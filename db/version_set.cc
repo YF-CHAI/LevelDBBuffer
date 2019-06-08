@@ -953,7 +953,9 @@ class VersionSet::Builder {
 		  (*buffer) =new  Buffer();
 		  (*buffer)->smallest = be.smallest;
 		  (*buffer)->largest = be.largest;
-          (*buffer)->nodes.reserve(config::kThresholdBufferNum+5);
+          //(*buffer)->nodes.reserve(config::kThresholdBufferNum+5);
+		  //cyf change as an independent value
+		  (*buffer)->nodes.reserve(config::kBufferResveredNum);
 		  (*buffer)->nodes.push_back(newnode);
 		  (*buffer)->size=be.size;
 	  }else{
@@ -1152,14 +1154,27 @@ void Apply(VersionEdit* edit) {
     	 BufferNodeEdit& be = levels_[level].added_buffer_nodes[j];
     	 BufferAddNode(&(f->buffer),be,v->sequence_);
          
-         if(f->buffer->nodes.size() >= config::kThresholdBufferNum){
+         double merge_score = static_cast<double>(f->buffer->size) / static_cast<double>(f->file_size +1);
+         if( merge_score >= config::kLDCMergeSizeRatio){//cyf change, 1.0 means buffers' size / to be merged SST's size has no write amplification
              vset_->buffer_compact_switch_ = true;
              v->bc_compaction_level_ = level;
              if(std::find(v->need_compact_[level].begin(),v->need_compact_[level].end(),f)
              ==v->need_compact_[level].end())
                  v->need_compact_[level].push_back(f);
+
+         }
+
+         //cyf comment out for backup 2019.6.5
+         /*
+         if(f->buffer->nodes.size() >= config::kThresholdBufferNum ){
+             vset_->buffer_compact_switch_ = true;
+             v->bc_compaction_level_ = level;
+             if(std::find(v->need_compact_[level].begin(),v->need_compact_[level].end(),f)
+            ==v->need_compact_[level].end())
+                 v->need_compact_[level].push_back(f);
             //std::cout<<"buffer fill: ="<<ptr<<"!"<<std::endl;
          }
+         */
          
       }
 

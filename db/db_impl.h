@@ -26,6 +26,21 @@ class VersionSet;
 //forward define
 //struct CompactionState;
 
+
+//cyf add for WR Sampling for self-adaptive
+class WRSample
+{
+public:
+    WRSample();
+    ~WRSample();
+    double getWRRatio();
+    void resetWRSample();
+private:
+    double writes_num_;
+    double reads_num_;
+};
+
+
 class DBImpl : public DB {
  public:
   DBImpl(const Options& options, const std::string& dbname);

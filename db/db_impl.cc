@@ -1563,7 +1563,7 @@ Status DBImpl::Dispatch(CompactionState* compact) {
           
           InternalKey nlargest;
           
-          int tag = 0;
+          int tag = 0;//tag seems no use ......
           
           if(ptr1>=compact->compaction->inputs_[1].size()){
               nlargest.DecodeFrom(compact->compaction->inputs_[0][i]->largest.Encode());
@@ -2419,6 +2419,37 @@ Status DestroyDB(const std::string& dbname, const Options& options) {
     env->DeleteDir(dbname);  // Ignore error in case dir contains other files
   }
   return result;
+}
+
+
+//cyf add for self-adaptive
+WRSample::WRSample()
+{
+    writes_num_ = 0.0;
+    reads_num_  = 0.0;
+
+}
+
+WRSample::~WRSample()
+{
+
+}
+
+
+//W:R = 1:1, 1:4, 4:1 means WR balance, read heavy and write heavy mode
+double WRSample::getWRRatio()
+{
+    if(writes_num_ == 0.0) return 0.01;
+    else if (reads_num_ == 0.0) return 99.99;
+    else return writes_num_ / reads_num_;
+
+}
+
+void WRSample::resetWRSample()
+{
+    reads_num_ = 0.0;
+    writes_num_ = 0.0;
+
 }
 
 }  // namespace leveldb

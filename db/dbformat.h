@@ -46,10 +46,18 @@ static const int kReadBytesPeriod = 1048576;
 static const int kBufferCompactLevel  = 1;
 
 //
-static const int kBufferComactMaxLevel = 2;
+static const int kBufferComactMaxLevel = 7;
 
 //whc add
 static const int kThresholdBufferNum  = 5;
+
+//cyf add for having two condition to determine the merge operation
+//kLDCMergeSizeRatio = total_linked_fragement_size / target_merge_sstable_size
+//the best is 1:1, means no write amplification
+static const double kLDCMergeSizeRatio = 0.5;
+
+//cyf add for pre-reserving buffer number
+static const int kBufferResveredNum = 20;
 
 //whc add
 static const bool kSwitchSSD = false;
