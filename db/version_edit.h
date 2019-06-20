@@ -26,7 +26,11 @@ struct FileMetaData {
   InternalKey largest;        // Largest internal key served by table
   Buffer* buffer;               //whc add
   InternalKey percent_size_key[10];     //cyf: percent_size_key[i] shows index key of (i*10)% of SST's size
-  FileMetaData() : refs(0), allowed_seeks(1 << 30), file_size(0),buffer(NULL) { }
+  FileMetaData() : refs(0), allowed_seeks(1 << 30), file_size(0),buffer(NULL) {
+      for (int i = 0; i < config::kLDCLinkKVSizeInterval; ++i) {
+          percent_size_key[i].DecodeFrom(Slice("0"));
+      }
+  }
   
 };
 
