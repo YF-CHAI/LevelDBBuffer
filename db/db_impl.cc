@@ -1152,7 +1152,7 @@ Status DBImpl::OpenCompactionOutputFile(CompactionState* compact) {
     out.largest.Clear();
     //cyf add for get key size distribution
     for (int i = 0; i < config::kLDCLinkKVSizeInterval; ++i) {
-        out.p_size_key[i].Clear();
+        out.p_size_key[i].DecodeFrom(Slice("0"));//cyf add for skip IternalKey 's assert check
     }
     compact->outputs.push_back(out);
     mutex_.Unlock();
