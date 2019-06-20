@@ -16,7 +16,7 @@ class VersionSet;
 
 struct Buffer;
 
-//whc change
+//whc change, then cyf change it.
 struct FileMetaData {
   int refs;
   int allowed_seeks;          // Seeks allowed until compaction
@@ -25,10 +25,9 @@ struct FileMetaData {
   InternalKey smallest;       // Smallest internal key served by table
   InternalKey largest;        // Largest internal key served by table
   Buffer* buffer;               //whc add
-
+  InternalKey percent_size_key[10];     //cyf: percent_size_key[i] shows index key of (i*10)% of SST's size
   FileMetaData() : refs(0), allowed_seeks(1 << 30), file_size(0),buffer(NULL) { }
   
-  //~FileMetaData(){delete buffer;}
 };
 
 //whc add
@@ -112,12 +111,19 @@ class VersionEdit {
   void AddFile(int level, uint64_t file,
                uint64_t file_size,
                const InternalKey& smallest,
-               const InternalKey& largest) {
+               const InternalKey& largest,
+               /*cyf add this default parameter*/ InternalKey* p = nullptr) {
     FileMetaData f;
     f.number = file;
     f.file_size = file_size;
     f.smallest = smallest;
     f.largest = largest;
+    //cyf: adding key size distribution in MANIFEST seems to be so boring......
+    if(p != nullptr){
+        for (int i=0;i<config::kLDCLinkKVSizeInterval;i++) {
+            f.percent_size_key[i].DecodeFrom((p+i)->Rep());
+        }
+    }
     new_files_.push_back(std::make_pair(level, f));
   }
 

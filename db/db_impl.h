@@ -148,7 +148,7 @@ class DBImpl : public DB {
   Status OpenCompactionOutputFile(CompactionState* compact);
   Status FinishCompactionOutputFile(CompactionState* compact, Iterator* input);
   //whc add
-  Status FinishBufferCompactionOutputFile(CompactionState* compact, Iterator* input);
+  Status FinishBufferCompactionOutputFile(CompactionState* compact, Iterator* input);//cyf no use in LDC
   Status InstallCompactionResults(CompactionState* compact)
       EXCLUSIVE_LOCKS_REQUIRED(mutex_);
 

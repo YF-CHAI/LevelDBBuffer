@@ -408,7 +408,7 @@ class VersionSet {
   // No copying allowed
   VersionSet(const VersionSet&);
   void operator=(const VersionSet&);
-};
+};//end of VersionSet
 
 // A Compaction encapsulates information about a compaction.
 class Compaction {

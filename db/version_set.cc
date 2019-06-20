@@ -1051,7 +1051,7 @@ void Apply(VersionEdit* edit) {
         //v->files_in_ssd_[level] = base_->files_in_ssd_[level];
         // delete buffertable if ref==0
         std::map<uint64_t,BufferTable*>::iterator ptr;
-        //if(level==config::kBufferCompactLevel)
+        //if(level==config::kBufferCompactStartLevel)
             //std::cout<<"files_in_ssd_.size[level]()="<<base_->files_in_ssd_[level].size()<<std::endl;
         for(ptr = base_->files_in_ssd_[level].begin();ptr!=base_->files_in_ssd_[level].end();ptr++){
             if(ptr->second->refs > 0)
@@ -1155,7 +1155,7 @@ void Apply(VersionEdit* edit) {
     	 BufferAddNode(&(f->buffer),be,v->sequence_);
          
          double merge_score = static_cast<double>(f->buffer->size) / static_cast<double>(f->file_size +1);
-         if( merge_score >= config::kLDCMergeSizeRatio){//cyf change, 1.0 means buffers' size / to be merged SST's size has no write amplification
+         if( merge_score  >= config::kLDCMergeSizeRatio){//cyf change, 1.0 means buffers' size / to be merged SST's size has no write amplification
              vset_->buffer_compact_switch_ = true;
              v->bc_compaction_level_ = level;
              if(std::find(v->need_compact_[level].begin(),v->need_compact_[level].end(),f)
@@ -1186,7 +1186,7 @@ void Apply(VersionEdit* edit) {
       // File is deleted: do nothing
     } else {
       std::vector<FileMetaData*>* files = &v->files_[level];
-      if (level > 0 && !files->empty()) {
+      if (level > 0 && !files->empty()) {//cyf: normally it won't be executed
           if(vset_->icmp_.Compare((*files)[files->size()-1]->largest,
                                     f->smallest) >= 0){
                 std::cout<<"last->largest="<<(*files)[files->size()-1]->largest.Rep()<<std::endl;
@@ -1602,7 +1602,7 @@ Status VersionSet::WriteSnapshot(log::Writer* log) {
     const std::vector<FileMetaData*>& files = current_->files_[level];
     for (size_t i = 0; i < files.size(); i++) {
       const FileMetaData* f = files[i];
-      edit.AddFile(level, f->number, f->file_size, f->smallest, f->largest);
+      edit.AddFile(level, f->number, f->file_size, f->smallest, f->largest, /*cyf add*/files[i]->percent_size_key);
     }
   }
 
@@ -1737,7 +1737,7 @@ void VersionSet::GetRange(const std::vector<FileMetaData*>& inputs,
                 continue;
             }
             nodesmallest.DecodeFrom(ptr->key());
-            if(icmp_.Compare(f->smallest, nodesmallest) > 0)
+            if(icmp_.Compare(f->smallest, nodesmallest) > 0)//cyf: TODO: need change condition for link size adaptive
                 f->smallest = nodesmallest;
             delete ptr;
         }
@@ -1760,6 +1760,7 @@ void VersionSet::GetRange(const std::vector<FileMetaData*>& inputs,
 // Stores the minimal range that covers all entries in inputs1 and inputs2
 // in *smallest, *largest.
 // REQUIRES: inputs is not empty
+//cyf: no use in LDC
 void VersionSet::GetRange2(const std::vector<FileMetaData*>& inputs1,
                            const std::vector<FileMetaData*>& inputs2,
                            InternalKey* smallest,
@@ -1897,6 +1898,8 @@ Compaction* VersionSet::PickCompaction() {
       c->input_version_ = current_;
       c->input_version_->Ref();
       //std::cout<<"pickcompaction:current_->sequence_= "<<current_->sequence_<<std::endl;
+
+      //cyf the if below is no use for nowhere change the false to true
       if(current_->endbuffers_need_[level]){
           c->endbuffer = current_->endbuffers_[level];
           current_->endbuffers_clean_[level] = true;
@@ -1922,6 +1925,8 @@ Compaction* VersionSet::PickCompaction() {
     //whc change
     for (size_t i = 0; i < current_->files_[level].size(); i++) {
       FileMetaData* f = current_->files_[level][i];
+      //cyf: the if below means that if the SST has been linked,
+      //it won't be selected as the compaction candidator any more. it's hard to read...
       if( (f->buffer == NULL || (!BCJudge::IsBufferCompactLevel(level)))&& 
       (compact_pointer_[level].empty() ||
           icmp_.Compare(f->largest.Encode(), compact_pointer_[level]) > 0)) {
@@ -1929,11 +1934,13 @@ Compaction* VersionSet::PickCompaction() {
         break;
       }
     }
+
+
     if (c->inputs_[0].empty()) {
        //whc change
         // Wrap-around to the beginning of the key space
       //c->inputs_[0].push_back(current_->files_[level][0]);
-      
+      //cyf: this loop means that LDC selected an compaction-finished SST again.
       for (size_t i = 0; i < current_->files_[level].size(); i++){
           FileMetaData* f = current_->files_[level][i];
           if(f->buffer == NULL || (!BCJudge::IsBufferCompactLevel(level))){
@@ -1945,7 +1952,7 @@ Compaction* VersionSet::PickCompaction() {
     //whc add
     assert(!c->inputs_[0].empty());
     
-  } else if (seek_compaction) {
+  } else if (seek_compaction) {//cyf: turn off the seek condition
     std::cout<<"pickcompaction:seek_compaction "<<std::endl;
     level = current_->file_to_compact_level_;
     c = new Compaction(options_, level);

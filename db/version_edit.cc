@@ -82,6 +82,10 @@ void VersionEdit::EncodeTo(std::string* dst) const {
     PutVarint64(dst, f.file_size);
     PutLengthPrefixedSlice(dst, f.smallest.Encode());
     PutLengthPrefixedSlice(dst, f.largest.Encode());
+    //cyf add for record the key size distribution, Add into MANIFEST file
+    for (size_t i =0; i < config::kLDCLinkKVSizeInterval; i++) {
+        PutLengthPrefixedSlice(dst,f.percent_size_key[i].Encode());
+    }
   }
 }
 
@@ -179,13 +183,18 @@ Status VersionEdit::DecodeFrom(const Slice& src) {
           msg = "deleted file";
         }
         break;
-
+      //cyf: need to add key size distribution info
       case kNewFile:
         if (GetLevel(&input, &level) &&
             GetVarint64(&input, &f.number) &&
             GetVarint64(&input, &f.file_size) &&
             GetInternalKey(&input, &f.smallest) &&
             GetInternalKey(&input, &f.largest)) {
+            //cyf add for record the key size distribution, Add into MANIFEST file
+            for (size_t i =0; i < config::kLDCLinkKVSizeInterval; i++)
+            {
+                GetInternalKey(&input, &f.percent_size_key[i]);
+            }
           new_files_.push_back(std::make_pair(level, f));
         } else {
           msg = "new-file entry";

@@ -64,6 +64,7 @@ struct DBImpl::CompactionState {
     uint64_t number;
     uint64_t file_size;
     InternalKey smallest, largest;
+    InternalKey p_size_key[config::kLDCLinkKVSizeInterval];//cyf add for get key size distribution
   };
   std::vector<Output> outputs;
 
@@ -1033,7 +1034,7 @@ void DBImpl::BackgroundCompaction() {
     FileMetaData* f = c->input(0, 0);
     c->edit()->DeleteFile(c->level(), f->number);
     c->edit()->AddFile(c->level() + 1, f->number, f->file_size,
-                       f->smallest, f->largest);
+                       f->smallest, f->largest, /*cyf add*/f->percent_size_key);
     status = versions_->LogAndApply(c->edit(), &mutex_);
     if (!status.ok()) {
       RecordBackgroundError(status);
@@ -1055,13 +1056,13 @@ void DBImpl::BackgroundCompaction() {
    //CopyToSSD(compact);
    // status = DoCompactionWork(compact);
    //whc change
-  //if(compact->compaction->level_== config::kBufferCompactLevel){
+  //if(compact->compaction->level_== config::kBufferCompactStartLevel){
   
     bool flag = true;
     if(compact->compaction->level_<=1 || compact->compaction->inputs_[1].size()<12
     || BCJudge::IsBufferCompactLevel(compact->compaction->level_)){
       if(BCJudge::IsBufferCompactLevel(compact->compaction->level_)){
-          if(config::kSwitchSSD){
+          if(config::kSwitchSSD){//default: false, use full-SSD env, no hybrid storage.
               mutex_.Unlock();
               CopyToSSD(compact);
               mutex_.Lock();
@@ -1069,10 +1070,10 @@ void DBImpl::BackgroundCompaction() {
           //std::cout<<"Have copied to SSD"<<std::endl;
           
           assert(c==compact->compaction);
-          status = Dispatch(compact);
+          status = Dispatch(compact);//Level have LDC method to do Link and Merge operation
           flag = false;
       } else {
-          status = DoCompactionWork(compact);
+          status = DoCompactionWork(compact);//Level 0 won't have Link and Merge
       }
     }
   
@@ -1149,6 +1150,10 @@ Status DBImpl::OpenCompactionOutputFile(CompactionState* compact) {
     out.number = file_number;
     out.smallest.Clear();
     out.largest.Clear();
+    //cyf add for get key size distribution
+    for (int i = 0; i < config::kLDCLinkKVSizeInterval; ++i) {
+        out.p_size_key[i].Clear();
+    }
     compact->outputs.push_back(out);
     mutex_.Unlock();
   }
@@ -1221,6 +1226,7 @@ Status DBImpl::FinishCompactionOutputFile(CompactionState* compact,
 }
 
 //whc add
+//cyf: no use in LDC
 Status DBImpl::FinishBufferCompactionOutputFile(CompactionState* compact,
                                           Iterator* input) {
   assert(compact != NULL);
@@ -1283,14 +1289,14 @@ Status DBImpl::InstallCompactionResults(CompactionState* compact) {
   //whc change
   for (size_t i = 0; i < compact->outputs.size(); i++) {
     const CompactionState::Output& out = compact->outputs[i];
-    //if((!compact->compaction->IsBufferCompact) || level != config::kBufferCompactLevel +1)
+    //if((!compact->compaction->IsBufferCompact) || level != config::kBufferCompactStartLevel +1)
     if((!compact->compaction->IsBufferCompact) || (!BCJudge::IsBufferCompactLevel(level-1)))
     compact->compaction->edit()->AddFile(
         level + 1,
-        out.number, out.file_size, out.smallest, out.largest);
+        out.number, out.file_size, out.smallest, out.largest, /*cyf add*/compact->outputs[i].p_size_key);
     else compact->compaction->edit()->AddFile(
         level,
-        out.number, out.file_size, out.smallest, out.largest);
+        out.number, out.file_size, out.smallest, out.largest, /*cyf add*/compact->outputs[i].p_size_key);
   }
   return versions_->LogAndApply(compact->compaction->edit(), &mutex_);
 }
@@ -1302,6 +1308,8 @@ Status DBImpl::DoCompactionWork(CompactionState* compact) {
   //whc add
   uint64_t input_size = 0;
   uint64_t output_size = 0;
+  //cyf add
+  int key_distribution_index = 0;
 
   Log(options_.info_log,  "Compacting %d@%d + %d@%d files",
       compact->compaction->num_input_files(0),
@@ -1312,7 +1320,7 @@ Status DBImpl::DoCompactionWork(CompactionState* compact) {
   assert(versions_->NumLevelFiles(compact->compaction->level()) > 0);
   assert(compact->builder == NULL);
   assert(compact->outfile == NULL);
-  if (snapshots_.empty()) {
+  if (snapshots_.empty()) {//cyf: if use snapshot, be careful for the data consistency problem
     compact->smallest_snapshot = versions_->LastSequence();
   } else {
     compact->smallest_snapshot = snapshots_.oldest()->number_;
@@ -1406,14 +1414,33 @@ Status DBImpl::DoCompactionWork(CompactionState* compact) {
         }
       }
       if (compact->builder->NumEntries() == 0) {
-        compact->current_output()->smallest.DecodeFrom(key);
+        compact->current_output()->smallest.DecodeFrom(key);//cyf: set the smallest key for output
+        //cyf add to record the key distribution
+        key_distribution_index = 0;
+        compact->current_output()->p_size_key[key_distribution_index].DecodeFrom(key);//p_size_key[0] equals smallest key
+        key_distribution_index++;//set index to point to next pos
       }
-      compact->current_output()->largest.DecodeFrom(key);
+      compact->current_output()->largest.DecodeFrom(key);//cyf: update the largest, key by key
       compact->builder->Add(key, input->value());
 
+      //cyf add
+      if (static_cast<double>((compact->builder->FileSize() * key_distribution_index) / options_.max_file_size) >= 1.0)
+      {
+          compact->current_output()->p_size_key[key_distribution_index].DecodeFrom(key);
+          if(key_distribution_index < config::kLDCLinkKVSizeInterval)
+              key_distribution_index++;
+
+      }
       // Close output file if it is big enough
       if (compact->builder->FileSize() >=
           compact->compaction->MaxOutputFileSize()) {
+          //cyf add
+          if(key_distribution_index < config::kLDCLinkKVSizeInterval){
+              for (int index = key_distribution_index; index < config::kLDCLinkKVSizeInterval; index++) {
+                  compact->current_output()->p_size_key[index].DecodeFrom(key);
+              }
+
+          }
         status = FinishCompactionOutputFile(compact, input);
         if (!status.ok()) {
           break;
@@ -1422,7 +1449,7 @@ Status DBImpl::DoCompactionWork(CompactionState* compact) {
     }
 
     input->Next();
-  }
+  }//endfor: for (; input->Valid() && !shutting_down_.Acquire_Load(); )
 
   if (status.ok() && shutting_down_.Acquire_Load()) {
     status = Status::IOError("Deleting DB during compaction");
@@ -1563,7 +1590,7 @@ Status DBImpl::Dispatch(CompactionState* compact) {
           
           InternalKey nlargest;
           
-          int tag = 0;//tag seems no use ......
+          int tag = 0;//cyf: tag seems no use ......
           
           if(ptr1>=compact->compaction->inputs_[1].size()){
               nlargest.DecodeFrom(compact->compaction->inputs_[0][i]->largest.Encode());
@@ -1578,12 +1605,35 @@ Status DBImpl::Dispatch(CompactionState* compact) {
               tag = 3;
             }
           
+          //cyf: inputs_[0][i]->file_size change to be the realed link fragement size.
+          uint64_t link_size;
+          int link_start = 0;
+          int link_end = config::kLDCLinkKVSizeInterval - 1;
+          FileMetaData* f = compact->compaction->inputs_[0][i];
+          for (int li = 0; li < config::kLDCLinkKVSizeInterval; ++li) {
+              if(internal_comparator_.Compare(nsmallest,f->percent_size_key[li]) < 0)
+                  link_start++;
+
+              if(internal_comparator_.Compare(nlargest, f->percent_size_key[config::kLDCLinkKVSizeInterval - li]) <= 0)
+                  link_end--;
+
+              if((link_end - link_start) <= 0)
+                  link_size = static_cast<uint64_t>(options_.max_file_size  / 10);
+              else {
+                  link_size = static_cast<uint64_t>(options_.max_file_size *(link_end -link_start)  / 10);
+              }
+
+
+          }
+
+
           if(ptr1<compact->compaction->inputs_[1].size()){
-              
+
               assert(nlargest.Rep().size()>0);
               compact->compaction->edit_.AddBufferNode(compact->compaction->level_+1,
     						compact->compaction->inputs_[0][i]->number,
-                            compact->compaction->inputs_[0][i]->file_size,
+                            link_size,//cyf change
+                            //compact->compaction->inputs_[0][i]->file_size,
 							compact->compaction->inputs_[1][ptr1]->number,
 							0,
 							nsmallest,
@@ -1599,7 +1649,8 @@ Status DBImpl::Dispatch(CompactionState* compact) {
               assert(nlargest.Rep().size()>0);
               compact->compaction->edit_.AddBufferNode(compact->compaction->level_+1,
     						compact->compaction->inputs_[0][i]->number,
-                            compact->compaction->inputs_[0][i]->file_size,
+                            link_size,//cyf change
+                            //compact->compaction->inputs_[0][i]->file_size,
 							compact->compaction->inputs_[1][ptr1-1]->number,
 							0,
 							nsmallest,
@@ -1668,12 +1719,15 @@ Status DBImpl::Dispatch(CompactionState* compact) {
   return status;
 }
 
+//cyf: actually means LDC's Merge operation
 Status DBImpl::BufferCompact(CompactionState* compact,int index){
     Status status;
     const uint64_t start_micros = env_->NowMicros();
     int64_t imm_micros = 0;  // Micros spent doing imm_ compactions
     uint64_t input_size =0;
     uint64_t output_size =0;
+
+    int key_distribution_index = 0;
     //std::cout<<"go into buffer compact"<<std::endl;
     assert(versions_->NumLevelFiles(compact->compaction->level()) > 0);
     assert(compact->builder == NULL);
@@ -1773,15 +1827,36 @@ Status DBImpl::BufferCompact(CompactionState* compact,int index){
       }
       if (compact->builder->NumEntries() == 0) {
         compact->current_output()->smallest.DecodeFrom(key);
+        //cyf add to record the key distribution
+        key_distribution_index = 0;
+        compact->current_output()->p_size_key[key_distribution_index].DecodeFrom(key);//p_size_key[0] equals smallest key
+        key_distribution_index++;//set index to point to next pos
       }
       compact->current_output()->largest.DecodeFrom(key);
       compact->builder->Add(key, input->value());
 
       //std::cout<<"buffer compact cur file size"<<compact->builder->FileSize()<<std::endl;
       //std::cout<<"buffer compact max file size"<<compact->compaction->MaxOutputFileSize()<<std::endl;
+
+      //cyf add
+      if (static_cast<double>((compact->builder->FileSize() * key_distribution_index) / options_.max_file_size) >= 1.0)
+      {
+          compact->current_output()->p_size_key[key_distribution_index].DecodeFrom(key);
+          if(key_distribution_index < config::kLDCLinkKVSizeInterval)
+              key_distribution_index++;
+
+      }
+
       // Close output file if it is big enough
       if (compact->builder->FileSize() >=
           compact->compaction->MaxOutputFileSize()) {
+          //cyf add
+          if(key_distribution_index < config::kLDCLinkKVSizeInterval){
+              for (int index = key_distribution_index; index < config::kLDCLinkKVSizeInterval; index++) {
+                  compact->current_output()->p_size_key[index].DecodeFrom(key);
+              }
+
+          }
         status = FinishCompactionOutputFile(compact, input);
         //std::cout<<"buffer compact out"<<std::endl;
         if (!status.ok()) {

@@ -229,7 +229,8 @@ Status TableBuilder::Finish() {
 
     // TODO(postrelease): Add stats and other meta blocks
     WriteBlock(&meta_index_block, &metaindex_block_handle);
-    ReadStatic::index_block_size = (filter_block_handle.size()>ReadStatic::index_block_size) ? filter_block_handle.size() : ReadStatic::index_block_size; 
+    ReadStatic::index_block_size =
+            (filter_block_handle.size()>ReadStatic::index_block_size) ? filter_block_handle.size() : ReadStatic::index_block_size;
   }
 
   // Write index block

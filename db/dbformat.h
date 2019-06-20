@@ -43,10 +43,10 @@ static const int kMaxMemCompactLevel = 0;
 static const int kReadBytesPeriod = 1048576;
 
 //whc add
-static const int kBufferCompactLevel  = 1;
+static const int kBufferCompactStartLevel  = 1;
 
 //
-static const int kBufferComactMaxLevel = 7;
+static const int kBufferCompactEndLevel = 7;
 
 //whc add
 static const int kThresholdBufferNum  = 5;
@@ -59,6 +59,11 @@ static const double kLDCMergeSizeRatio = 0.5;
 //cyf add for pre-reserving buffer number
 static const int kBufferResveredNum = 20;
 
+//cyf add for get percent size 0%~100% 's key, SST max size ~ 2MB
+//|0%   |10%    |......|90%     |100%   |
+//|key1 |key2   |......|key9    |key10  |   key1 = smallest, key10 = largest
+static const int kLDCLinkKVSizeInterval = 11;
+
 //whc add
 static const bool kSwitchSSD = false;
 
@@ -70,11 +75,12 @@ static const std::string kSSDPath = "";
 
 
 //whc add
+class InternalKey;
 class BCJudge{
     public:
     static bool IsBufferCompactLevel(int level){
-        return (level >= config::kBufferCompactLevel && level<=config::kBufferComactMaxLevel);
-        //return (level>=config::kBufferCompactLevel);
+        return (level >= config::kBufferCompactStartLevel && level<=config::kBufferCompactEndLevel);
+        //return (level>=config::kBufferCompactStartLevel);
         //return (level==1);
         //return false;
     }
@@ -104,7 +110,7 @@ class ReadStatic{
 
 
 
-class InternalKey;
+//class InternalKey;
 
 // Value types encoded as the last component of internal keys.
 // DO NOT CHANGE THESE ENUM VALUES: they are embedded in the on-disk
