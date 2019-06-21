@@ -39,7 +39,6 @@ void VersionEdit::Clear() {
 }
 
 void VersionEdit::EncodeTo(std::string* dst) const {
-    printf("void VersionEdit::EncodeTo(std::string* dst) const\n");
   if (has_comparator_) {
     PutVarint32(dst, kComparator);
     PutLengthPrefixedSlice(dst, comparator_);
@@ -75,7 +74,9 @@ void VersionEdit::EncodeTo(std::string* dst) const {
     PutVarint64(dst, iter->second);  // file number
   }
 
+
   for (size_t i = 0; i < new_files_.size(); i++) {
+      printf("void VersionEdit::EncodeTo(std::string* dst) const\n");
     const FileMetaData& f = new_files_[i].second;
     PutVarint32(dst, kNewFile);
     PutVarint32(dst, new_files_[i].first);  // level
