@@ -1860,7 +1860,10 @@ Status DBImpl::BufferCompact(CompactionState* compact,int index){
       //std::cout<<"buffer compact max file size"<<compact->compaction->MaxOutputFileSize()<<std::endl;
 
       //cyf add
-      if (static_cast<double>((compact->builder->FileSize() * key_distribution_index) / options_.max_file_size) >= 1.0)
+      if (static_cast<double>((compact->builder->FileSize()
+                               * (config::kLDCLinkKVSizeInterval - 1))
+                              / options_.max_file_size)
+              >= 1.0 * key_distribution_index)
       {
           compact->current_output()->p_size_key[key_distribution_index].DecodeFrom(key);
           if(key_distribution_index < config::kLDCLinkKVSizeInterval)
@@ -1878,6 +1881,13 @@ Status DBImpl::BufferCompact(CompactionState* compact,int index){
               }
 
           }
+
+          for (int j=0;j<config::kLDCLinkKVSizeInterval;j++) {
+              std::cout << "Key-buffer distribution:["<<j<<"] [ "
+                        <<compact->current_output()->p_size_key[j].Encode().ToString()
+                       <<" ]"<<std::endl;
+          }
+
         status = FinishCompactionOutputFile(compact, input);
         //std::cout<<"buffer compact out"<<std::endl;
         if (!status.ok()) {
