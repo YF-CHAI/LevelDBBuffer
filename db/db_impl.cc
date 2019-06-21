@@ -1432,7 +1432,7 @@ Status DBImpl::DoCompactionWork(CompactionState* compact) {
       compact->builder->Add(key, input->value());
 
       //cyf add
-      std::cout<< "cyf builder->filesize: "<<compact->builder->FileSize()<<std::endl;
+      //std::cout<< "cyf builder->filesize: "<<compact->builder->FileSize()<<std::endl;
       if (static_cast<double>((compact->builder->FileSize() * key_distribution_index) / options_.max_file_size) >= 1.0)
       {
           std::cout<< "cyf builder->filesize reach the limit: "<<compact->builder->FileSize()<<std::endl;
