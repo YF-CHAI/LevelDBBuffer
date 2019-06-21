@@ -25,10 +25,13 @@ struct FileMetaData {
   InternalKey smallest;       // Smallest internal key served by table
   InternalKey largest;        // Largest internal key served by table
   Buffer* buffer;               //whc add
-  InternalKey percent_size_key[10];     //cyf: percent_size_key[i] shows index key of (i*10)% of SST's size
+  std::vector<InternalKey> percent_size_key;     //cyf: percent_size_key[i] shows index key of (i*10)% of SST's size
   FileMetaData() : refs(0), allowed_seeks(1 << 30), file_size(0),buffer(NULL) {
+      percent_size_key.reserve(config::kLDCLinkKVSizeInterval);
       for (int i = 0; i < config::kLDCLinkKVSizeInterval; ++i) {
-          percent_size_key[i].DecodeFrom(Slice("0"));
+          InternalKey key;
+          key.DecodeFrom(Slice("0"));
+          percent_size_key.push_back(key);
       }
   }
   

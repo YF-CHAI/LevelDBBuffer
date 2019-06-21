@@ -64,7 +64,16 @@ struct DBImpl::CompactionState {
     uint64_t number;
     uint64_t file_size;
     InternalKey smallest, largest;
-    InternalKey p_size_key[config::kLDCLinkKVSizeInterval];//cyf add for get key size distribution
+    std::vector<InternalKey> p_size_key;//cyf add for get key size distribution
+    explicit Output(){
+        p_size_key.reserve(config::kLDCLinkKVSizeInterval);
+        for (size_t i = 0; i < config::kLDCLinkKVSizeInterval; ++i) {
+            InternalKey key;
+            key.DecodeFrom(Slice("0"));
+            p_size_key.push_back(key);
+            //p_size_key[i].DecodeFrom(Slice("0"));
+        }
+    }
   };
   std::vector<Output> outputs;
 
