@@ -1432,7 +1432,6 @@ Status DBImpl::DoCompactionWork(CompactionState* compact) {
       compact->builder->Add(key, input->value());
 
       //cyf add
-      std::cout<<"cyf: start DoCompactionWork"<<std::endl;
       if (static_cast<double>((compact->builder->FileSize() * key_distribution_index) / options_.max_file_size) >= 1.0)
       {
           compact->current_output()->p_size_key[key_distribution_index].DecodeFrom(key);
@@ -1450,6 +1449,11 @@ Status DBImpl::DoCompactionWork(CompactionState* compact) {
               }
 
           }
+
+          for (int j=0;j<config::kLDCLinkKVSizeInterval;j++) {
+              std::cout << "Key distribution:["<<j<<" "<<compact->current_output()->p_size_key[j].Rep()<<std::endl;
+          }
+
         status = FinishCompactionOutputFile(compact, input);
         if (!status.ok()) {
           break;
