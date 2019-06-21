@@ -1673,7 +1673,7 @@ Status DBImpl::Dispatch(CompactionState* compact) {
              ptr0_key.assign(compact->compaction->inputs_[0][i]->largest.Rep());
           }
         flag = false;
-        std::cout<<"cyf: finished AddBufferNode"<<std::endl;
+        std::cout<<"cyf: finished AddBufferNode"<<" linksize is "<<link_size<<std::endl;
       }
   }
 
