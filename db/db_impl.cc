@@ -1432,6 +1432,7 @@ Status DBImpl::DoCompactionWork(CompactionState* compact) {
       compact->builder->Add(key, input->value());
 
       //cyf add
+      std::cout<<"cyf: start DoCompactionWork"<<std::endl;
       if (static_cast<double>((compact->builder->FileSize() * key_distribution_index) / options_.max_file_size) >= 1.0)
       {
           compact->current_output()->p_size_key[key_distribution_index].DecodeFrom(key);
@@ -1614,11 +1615,12 @@ Status DBImpl::Dispatch(CompactionState* compact) {
             }
           
           //cyf: inputs_[0][i]->file_size change to be the realed link fragement size.
+          std::cout<<"cyf: start AddBufferNode"<<std::endl;
           uint64_t link_size;
           int link_start = 0;
           int link_end = config::kLDCLinkKVSizeInterval - 1;
           FileMetaData* f = compact->compaction->inputs_[0][i];
-          for (int li = 0; li < config::kLDCLinkKVSizeInterval; ++li) {
+          for (size_t li = 0; li < config::kLDCLinkKVSizeInterval; ++li) {
               if(internal_comparator_.Compare(nsmallest,f->percent_size_key[li]) < 0)
                   link_start++;
 
@@ -1667,6 +1669,7 @@ Status DBImpl::Dispatch(CompactionState* compact) {
              ptr0_key.assign(compact->compaction->inputs_[0][i]->largest.Rep());
           }
         flag = false;
+        std::cout<<"cyf: finished AddBufferNode"<<std::endl;
       }
   }
 

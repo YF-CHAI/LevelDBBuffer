@@ -1016,7 +1016,7 @@ int main(int argc, char** argv) {
   if (FLAGS_db == NULL) {
       leveldb::g_env->GetTestDirectory(&default_db_path);
       //default_db_path = "/mnt/ssd";
-      default_db_path += "/mnt/ssd/dbbench";
+      default_db_path += "/dbbench";
       FLAGS_db = default_db_path.c_str();
   }
 
