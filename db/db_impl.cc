@@ -69,7 +69,7 @@ struct DBImpl::CompactionState {
         p_size_key.reserve(config::kLDCLinkKVSizeInterval);
         for (size_t i = 0; i < config::kLDCLinkKVSizeInterval; ++i) {
             InternalKey key;
-            key.DecodeFrom(Slice("00000000"));
+            key.DecodeFrom(Slice("0000000000000000"));
             p_size_key.push_back(key);
             //p_size_key[i].DecodeFrom(Slice("0"));
         }
