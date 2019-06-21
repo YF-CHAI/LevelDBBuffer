@@ -128,7 +128,7 @@ class VersionEdit {
     f.largest = largest;
     //cyf: adding key size distribution in MANIFEST seems to be so boring......
     if(p != nullptr){
-        for (int i=0;i<config::kLDCLinkKVSizeInterval;i++) {
+        for (size_t i=0;i<config::kLDCLinkKVSizeInterval;i++) {
             f.percent_size_key[i].DecodeFrom((*p)[i].Rep());
         }
     }

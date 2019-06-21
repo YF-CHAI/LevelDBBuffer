@@ -1432,6 +1432,7 @@ Status DBImpl::DoCompactionWork(CompactionState* compact) {
       compact->builder->Add(key, input->value());
 
       //cyf add
+      std::cout<< "cyf builder->filesize: "<<compact->builder->FileSize()<<std::endl;
       if (static_cast<double>((compact->builder->FileSize() * key_distribution_index) / options_.max_file_size) >= 1.0)
       {
           compact->current_output()->p_size_key[key_distribution_index].DecodeFrom(key);
@@ -1557,7 +1558,7 @@ uint64_t DBImpl::GetLevelTotalSize(int level){
 }
 
 Status DBImpl::Dispatch(CompactionState* compact) {
-  //std::cout<<"diapatch begin!"<<std::endl;
+
   const uint64_t start_micros = env_->NowMicros();
   int64_t imm_micros = 0;  // Micros spent doing imm_ compactions
 
