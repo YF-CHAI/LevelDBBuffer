@@ -39,6 +39,7 @@ void VersionEdit::Clear() {
 }
 
 void VersionEdit::EncodeTo(std::string* dst) const {
+    printf("void VersionEdit::EncodeTo(std::string* dst) const\n");
   if (has_comparator_) {
     PutVarint32(dst, kComparator);
     PutLengthPrefixedSlice(dst, comparator_);
@@ -85,7 +86,7 @@ void VersionEdit::EncodeTo(std::string* dst) const {
     //cyf add for record the key size distribution, Add into MANIFEST file
     for (size_t index =0; index < config::kLDCLinkKVSizeInterval; index++) {
         PutLengthPrefixedSlice(dst,f.percent_size_key[index].Encode());
-        printf("void VersionEdit::EncodeTo(std::string* dst) const\n");
+
 
     }
   }
