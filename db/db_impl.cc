@@ -1433,7 +1433,7 @@ Status DBImpl::DoCompactionWork(CompactionState* compact) {
 
       //cyf add
       //std::cout<< "cyf builder->filesize: "<<compact->builder->FileSize()<<std::endl;
-      if (static_cast<double>((compact->builder->FileSize() * key_distribution_index * 10) / options_.max_file_size) >= 1.0)
+      if (static_cast<double>( compact->builder->FileSize() / options_.max_file_size) >= (1.0 * key_distribution_index) )
       {
           std::cout<< "cyf builder->filesize reach the limit: "<<compact->builder->FileSize()<<std::endl;
           compact->current_output()->p_size_key[key_distribution_index].DecodeFrom(key);
