@@ -119,7 +119,8 @@ class VersionEdit {
                uint64_t file_size,
                const InternalKey& smallest,
                const InternalKey& largest,
-               /*cyf add this default parameter*/ InternalKey* p = nullptr) {
+               /*cyf add this default parameter*/
+               std::vector<InternalKey>* p = nullptr) {
     FileMetaData f;
     f.number = file;
     f.file_size = file_size;
@@ -128,7 +129,7 @@ class VersionEdit {
     //cyf: adding key size distribution in MANIFEST seems to be so boring......
     if(p != nullptr){
         for (int i=0;i<config::kLDCLinkKVSizeInterval;i++) {
-            f.percent_size_key[i].DecodeFrom((p+i)->Rep());
+            f.percent_size_key[i].DecodeFrom((*p)[i].Rep());
         }
     }
     new_files_.push_back(std::make_pair(level, f));

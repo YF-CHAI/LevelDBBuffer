@@ -1043,7 +1043,7 @@ void DBImpl::BackgroundCompaction() {
     FileMetaData* f = c->input(0, 0);
     c->edit()->DeleteFile(c->level(), f->number);
     c->edit()->AddFile(c->level() + 1, f->number, f->file_size,
-                       f->smallest, f->largest, /*cyf add*/f->percent_size_key);
+                       f->smallest, f->largest, /*cyf add*/&f->percent_size_key);
     status = versions_->LogAndApply(c->edit(), &mutex_);
     if (!status.ok()) {
       RecordBackgroundError(status);
@@ -1159,10 +1159,7 @@ Status DBImpl::OpenCompactionOutputFile(CompactionState* compact) {
     out.number = file_number;
     out.smallest.Clear();
     out.largest.Clear();
-    //cyf add for get key size distribution
-    for (int i = 0; i < config::kLDCLinkKVSizeInterval; ++i) {
-        out.p_size_key[i].DecodeFrom(Slice("0"));//cyf add for skip IternalKey 's assert check
-    }
+
     compact->outputs.push_back(out);
     mutex_.Unlock();
   }
@@ -1302,10 +1299,12 @@ Status DBImpl::InstallCompactionResults(CompactionState* compact) {
     if((!compact->compaction->IsBufferCompact) || (!BCJudge::IsBufferCompactLevel(level-1)))
     compact->compaction->edit()->AddFile(
         level + 1,
-        out.number, out.file_size, out.smallest, out.largest, /*cyf add*/compact->outputs[i].p_size_key);
+        out.number, out.file_size, out.smallest, out.largest,
+                /*cyf add*/&compact->outputs[i].p_size_key);
     else compact->compaction->edit()->AddFile(
         level,
-        out.number, out.file_size, out.smallest, out.largest, /*cyf add*/compact->outputs[i].p_size_key);
+        out.number, out.file_size, out.smallest, out.largest,
+                /*cyf add*/&compact->outputs[i].p_size_key);
   }
   return versions_->LogAndApply(compact->compaction->edit(), &mutex_);
 }
