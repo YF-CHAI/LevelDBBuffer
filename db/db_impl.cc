@@ -1437,7 +1437,7 @@ Status DBImpl::DoCompactionWork(CompactionState* compact) {
                                * compact->builder->FileSize() / options_.max_file_size)
               >= (1.0 * key_distribution_index) )
       {
-          std::cout<< "cyf builder->filesize reach the limit: "<<compact->builder->FileSize()<<std::endl;
+          //std::cout<< "cyf builder->filesize reach the limit: "<<compact->builder->FileSize()<<std::endl;
           compact->current_output()->p_size_key[key_distribution_index].DecodeFrom(key);
           if(key_distribution_index < (config::kLDCLinkKVSizeInterval - 1))
               key_distribution_index++;
@@ -1453,8 +1453,8 @@ Status DBImpl::DoCompactionWork(CompactionState* compact) {
 
           }
 
-          for (int j=0;j<config::kLDCLinkKVSizeInterval;j++) {
-              std::cout << "Key distribution:["<<j<<"] [ "
+            for (int j=0;j<config::kLDCLinkKVSizeInterval;j++) {
+              std::cout << "cyf DoCompactionWork Key distribution:["<<j<<"] [ "
                         <<compact->current_output()->p_size_key[j].Encode().ToString()
                        <<" ]"<<std::endl;
           }
@@ -1879,7 +1879,7 @@ Status DBImpl::BufferCompact(CompactionState* compact,int index){
 
           }
 
-          for (int j=0;j<config::kLDCLinkKVSizeInterval;j++) {
+           for (int j=0;j<config::kLDCLinkKVSizeInterval;j++) {
               std::cout << "Key-buffer distribution:["<<j<<"] [ "
                         <<compact->current_output()->p_size_key[j].Encode().ToString()
                        <<" ]"<<std::endl;
