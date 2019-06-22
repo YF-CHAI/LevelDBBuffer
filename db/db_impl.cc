@@ -1305,6 +1305,7 @@ Status DBImpl::InstallCompactionResults(CompactionState* compact) {
         level,
         out.number, out.file_size, out.smallest, out.largest,
                 /*cyf add*/&compact->outputs[i].p_size_key);
+
   }
   return versions_->LogAndApply(compact->compaction->edit(), &mutex_);
 }
