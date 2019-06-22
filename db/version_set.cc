@@ -2149,9 +2149,6 @@ Compaction::~Compaction() {
 }
 
 bool Compaction::IsTrivialMove() const {
-
-  //cyf test
-  return false;
   const VersionSet* vset = input_version_->vset_;
   // Avoid a move if there is lots of overlapping grandparent data.
   // Otherwise, the move could create a parent file that will require
