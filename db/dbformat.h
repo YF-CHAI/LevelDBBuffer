@@ -61,7 +61,7 @@ static const int kBufferResveredNum = 20;
 
 //cyf add for get percent size 0%~100% 's key, SST max size ~ 2MB
 //|0%   |10%    |......|90%     |100%   |
-//|key1 |key2   |......|key9    |key10  |   key1 = smallest, key10 = largest
+//|key0 |key1   |......|key9    |key10  |   key0 = smallest, key10 = largest
 static const int kLDCLinkKVSizeInterval = 11;
 
 //whc add
