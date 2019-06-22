@@ -1317,7 +1317,7 @@ Status DBImpl::DoCompactionWork(CompactionState* compact) {
   uint64_t input_size = 0;
   uint64_t output_size = 0;
   //cyf add
-  int key_distribution_index = 0;
+  size_t key_distribution_index = 0;
 
   Log(options_.info_log,  "Compacting %d@%d + %d@%d files",
       compact->compaction->num_input_files(0),
@@ -1439,9 +1439,8 @@ Status DBImpl::DoCompactionWork(CompactionState* compact) {
       {
           std::cout<< "cyf builder->filesize reach the limit: "<<compact->builder->FileSize()<<std::endl;
           compact->current_output()->p_size_key[key_distribution_index].DecodeFrom(key);
-          if(key_distribution_index < config::kLDCLinkKVSizeInterval)
+          if(key_distribution_index < (config::kLDCLinkKVSizeInterval - 1))
               key_distribution_index++;
-
       }
       // Close output file if it is big enough
       if (compact->builder->FileSize() >=
@@ -1627,24 +1626,22 @@ Status DBImpl::Dispatch(CompactionState* compact) {
           //cyf: inputs_[0][i]->file_size change to be the realed link fragement size.
           std::cout<<"cyf: start AddBufferNode"<<std::endl;
           uint64_t link_size;
-          int link_start = 0;
-          int link_end = config::kLDCLinkKVSizeInterval - 1;
+          size_t link_start = 0;
+          size_t link_end = config::kLDCLinkKVSizeInterval - 1;
           FileMetaData* f = compact->compaction->inputs_[0][i];
           for (size_t li = 0; li < config::kLDCLinkKVSizeInterval; ++li) {
-              if(internal_comparator_.Compare(nsmallest,f->percent_size_key[li]) < 0)
+
+              if(internal_comparator_.Compare(nsmallest,f->percent_size_key[link_start]) < 0)
                   link_start++;
 
-              if(internal_comparator_.Compare(nlargest, f->percent_size_key[config::kLDCLinkKVSizeInterval - li]) <= 0)
+              if(internal_comparator_.Compare(nlargest, f->percent_size_key[link_end]) <= 0)
                   link_end--;
-
-              if((link_end - link_start) <= 0)
-                  link_size = static_cast<uint64_t>(options_.max_file_size  / 10);
-              else {
-                  link_size = static_cast<uint64_t>(options_.max_file_size *(link_end -link_start)  / 10);
-              }
-
-
           }
+
+          if((link_end - link_start) <= 0)
+              link_size = static_cast<uint64_t>(options_.max_file_size  / 10);
+          else
+              link_size = static_cast<uint64_t>(options_.max_file_size *(link_end -link_start)  / 10);
 
 
           if(ptr1<compact->compaction->inputs_[1].size()){
@@ -1679,7 +1676,7 @@ Status DBImpl::Dispatch(CompactionState* compact) {
              ptr0_key.assign(compact->compaction->inputs_[0][i]->largest.Rep());
           }
         flag = false;
-        std::cout<<"cyf: finished AddBufferNode"<<" linksize is "<<link_size<<std::endl;
+        std::cout<<"cyf: AddBuffer [ "<<nsmallest.Rep()<<" ~ "<<nlargest.Rep()<<" ]"<<" linksize is "<<link_size<<std::endl;
       }
   }
 
@@ -1748,7 +1745,7 @@ Status DBImpl::BufferCompact(CompactionState* compact,int index){
     uint64_t input_size =0;
     uint64_t output_size =0;
 
-    int key_distribution_index = 0;
+    size_t key_distribution_index = 0;
     //std::cout<<"go into buffer compact"<<std::endl;
     assert(versions_->NumLevelFiles(compact->compaction->level()) > 0);
     assert(compact->builder == NULL);
@@ -1866,7 +1863,7 @@ Status DBImpl::BufferCompact(CompactionState* compact,int index){
               >= 1.0 * key_distribution_index)
       {
           compact->current_output()->p_size_key[key_distribution_index].DecodeFrom(key);
-          if(key_distribution_index < config::kLDCLinkKVSizeInterval)
+          if(key_distribution_index < (config::kLDCLinkKVSizeInterval - 1))
               key_distribution_index++;
 
       }
