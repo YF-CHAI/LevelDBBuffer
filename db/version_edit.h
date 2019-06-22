@@ -141,17 +141,18 @@ class VersionEdit {
   }
 
   //whc add
-  void AddBufferNode(int level,uint64_t snumber,uint64_t ssize,
-		  uint64_t dnumber,
-		  uint64_t size,
-		  InternalKey& smallest,
-		  InternalKey& largest,
-		 bool inend ){
+  void AddBufferNode(int level,
+                     uint64_t snumber, uint64_t ssize,
+                     uint64_t dnumber, uint64_t size,
+                     InternalKey& smallest,
+                     InternalKey& largest,
+                     bool inend ){
 	  BufferNodeEdit b;
 	  InternalKey fill;
       b.snumber = snumber;
 	  b.dnumber = dnumber;
-	  b.size = size;
+      //b.size = size;//cyf change the two size position
+      b.size = ssize;
 	  
       if(!inend)
         b.smallest = smallest;
@@ -160,7 +161,8 @@ class VersionEdit {
           
       b.largest = largest;
 	  b.inend = inend;
-      b.filesize = ssize;
+      //b.filesize = ssize;
+      b.filesize = size;
 	  new_buffer_nodes.push_back(std::make_pair(level, b));
   }
 
