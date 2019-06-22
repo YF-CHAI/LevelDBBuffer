@@ -1653,7 +1653,7 @@ Status DBImpl::Dispatch(CompactionState* compact) {
                             link_size,//cyf change
                             //compact->compaction->inputs_[0][i]->file_size,
 							compact->compaction->inputs_[1][ptr1]->number,
-							0,
+                            compact->compaction->inputs_[0][i]->file_size,//0,
 							nsmallest,
                             nlargest,
 							flag);
@@ -1670,7 +1670,7 @@ Status DBImpl::Dispatch(CompactionState* compact) {
                             link_size,//cyf change
                             //compact->compaction->inputs_[0][i]->file_size,
 							compact->compaction->inputs_[1][ptr1-1]->number,
-							0,
+                            compact->compaction->inputs_[0][i]->file_size,//0,
 							nsmallest,
                             nlargest,
 							flag);
