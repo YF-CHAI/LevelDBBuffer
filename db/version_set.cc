@@ -998,7 +998,7 @@ void Apply(VersionEdit* edit) {
       const int level = edit->new_files_[i].first;
       FileMetaData* f = new FileMetaData(edit->new_files_[i].second);
       for (int j = 0; j < config::kLDCLinkKVSizeInterval; ++j) {
-          std::cout<<"Level: "<<level<< " new_files_ [ "<<edit->new_files_[i].second.percent_size_key[j].Rep()
+          std::cout<<"Level: "<<level<< " new_files_ ["<<"j:]"<<j<<" ["<<edit->new_files_[i].second.percent_size_key[j].Rep()
                   << "] f->[ "<< f->percent_size_key[j].Rep()<<" ]"<<std::endl;
 
       }
