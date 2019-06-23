@@ -1639,8 +1639,8 @@ Status DBImpl::Dispatch(CompactionState* compact) {
           //cyf: inputs_[0][i]->file_size change to be the realed link fragement size.
           std::cout<<"cyf: start AddBufferNode"<<std::endl;
           uint64_t link_size;
-          size_t link_start = 0;
-          size_t link_end = config::kLDCLinkKVSizeInterval - 1;
+          int link_start = 0;
+          int link_end = config::kLDCLinkKVSizeInterval - 1;
           FileMetaData* f = compact->compaction->inputs_[0][i];
           for (size_t li = 0; li < config::kLDCLinkKVSizeInterval; ++li) {
 
@@ -1654,7 +1654,7 @@ Status DBImpl::Dispatch(CompactionState* compact) {
           if((link_end - link_start) <= 0)
               link_size = static_cast<uint64_t>(options_.max_file_size  / 10);
           else
-              link_size = static_cast<uint64_t>(options_.max_file_size *(link_end -link_start)  / 10);
+              link_size = static_cast<uint64_t>(options_.max_file_size *((link_end -link_start)%10)  / 10);
 
 
           if(ptr1<compact->compaction->inputs_[1].size()){
