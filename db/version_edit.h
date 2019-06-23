@@ -35,22 +35,7 @@ struct FileMetaData {
       }
   }
 
-  FileMetaData( FileMetaData& f){
-      refs = f.refs;
-      allowed_seeks = f.allowed_seeks;
-      number = f.number;
-      file_size = f.file_size;
-      smallest = f.smallest;
-      largest = f.largest;
-      buffer = f.buffer;
 
-      for (int i = 0; i < config::kLDCLinkKVSizeInterval; ++i) {
-          InternalKey key;
-          key.DecodeFrom(f.percent_size_key[i].Rep());
-          percent_size_key.push_back(key);
-      }
-
-  }
   
 };
 
