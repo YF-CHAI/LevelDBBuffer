@@ -1042,6 +1042,18 @@ void DBImpl::BackgroundCompaction() {
     assert(c->num_input_files(0) == 1);
     FileMetaData* f = c->input(0, 0);
     c->edit()->DeleteFile(c->level(), f->number);
+
+    //cyf add for Level0 SST's default key size distribution
+    //no matter how large the overlap range is, it's awlay 1/10 of SST's limit
+    if (c->level() == 0) {
+        std::cout <<"cyf: suffering from IsTrivialMove()-filenumber-[ "<<f->number<<" ]"<<std::endl;
+        f->percent_size_key[0].DecodeFrom(f->smallest.Encode());
+        for (size_t i = 1; i < config::kLDCLinkKVSizeInterval; ++i) {
+            f->percent_size_key[i].DecodeFrom(f->largest.Encode());
+
+        }
+    }
+
     c->edit()->AddFile(c->level() + 1, f->number, f->file_size,
                        f->smallest, f->largest, /*cyf add*/&f->percent_size_key);
     status = versions_->LogAndApply(c->edit(), &mutex_);
@@ -2339,7 +2351,7 @@ bool DBImpl::GetProperty(const Slice& property, std::string* value) {
     char buf[200];
     snprintf(buf, sizeof(buf),
              "                               Compactions\n"
-             "Level  Files Size(MB) Time(sec) Read(GB) Write(GB) ReadFiles WriteFiles CompactTimes\n"
+             "Level  Files Size(MB) Time(sec) Read(MB) Write(MB) ReadFiles WriteFiles CompactTimes\n"
              "--------------------------------------------------\n"
              );
     value->append(buf);

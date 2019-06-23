@@ -110,7 +110,7 @@ Version::~Version() {
               
               
               f->buffer->nodes.clear();
-              std::vector<BufferNode>().swap(f->buffer->nodes);
+              std::vector<BufferNode>().swap(f->buffer->nodes);//cyf nice way to release memory
               delete (f->buffer);
           }
           delete f;
