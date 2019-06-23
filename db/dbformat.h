@@ -57,7 +57,7 @@ static const int kThresholdBufferNum  = 5;
 static const double kLDCMergeSizeRatio = 0.5;
 
 //cyf add for pre-reserving buffer number
-static const int kBufferResveredNum = 20;
+static const int kBufferResveredNum = 50;
 
 //cyf add for get percent size 0%~100% 's key, SST max size ~ 2MB
 //|0%   |10%    |......|90%     |100%   |

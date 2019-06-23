@@ -9,6 +9,7 @@
 #include <utility>
 #include <vector>
 #include "db/dbformat.h"
+#include <iostream>
 
 namespace leveldb {
 
@@ -24,15 +25,13 @@ struct FileMetaData {
   uint64_t file_size;         // File size in bytes
   InternalKey smallest;       // Smallest internal key served by table
   InternalKey largest;        // Largest internal key served by table
-  Buffer* buffer;               //whc add
+
   std::vector<InternalKey> percent_size_key;     //cyf: percent_size_key[i] shows index key of (i*10)% of SST's size
+
+  Buffer* buffer;//whc add
+
   FileMetaData() : refs(0), allowed_seeks(1 << 30), file_size(0),buffer(NULL) {
       percent_size_key.reserve(config::kLDCLinkKVSizeInterval);
-      for (int i = 0; i < config::kLDCLinkKVSizeInterval; ++i) {
-          InternalKey key;
-          key.DecodeFrom(Slice("0"));
-          percent_size_key.push_back(key);
-      }
   }
 
 
@@ -130,9 +129,20 @@ class VersionEdit {
     f.largest = largest;
     //cyf: adding key size distribution in MANIFEST seems to be so boring......
     if(p != nullptr){
-        for (size_t i=0;i<config::kLDCLinkKVSizeInterval;i++) {
-            f.percent_size_key[i].DecodeFrom((*p)[i].Rep());
+
+        if((*p).size() >= (config::kLDCLinkKVSizeInterval -1)) {
+            for (size_t i=0;i<config::kLDCLinkKVSizeInterval;i++) {
+            f.percent_size_key[i].DecodeFrom((*p)[i].Encode());
+            }
+        }else {
+            std::cout<<"AddFile() get an uncompleted percent_size_key!"<<std::endl;
         }
+    }else {
+            f.percent_size_key.push_back(smallest);
+            for (size_t i = 0; i < (config::kLDCLinkKVSizeInterval -1); ++i) {
+                f.percent_size_key.push_back(largest);
+        }
+
     }
     new_files_.push_back(std::make_pair(level, f));
   }

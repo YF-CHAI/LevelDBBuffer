@@ -67,12 +67,6 @@ struct DBImpl::CompactionState {
     std::vector<InternalKey> p_size_key;//cyf add for get key size distribution
     explicit Output(){
         p_size_key.reserve(config::kLDCLinkKVSizeInterval);
-        for (size_t i = 0; i < config::kLDCLinkKVSizeInterval; ++i) {
-            InternalKey key;
-            key.DecodeFrom(Slice("0"));
-            p_size_key.push_back(key);
-            //p_size_key[i].DecodeFrom(Slice("0"));
-        }
     }
   };
   std::vector<Output> outputs;
@@ -84,7 +78,7 @@ struct DBImpl::CompactionState {
   uint64_t total_bytes;
 
   //whc add
-  std::vector<FileMetaData> buffer_input;
+  std::vector<FileMetaData> buffer_input;//cyf seems no use
 
   Output* current_output() { return &outputs[outputs.size()-1]; }
 
@@ -1046,14 +1040,14 @@ void DBImpl::BackgroundCompaction() {
 
     //cyf add for Level0 SST's default key size distribution
     //no matter how large the overlap range is, it's awlay 1/10 of SST's limit
-    if (c->level() == 0) {
+    /*if (c->level() == 0) {
         std::cout <<"cyf: suffering from IsTrivialMove()-filenumber-[ "<<f->number<<" ]"<<std::endl;
         f->percent_size_key[0].DecodeFrom(f->smallest.Encode());
         for (size_t i = 1; i < config::kLDCLinkKVSizeInterval; ++i) {
             f->percent_size_key[i].DecodeFrom(f->largest.Encode());
 
         }
-    }
+    }*/
 
     c->edit()->AddFile(c->level() + 1, f->number, f->file_size,
                        f->smallest, f->largest, /*cyf add*/&f->percent_size_key);
@@ -1639,7 +1633,7 @@ Status DBImpl::Dispatch(CompactionState* compact) {
           
           //cyf: inputs_[0][i]->file_size change to be the realed link fragement size.
           std::cout<<"cyf: start AddBufferNode"<<std::endl;
-          uint64_t link_size;
+          uint64_t link_size = 0;
           int link_start = 0;
           int link_end = config::kLDCLinkKVSizeInterval - 1;
           FileMetaData* f = compact->compaction->inputs_[0][i];

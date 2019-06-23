@@ -1899,9 +1899,7 @@ Compaction* VersionSet::PickCompaction() {
       //std::cout<<"pickcompaction:bc compaction level is: "<<current_->bc_compaction_level_<<std::endl;
       c = new Compaction(options_, level);
       c->inputs_[0] = current_->need_compact_[level];
-      //std::cout<<"pickcompaction:bc compaction input num "<<c->inputs_[0].size()<<std::endl;
-      //std::cout<<"pickcompaction:bc compaction input[0][0].s= "<<c->inputs_[0][0]->smallest.Rep()<<std::endl;
-      //std::cout<<"pickcompaction:bc compaction input[0][0].l= "<<c->inputs_[0][0]->largest.Rep()<<std::endl;
+
       c->input_version_ = current_;
       c->input_version_->Ref();
       //std::cout<<"pickcompaction:current_->sequence_= "<<current_->sequence_<<std::endl;
@@ -1985,24 +1983,8 @@ Compaction* VersionSet::PickCompaction() {
 
   SetupOtherInputs(c);
   c->IsBufferCompact = false;
-  //std::cout<<"pickcompaction:level= "<<level<<std::endl;
-  //assert(c->inputs_[0][0]->buffer == NULL);
-  //std::cout<<"pick compaction level: "<< c->level()<<std::endl;
-  //std::cout<<"pick compaction up num: "<< c->inputs_[0].size()<<std::endl;
-  //std::cout<<"pick compaction down num: "<< c->inputs_[1].size()<<std::endl;
-  
-  //whc add
-  /*
-  if(c->inputs_[1].size()>15){
-      std::cout<<"pickcompaction: unexpected!!!!!! "<<std::endl;
-      std::cout<<"size="<<c->inputs_[0][0]->file_size<<" smallest="<< c->inputs_[0][0]->smallest.Rep()
-      <<" largest="<< c->inputs_[0][0]->largest.Rep()<<std::endl;
-      for(int i=0;i<c->inputs_[1].size();i++){
-          std::cout<<"size="<<c->inputs_[1][i]->file_size<<" smallest="<< c->inputs_[1][i]->smallest.Rep()
-      <<" largest="<< c->inputs_[1][i]->largest.Rep()<<std::endl;
-      }
-  }
-   */
+
+
   return c;
 }
 
