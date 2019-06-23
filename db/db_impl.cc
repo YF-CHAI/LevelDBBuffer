@@ -1466,11 +1466,11 @@ Status DBImpl::DoCompactionWork(CompactionState* compact) {
 
           }
 
-            for (int j=0;j<config::kLDCLinkKVSizeInterval;j++) {
+          /*  for (int j=0;j<config::kLDCLinkKVSizeInterval;j++) {
               std::cout << "cyf DoCompactionWork Key distribution:["<<j<<"] [ "
                         <<compact->current_output()->p_size_key[j].Encode().ToString()
                        <<" ]"<<std::endl;
-          }
+          } */
 
         status = FinishCompactionOutputFile(compact, input);
         if (!status.ok()) {
@@ -1652,9 +1652,11 @@ Status DBImpl::Dispatch(CompactionState* compact) {
           }
 
           if((link_end - link_start) <= 0)
-              link_size = static_cast<uint64_t>(options_.max_file_size  / 10);
+              link_size = static_cast<uint64_t>(options_.max_file_size  / (config::kLDCLinkKVSizeInterval - 1));
           else
-              link_size = static_cast<uint64_t>(options_.max_file_size *((link_end -link_start)%10)  / 10);
+              link_size = static_cast<uint64_t>(options_.max_file_size
+                                                * ((link_end -link_start) % (config::kLDCLinkKVSizeInterval - 1))
+                                                / (config::kLDCLinkKVSizeInterval - 1));
 
 
           if(ptr1<compact->compaction->inputs_[1].size()){
