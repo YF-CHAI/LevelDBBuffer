@@ -1161,9 +1161,10 @@ void Apply(VersionEdit* edit) {
     	 BufferAddNode(&(f->buffer),be,v->sequence_);
          
          double merge_score = static_cast<double>(f->buffer->size) / static_cast<double>(f->file_size +1);
-         std::cout<< "| cyf the merge_score is: "<<merge_score
+         std::cout<< "| cyf the merge_score: "<<merge_score
                   <<" | f->buffer->size: "<<f->buffer->size
-                 <<" |f->file_size:"<<f->file_size<<"|"
+                 <<" |f->file_size:"<<f->file_size<<" | "
+                 <<"buffer num: "<<f->buffer->nodes.size()<<" |"
                  <<std::endl;
          if( merge_score  >= config::kLDCMergeSizeRatio){//cyf change, 1.0 means buffers' size / to be merged SST's size has no write amplification
              vset_->buffer_compact_switch_ = true;
