@@ -30,7 +30,7 @@ struct FileMetaData {
       percent_size_key.reserve(config::kLDCLinkKVSizeInterval);
       for (int i = 0; i < config::kLDCLinkKVSizeInterval; ++i) {
           InternalKey key;
-          key.DecodeFrom(Slice("0000000000000000"));
+          key.DecodeFrom(Slice("0"));
           percent_size_key.push_back(key);
       }
   }

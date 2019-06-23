@@ -69,7 +69,7 @@ struct DBImpl::CompactionState {
         p_size_key.reserve(config::kLDCLinkKVSizeInterval);
         for (size_t i = 0; i < config::kLDCLinkKVSizeInterval; ++i) {
             InternalKey key;
-            key.DecodeFrom(Slice("0000000000000000"));
+            key.DecodeFrom(Slice("0"));
             p_size_key.push_back(key);
             //p_size_key[i].DecodeFrom(Slice("0"));
         }
@@ -1039,6 +1039,7 @@ void DBImpl::BackgroundCompaction() {
     // Nothing to do
   } else if (!is_manual && c->IsTrivialMove()) {
     // Move file to next level
+    std::cout <<"cyf: suffering from IsTrivialMove()"<<std::endl;
     assert(c->num_input_files(0) == 1);
     FileMetaData* f = c->input(0, 0);
     c->edit()->DeleteFile(c->level(), f->number);
