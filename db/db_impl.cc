@@ -1650,13 +1650,14 @@ Status DBImpl::Dispatch(CompactionState* compact) {
               if(internal_comparator_.Compare(nlargest, f->percent_size_key[link_end]) > 0)
                   link_end++;
           }
+          std::cout<<"cyf: start AddBufferNode"<<"linkstart: "<<link_start<< " linkend: "<<link_end<<std::endl;
 
           if(link_end  == link_start ){
               link_size = static_cast<uint64_t>(options_.max_file_size  / (config::kLDCLinkKVSizeInterval - 1));
           }
           else{
               link_size = static_cast<uint64_t>(options_.max_file_size
-                                                * static_cast<double>((link_end -link_start ) / config::kLDCLinkKVSizeInterval));
+                                                * (static_cast<double>(link_end -link_start ) / config::kLDCLinkKVSizeInterval));
           }
           assert(link_size != 0);//cyf link size should not be 0
 
