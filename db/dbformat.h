@@ -54,7 +54,7 @@ static const int kThresholdBufferNum  = 5;
 //cyf add for having two condition to determine the merge operation
 //kLDCMergeSizeRatio = total_linked_fragement_size / target_merge_sstable_size
 //the best is 1:1, means no write amplification
-static const double kLDCMergeSizeRatio = 0.5;
+static const double kLDCMergeSizeRatio = 1.0;
 
 //cyf add for pre-reserving buffer number
 static const int kBufferResveredNum = 20;
