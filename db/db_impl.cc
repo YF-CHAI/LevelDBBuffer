@@ -1652,7 +1652,7 @@ Status DBImpl::Dispatch(CompactionState* compact) {
           }
           std::cout<<"cyf: start AddBufferNode"<<"linkstart: "<<link_start<< " linkend: "<<link_end<<std::endl;
 
-          if(link_end  == link_start ){
+          if(link_end <= link_start){
               link_size = static_cast<uint64_t>(options_.max_file_size  / (config::kLDCLinkKVSizeInterval - 1));
           }
           else{
