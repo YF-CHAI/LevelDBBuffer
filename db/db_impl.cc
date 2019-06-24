@@ -67,6 +67,11 @@ struct DBImpl::CompactionState {
     std::vector<InternalKey> p_size_key;//cyf add for get key size distribution
     explicit Output(){
         p_size_key.reserve(config::kLDCLinkKVSizeInterval);
+        InternalKey key;
+        key.DecodeFrom(Slice("0000000000000000"));
+        for (size_t i = 0; i < config::kLDCLinkKVSizeInterval; ++i) {
+            p_size_key.push_back(key);
+        }
     }
   };
   std::vector<Output> outputs;

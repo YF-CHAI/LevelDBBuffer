@@ -32,6 +32,12 @@ struct FileMetaData {
 
   FileMetaData() : refs(0), allowed_seeks(1 << 30), file_size(0),buffer(NULL) {
       percent_size_key.reserve(config::kLDCLinkKVSizeInterval);
+      InternalKey key;
+      key.DecodeFrom(Slice("0000000000000000"));
+      for (size_t i = 0; i < config::kLDCLinkKVSizeInterval; ++i) {
+          percent_size_key.push_back(key);
+
+      }
   }
 
 
@@ -138,9 +144,10 @@ class VersionEdit {
             std::cout<<"AddFile() get an uncompleted percent_size_key!"<<std::endl;
         }
     }else {
-            f.percent_size_key.push_back(smallest);
+            if(f.percent_size_key.size() > 0) f.percent_size_key[0].DecodeFrom(smallest.Encode());
             for (size_t i = 0; i < (config::kLDCLinkKVSizeInterval -1); ++i) {
-                f.percent_size_key.push_back(largest);
+                //f.percent_size_key.push_back(largest);
+                f.percent_size_key[i].DecodeFrom(largest.Encode());
         }
 
     }
