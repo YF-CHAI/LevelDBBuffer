@@ -1139,7 +1139,7 @@ void Apply(VersionEdit* edit) {
 
          assert(file_size != 0);
 
-         double merge_score =  static_cast<double>(buffer_size / file_size);
+         double merge_score =  static_cast<double>(buffer_size) / file_size;
          std::cout<< "| cyf merge_score: "<<merge_score
                   <<" | f->buffer->size: "<<f->buffer->size
                  <<" |f->file_size:"<<f->file_size<<" | "
@@ -1593,7 +1593,7 @@ Status VersionSet::WriteSnapshot(log::Writer* log) {
     for (size_t i = 0; i < files.size(); i++) {
       const FileMetaData* f = files[i];
       edit.AddFile(level, f->number, f->file_size, f->smallest, f->largest,
-                   /*cyf add*/&files[i]->percent_size_key);
+                   /*cyf add*/&(files[i]->percent_size_key));
     }
   }
 

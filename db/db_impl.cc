@@ -63,7 +63,8 @@ struct DBImpl::CompactionState {
   struct Output {
     uint64_t number;
     uint64_t file_size;
-    InternalKey smallest, largest;
+    InternalKey smallest;
+    InternalKey largest;
     std::vector<InternalKey> p_size_key;//cyf add for get key size distribution
     explicit Output(){
         p_size_key.reserve(config::kLDCLinkKVSizeInterval);
@@ -1054,7 +1055,7 @@ void DBImpl::BackgroundCompaction() {
     }
 
     c->edit()->AddFile(c->level() + 1, f->number, f->file_size,
-                       f->smallest, f->largest, /*cyf add*/&f->percent_size_key);
+                       f->smallest, f->largest, /*cyf add*/&(f->percent_size_key));
     status = versions_->LogAndApply(c->edit(), &mutex_);
     if (!status.ok()) {
       RecordBackgroundError(status);
@@ -1311,11 +1312,11 @@ Status DBImpl::InstallCompactionResults(CompactionState* compact) {
     compact->compaction->edit()->AddFile(
         level + 1,
         out.number, out.file_size, out.smallest, out.largest,
-                /*cyf add*/&compact->outputs[i].p_size_key);
+                /*cyf add*/&(compact->outputs[i].p_size_key));
     else compact->compaction->edit()->AddFile(
         level,
         out.number, out.file_size, out.smallest, out.largest,
-                /*cyf add*/&compact->outputs[i].p_size_key);
+                /*cyf add*/&(compact->outputs[i].p_size_key));
 
   }
   return versions_->LogAndApply(compact->compaction->edit(), &mutex_);
