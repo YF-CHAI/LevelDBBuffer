@@ -1106,7 +1106,7 @@ void Apply(VersionEdit* edit) {
       //whc add
       // add newbuffer and new ssd file to *v
       //std::cout<<"1"<<std::endl;
-      for(int j=0;j<levels_[level].added_buffer_nodes.size();j++){
+      for(size_t j=0;j<levels_[level].added_buffer_nodes.size();j++){
     	 // add source ssd table ref
     	  //std::cout<<"j:"<< j<<std::endl;
     	  //std::cout<<"s:"<< levels_[level].added_buffer_nodes[j].snumber<<std::endl;
@@ -1144,7 +1144,7 @@ void Apply(VersionEdit* edit) {
     	 FileMetaData* f = NULL;
     	 //std::cout<<"d is"<<d<<std::endl;
     	 int ptr;
-         for(int k=0;k<v->files_[level].size();k++){
+         for(int k = 0; k < v->files_[level].size(); k++){
     		 if(v->files_[level][k]->number == d){
     			 f = v->files_[level][k];
                  ptr = k;
@@ -1156,7 +1156,7 @@ void Apply(VersionEdit* edit) {
     	 BufferAddNode(&(f->buffer),be,v->sequence_);
          
          double merge_score = static_cast<double>(f->buffer->size) / static_cast<double>(f->file_size +1);
-         std::cout<< "| cyf the merge_score: "<<merge_score
+         std::cout<< "| cyf merge_score: "<<merge_score
                   <<" | f->buffer->size: "<<f->buffer->size
                  <<" |f->file_size:"<<f->file_size<<" | "
                  <<"buffer num: "<<f->buffer->nodes.size()<<" |"

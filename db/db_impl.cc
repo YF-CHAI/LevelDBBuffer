@@ -1045,14 +1045,13 @@ void DBImpl::BackgroundCompaction() {
 
     //cyf add for Level0 SST's default key size distribution
     //no matter how large the overlap range is, it's awlay 1/10 of SST's limit
-    /*if (c->level() == 0) {
-        std::cout <<"cyf: suffering from IsTrivialMove()-filenumber-[ "<<f->number<<" ]"<<std::endl;
-        f->percent_size_key[0].DecodeFrom(f->smallest.Encode());
-        for (size_t i = 1; i < config::kLDCLinkKVSizeInterval; ++i) {
-            f->percent_size_key[i].DecodeFrom(f->largest.Encode());
+    if (1) {
+        for (size_t i = 0; i < config::kLDCLinkKVSizeInterval; ++i)
 
-        }
-    }*/
+        std::cout << "Key-TrivialMove distribution:["<<i<<"] [ "
+                  <<f->percent_size_key[i].Encode().ToString()
+                  <<" ]"<<std::endl;
+    }
 
     c->edit()->AddFile(c->level() + 1, f->number, f->file_size,
                        f->smallest, f->largest, /*cyf add*/&f->percent_size_key);
@@ -1657,6 +1656,7 @@ Status DBImpl::Dispatch(CompactionState* compact) {
               link_size = static_cast<uint64_t>(options_.max_file_size
                                                 * ((link_end -link_start) % (config::kLDCLinkKVSizeInterval - 1))
                                                 / (config::kLDCLinkKVSizeInterval - 1));
+          assert(link_size != 0)
 
 
           if(ptr1<compact->compaction->inputs_[1].size()){
