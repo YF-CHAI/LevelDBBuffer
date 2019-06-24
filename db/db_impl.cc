@@ -1639,24 +1639,23 @@ Status DBImpl::Dispatch(CompactionState* compact) {
           std::cout<<"cyf: start AddBufferNode"<<std::endl;
           uint64_t link_size = 0;
           int link_start = 0;
-          int link_end = config::kLDCLinkKVSizeInterval - 1;
+          int link_end = 0;
           FileMetaData* f = compact->compaction->inputs_[0][i];
           for (size_t li = 0; li < config::kLDCLinkKVSizeInterval; ++li) {
 
               if(internal_comparator_.Compare(nsmallest,f->percent_size_key[link_start]) < 0)
                   link_start++;
 
-              if(internal_comparator_.Compare(nlargest, f->percent_size_key[link_end]) <= 0)
-                  link_end--;
+              if(internal_comparator_.Compare(nlargest, f->percent_size_key[link_end]) > 0)
+                  link_end++;
           }
 
-          if((link_end - link_start) <= 0){
+          if(((link_end - link_start) <= 0) || ((link_end -link_start) > config::kLDCLinkKVSizeInterval -1)){
               link_size = static_cast<uint64_t>(options_.max_file_size  / (config::kLDCLinkKVSizeInterval - 1));
           }
           else{
               link_size = static_cast<uint64_t>(options_.max_file_size
-                                                * ((link_end -link_start) % (config::kLDCLinkKVSizeInterval))
-                                                / (config::kLDCLinkKVSizeInterval - 1));
+                                                * (link_end -link_start) % config::kLDCLinkKVSizeInterval);
           }
           assert(link_size != 0);
 
