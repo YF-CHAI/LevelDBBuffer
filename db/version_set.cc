@@ -1136,10 +1136,11 @@ void Apply(VersionEdit* edit) {
          
          uint64_t buffer_size_tmp = f->buffer->size;
          uint64_t file_size_tmp = f->file_size;
+         uint64_t max = 2<<20;
 
          assert(file_size_tmp != 0);
 
-         double merge_score =  static_cast<double>(buffer_size_tmp) / file_size_tmp;
+         double merge_score =  static_cast<double>(buffer_size_tmp) / max;
          std::cout<< "| cyf merge_score: "<<merge_score
                   <<" | f->buffer->size: "<<f->buffer->size
                  <<" |f->file_size:"<<f->file_size<<" | "

@@ -1651,7 +1651,7 @@ Status DBImpl::Dispatch(CompactionState* compact) {
                   link_end++;
           }
 
-          if(((link_end - link_start) <= 0) || ((link_end -link_start) > config::kLDCLinkKVSizeInterval -1)){
+          if(link_end  == link_start ){
               link_size = static_cast<uint64_t>(options_.max_file_size  / (config::kLDCLinkKVSizeInterval - 1));
           }
           else{
