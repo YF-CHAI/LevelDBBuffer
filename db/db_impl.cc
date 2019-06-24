@@ -1643,7 +1643,7 @@ Status DBImpl::Dispatch(CompactionState* compact) {
           FileMetaData* f = compact->compaction->inputs_[0][i];
           for (size_t li = 0; li < config::kLDCLinkKVSizeInterval; ++li) {
 
-              if(internal_comparator_.Compare(nsmallest,f->percent_size_key[link_start]) < 0)
+              if(internal_comparator_.Compare(nsmallest,f->percent_size_key[link_start]) > 0)
                   link_start++;
 
               if(internal_comparator_.Compare(nlargest, f->percent_size_key[link_end]) > 0)
