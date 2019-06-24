@@ -74,7 +74,7 @@ struct Buffer{
 	InternalKey largest;
 	uint64_t size;
 
-	Buffer(){}
+    Buffer(){size = 0;}
 
 };
 

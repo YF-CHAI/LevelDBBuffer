@@ -1108,11 +1108,6 @@ void Apply(VersionEdit* edit) {
       //std::cout<<"1"<<std::endl;
       for(size_t j=0;j<levels_[level].added_buffer_nodes.size();j++){
     	 // add source ssd table ref
-    	  //std::cout<<"j:"<< j<<std::endl;
-    	  //std::cout<<"s:"<< levels_[level].added_buffer_nodes[j].snumber<<std::endl;
-    	 //std::cout<<" d:"<< levels_[level].added_buffer_nodes[j].dnumber<<std::endl;
-    	 //std::cout<<" size:"<< levels_[level].added_buffer_nodes[j].size<<std::endl;
-    	 //std::cout<<" inend:"<< levels_[level].added_buffer_nodes[j].inend<<std::endl;
     	  uint64_t s = levels_[level].added_buffer_nodes[j].snumber;
     	 if(v->files_in_ssd_[level-1].find(s) == v->files_in_ssd_[level-1].end()){    // this file never save
     		 BufferTable* newbuffertable = new BufferTable(s);
@@ -1123,23 +1118,7 @@ void Apply(VersionEdit* edit) {
     	 }else{
     		 v->files_in_ssd_[level-1][s]->refs++;
     	 }
-    	 //std::cout<<"s2:"<< levels_[level].added_buffer_nodes[j].snumber<<std::endl;
-    	 //std::cout<<"2"<<std::endl;
-    	 /*
-         if(levels_[level].added_buffer_nodes[j].inend){
-    		 BufferNodeEdit& be = levels_[level].added_buffer_nodes[j];
-    		BufferAddNode(&(v->endbuffers_[level]),be,v->sequence_);
-    		 if(v->endbuffers_[level]->nodes.size()>10){
-                 vset_->buffer_compact_switch_ = true;
-                 v->endbuffers_need_[level] = true;
-                 v->bc_compaction_level_ = level;
-                  std::cout<<"level="<<level<<std::endl;
-                  std::cout<<"end fill"<<std::endl;
-             }
-             continue;
-    	 }*/
-    	 //std::cout<<"2"<<std::endl;
-    	 // add destination table buffer
+
     	 uint64_t d = levels_[level].added_buffer_nodes[j].dnumber;
     	 FileMetaData* f = NULL;
     	 //std::cout<<"d is"<<d<<std::endl;
