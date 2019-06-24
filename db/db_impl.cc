@@ -1655,9 +1655,9 @@ Status DBImpl::Dispatch(CompactionState* compact) {
           }
           else{
               link_size = static_cast<uint64_t>(options_.max_file_size
-                                                * (link_end -link_start) % config::kLDCLinkKVSizeInterval);
+                                                * ((link_end -link_start) % config::kLDCLinkKVSizeInterval));
           }
-          assert(link_size != 0);
+          assert(link_size != 0);//cyf link size should not be 0
 
 
           if(ptr1<compact->compaction->inputs_[1].size()){
