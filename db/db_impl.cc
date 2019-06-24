@@ -1650,13 +1650,15 @@ Status DBImpl::Dispatch(CompactionState* compact) {
                   link_end--;
           }
 
-          if((link_end - link_start) <= 0)
+          if((link_end - link_start) <= 0){
               link_size = static_cast<uint64_t>(options_.max_file_size  / (config::kLDCLinkKVSizeInterval - 1));
-          else
+          }
+          else{
               link_size = static_cast<uint64_t>(options_.max_file_size
                                                 * ((link_end -link_start) % (config::kLDCLinkKVSizeInterval - 1))
                                                 / (config::kLDCLinkKVSizeInterval - 1));
-          assert(link_size != 0)
+          }
+          assert(link_size != 0);
 
 
           if(ptr1<compact->compaction->inputs_[1].size()){
