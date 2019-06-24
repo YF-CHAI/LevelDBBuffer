@@ -1134,12 +1134,12 @@ void Apply(VersionEdit* edit) {
     	 BufferNodeEdit& be = levels_[level].added_buffer_nodes[j];
     	 BufferAddNode(&(f->buffer),be,v->sequence_);
          
-         uint64_t buffer_size = f->buffer->size;
-         uint64_t file_size = f->file_size;
+         uint64_t buffer_size_tmp = f->buffer->size;
+         uint64_t file_size_tmp = f->file_size;
 
          assert(file_size != 0);
 
-         double merge_score =  static_cast<double>(buffer_size) / file_size;
+         double merge_score =  static_cast<double>(buffer_size_tmp) / file_size_tmp;
          std::cout<< "| cyf merge_score: "<<merge_score
                   <<" | f->buffer->size: "<<f->buffer->size
                  <<" |f->file_size:"<<f->file_size<<" | "
