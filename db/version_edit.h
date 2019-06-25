@@ -41,7 +41,7 @@ struct FileMetaData {
       }
   }
 
-  explicit FileMetaData(FileMetaData& f) : refs(f.refs), allowed_seeks(f.allowed_seeks), file_size(f.file_size),buffer(NULL) {
+  /*explicit FileMetaData(FileMetaData& f) : refs(f.refs), allowed_seeks(f.allowed_seeks), file_size(f.file_size),buffer(NULL) {
 
       percent_size_key.reserve(config::kLDCLinkKVSizeInterval);
       InternalKey key;
@@ -50,7 +50,7 @@ struct FileMetaData {
           percent_size_key.push_back(f.percent_size_key[i]);
 
       }
-  }
+  }*/
 
 
 
