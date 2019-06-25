@@ -1141,12 +1141,12 @@ void Apply(VersionEdit* edit) {
          assert(file_size_tmp != 0);
 
          double merge_score =  static_cast<double>(buffer_size_tmp) / max;
-         std::cout<< "| cyf merge_score: "<<merge_score
+         /* std::cout<< "| cyf merge_score: "<<merge_score
                   <<" | f->buffer->size: "<<f->buffer->size
                  <<" |f->file_size:"<<f->file_size<<" | "
                  <<"buffer num: "<<f->buffer->nodes.size()<<" |"
-                 <<std::endl;
-         if( /*merge_score  >= config::kLDCMergeSizeRatio || */ f->buffer->nodes.size() >= config::kThresholdBufferNum){//cyf change, 1.0 means buffers' size / to be merged SST's size has no write amplification
+                 <<std::endl; */
+         if( merge_score  >= config::kLDCMergeSizeRatio /*||f->buffer->nodes.size() >= config::kThresholdBufferNum */){//cyf change, 1.0 means buffers' size / to be merged SST's size has no write amplification
              vset_->buffer_compact_switch_ = true;
              v->bc_compaction_level_ = level;
              if(std::find(v->need_compact_[level].begin(),v->need_compact_[level].end(),f)

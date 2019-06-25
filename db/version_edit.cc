@@ -84,12 +84,14 @@ void VersionEdit::EncodeTo(std::string* dst) const {
     PutVarint64(dst, f.file_size);
     PutLengthPrefixedSlice(dst, f.smallest.Encode());
     PutLengthPrefixedSlice(dst, f.largest.Encode());
+
+    /*
     //cyf add for record the key size distribution, Add into MANIFEST file
     for (size_t index =0; index < config::kLDCLinkKVSizeInterval; index++) {
         PutLengthPrefixedSlice(dst,f.percent_size_key[index].Encode());
 
 
-    }
+    } */
   }
 }
 
@@ -194,6 +196,7 @@ Status VersionEdit::DecodeFrom(const Slice& src) {
             GetVarint64(&input, &f.file_size) &&
             GetInternalKey(&input, &f.smallest) &&
             GetInternalKey(&input, &f.largest)) {
+
             //cyf add for record the key size distribution, Add into MANIFEST file
             for (size_t i =0; i < config::kLDCLinkKVSizeInterval; i++)
             {

@@ -1039,14 +1039,14 @@ void DBImpl::BackgroundCompaction() {
     // Nothing to do
   } else if (!is_manual && c->IsTrivialMove()) {
     // Move file to next level
-    std::cout <<"cyf: suffering from IsTrivialMove()"<<std::endl;
+    //std::cout <<"cyf: suffering from IsTrivialMove()"<<std::endl;
     assert(c->num_input_files(0) == 1);
     FileMetaData* f = c->input(0, 0);
     c->edit()->DeleteFile(c->level(), f->number);
 
     //cyf add for Level0 SST's default key size distribution
     //no matter how large the overlap range is, it's awlay 1/10 of SST's limit
-    if (1) {
+    if (0) {
         for (size_t i = 0; i < config::kLDCLinkKVSizeInterval; ++i)
 
         std::cout << "Key-TrivialMove distribution:["<<i<<"] [ "
@@ -1103,7 +1103,7 @@ void DBImpl::BackgroundCompaction() {
     }
     
     //whc change this two lines's position
-    if(flag){
+    if(flag){//cyf LDC's linked files should not be cleaned and released
         CleanupCompaction(compact);
         c->ReleaseInputs();
     }
@@ -1637,7 +1637,7 @@ Status DBImpl::Dispatch(CompactionState* compact) {
             }
           
           //cyf: inputs_[0][i]->file_size change to be the realed link fragement size.
-          std::cout<<"cyf: start AddBufferNode"<<std::endl;
+          //std::cout<<"cyf: start AddBufferNode"<<std::endl;
           uint64_t link_size = 0;
           int link_start = 0;
           int link_end = 0;
@@ -1650,7 +1650,7 @@ Status DBImpl::Dispatch(CompactionState* compact) {
               if(internal_comparator_.Compare(nlargest, f->percent_size_key[link_end]) > 0)
                   link_end++;
           }
-          std::cout<<"cyf: start AddBufferNode"<<"linkstart: "<<link_start<< " linkend: "<<link_end<<std::endl;
+          //std::cout<<"cyf: start AddBufferNode"<<"linkstart: "<<link_start<< " linkend: "<<link_end<<std::endl;
 
           if(link_end <= link_start){
               link_size = static_cast<uint64_t>(options_.max_file_size  / (config::kLDCLinkKVSizeInterval - 1));
@@ -1694,7 +1694,7 @@ Status DBImpl::Dispatch(CompactionState* compact) {
              ptr0_key.assign(compact->compaction->inputs_[0][i]->largest.Rep());
           }
         flag = false;
-        std::cout<<"cyf: AddBuffer [ "<<nsmallest.Rep()<<" ~ "<<nlargest.Rep()<<" ]"<<" linksize is "<<link_size<<std::endl;
+        //std::cout<<"cyf: AddBuffer [ "<<nsmallest.Rep()<<" ~ "<<nlargest.Rep()<<" ]"<<" linksize is "<<link_size<<std::endl;
       }
   }
 

@@ -31,6 +31,7 @@ struct FileMetaData {
   Buffer* buffer;//whc add
 
   FileMetaData() : refs(0), allowed_seeks(1 << 30), file_size(0),buffer(NULL) {
+
       percent_size_key.reserve(config::kLDCLinkKVSizeInterval);
       InternalKey key;
       key.DecodeFrom(Slice("0000000000000000"));
@@ -39,6 +40,18 @@ struct FileMetaData {
 
       }
   }
+
+  FileMetaData(FileMetaData& f) : refs(f.refs), allowed_seeks(f.allowed_seeks), file_size(f.file_size),buffer(NULL) {
+
+      percent_size_key.reserve(config::kLDCLinkKVSizeInterval);
+      InternalKey key;
+      key.DecodeFrom(Slice("0000000000000000"));
+      for (size_t i = 0; i < config::kLDCLinkKVSizeInterval; ++i) {
+          percent_size_key.push_back(key);
+
+      }
+  }
+
 
 
   
