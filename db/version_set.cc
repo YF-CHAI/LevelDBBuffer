@@ -999,6 +999,7 @@ void Apply(VersionEdit* edit) {
       //FileMetaData* f = new FileMetaData((edit->new_files_[i].second));
       FileMetaData* f = new FileMetaData();//cyf change
       {
+          f->file_size = edit->new_files_[i].second.file_size;
           f->refs = edit->new_files_[i].second.refs;
           f->number = edit->new_files_[i].second.number;
           f->largest = edit->new_files_[i].second.largest;
