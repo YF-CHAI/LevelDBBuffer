@@ -996,8 +996,22 @@ void Apply(VersionEdit* edit) {
     // Add new files
     for (size_t i = 0; i < edit->new_files_.size(); i++) {
       const int level = edit->new_files_[i].first;
-      FileMetaData* f = new FileMetaData(edit->new_files_[i].second);
+      //FileMetaData* f = new FileMetaData((edit->new_files_[i].second));
+      FileMetaData* f = new FileMetaData();//cyf change
+      {
+          f->refs = edit->new_files_[i].second.refs;
+          f->number = edit->new_files_[i].second.number;
+          f->largest = edit->new_files_[i].second.largest;
+          f->smallest = edit->new_files_[i].second.smallest;
+          f->allowed_seeks = edit->new_files_[i].second.allowed_seeks;
+          f->percent_size_key.reserve(config::kLDCLinkKVSizeInterval);
+          f->buffer = nullptr;
 
+          for (size_t i = 0; i < config::kLDCLinkKVSizeInterval; ++i) {
+              f->percent_size_key.push_back(edit->new_files_[i].second.percent_size_key[i]);
+
+          }
+      }
       f->refs = 1;
 
       // We arrange to automatically compact this file after
