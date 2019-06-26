@@ -82,6 +82,7 @@ SOURCES += \
     ../db/c_test.c
 
 DISTFILES += \
+    ../Makefile \
     ../perf.data \
     ../build_detect_platform \
     ../doc/doc.css \

@@ -118,7 +118,7 @@ Version::~Version() {
     }
   }
   
-  std::cout<<"open num"<<ReadStatic::open_num<<std::endl; 
+  //std::cout<<"cyf: open num"<<ReadStatic::open_num<<std::endl;
 }
 
 int FindFile(const InternalKeyComparator& icmp,
