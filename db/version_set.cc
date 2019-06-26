@@ -996,9 +996,9 @@ void Apply(VersionEdit* edit) {
     // Add new files
     for (size_t i = 0; i < edit->new_files_.size(); i++) {
       const int level = edit->new_files_[i].first;
-      //FileMetaData* f = new FileMetaData((edit->new_files_[i].second));
-      FileMetaData* f = new FileMetaData();//cyf change
-      {
+      FileMetaData* f = new FileMetaData((edit->new_files_[i].second));
+      //FileMetaData* f = new FileMetaData();//cyf change
+      /*{
           f->file_size = edit->new_files_[i].second.file_size;
           f->refs = edit->new_files_[i].second.refs;
           f->number = edit->new_files_[i].second.number;
@@ -1015,7 +1015,7 @@ void Apply(VersionEdit* edit) {
               }
 
           }
-      }
+      }*/
       f->refs = 1;
 
       // We arrange to automatically compact this file after
