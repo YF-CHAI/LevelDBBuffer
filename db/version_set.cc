@@ -1009,7 +1009,10 @@ void Apply(VersionEdit* edit) {
           f->buffer = nullptr;
 
           for (size_t i = 0; i < config::kLDCLinkKVSizeInterval; ++i) {
-              f->percent_size_key.push_back(edit->new_files_[i].second.percent_size_key[i]);
+              if(f->percent_size_key.size() == 0 ) f->percent_size_key.push_back(edit->new_files_[i].second.percent_size_key[i]);
+              else {
+                  f->percent_size_key[i] = edit->new_files_[i].second.percent_size_key[i];
+              }
 
           }
       }
