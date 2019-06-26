@@ -85,13 +85,13 @@ void VersionEdit::EncodeTo(std::string* dst) const {
     PutLengthPrefixedSlice(dst, f.smallest.Encode());
     PutLengthPrefixedSlice(dst, f.largest.Encode());
 
-    /*
+
     //cyf add for record the key size distribution, Add into MANIFEST file
     for (size_t index =0; index < config::kLDCLinkKVSizeInterval; index++) {
         PutLengthPrefixedSlice(dst,f.percent_size_key[index].Encode());
 
 
-    } */
+    }
   }
 }
 
