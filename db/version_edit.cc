@@ -76,7 +76,7 @@ void VersionEdit::EncodeTo(std::string* dst) const {
 
 
   for (size_t i = 0; i < new_files_.size(); i++) {
-      printf("void VersionEdit::EncodeTo(std::string* dst) const\n");
+      //printf("cyf: void VersionEdit::EncodeTo(std::string* dst) const\n");
     const FileMetaData& f = new_files_[i].second;
     PutVarint32(dst, kNewFile);
     PutVarint32(dst, new_files_[i].first);  // level

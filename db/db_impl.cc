@@ -1897,11 +1897,11 @@ Status DBImpl::BufferCompact(CompactionState* compact,int index){
 
           }
 
-           for (int j=0;j<config::kLDCLinkKVSizeInterval;j++) {
-              std::cout << "Key-buffer distribution:["<<j<<"] [ "
+           /*for (int j=0;j<config::kLDCLinkKVSizeInterval;j++) {
+              std::cout << "cyf: Key-buffer distribution:["<<j<<"] [ "
                         <<compact->current_output()->p_size_key[j].Encode().ToString()
                        <<" ]"<<std::endl;
-          }
+          }*/
 
         status = FinishCompactionOutputFile(compact, input);
         //std::cout<<"buffer compact out"<<std::endl;
