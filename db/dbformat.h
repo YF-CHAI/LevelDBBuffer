@@ -48,6 +48,9 @@ static const int kBufferCompactStartLevel  = 1;
 //
 static const int kBufferCompactEndLevel = 7;
 
+
+//cyf LDC trigger condition
+static const bool kIsLDCSizeTrigger = true;
 //whc add
 static const int kThresholdBufferNum  = 5;
 
