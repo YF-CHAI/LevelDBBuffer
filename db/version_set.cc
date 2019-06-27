@@ -1164,8 +1164,9 @@ void Apply(VersionEdit* edit) {
                  <<" |f->file_size:"<<f->file_size<<" | "
                  <<"buffer num: "<<f->buffer->nodes.size()<<" |"
                  <<std::endl; */
-         if( ((merge_score  >= config::kLDCMergeSizeRatio ) && ())
-                 ||(f->buffer->nodes.size() >= config::kThresholdBufferNum)){//cyf change, 1.0 means buffers' size / to be merged SST's size has no write amplification
+         if(  ( (merge_score  >= config::kLDCMergeSizeRatio ) && (config::kIsLDCSizeTrigger) )
+                 || ( (f->buffer->nodes.size() >= config::kThresholdBufferNum) && (!config::kIsLDCSizeTrigger) )  ){
+             //cyf change, 1.0 means buffers' size / to be merged SST's size has no write amplification
              vset_->buffer_compact_switch_ = true;
              v->bc_compaction_level_ = level;
              if(std::find(v->need_compact_[level].begin(),v->need_compact_[level].end(),f)
