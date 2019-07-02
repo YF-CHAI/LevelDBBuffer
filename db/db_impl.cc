@@ -381,12 +381,14 @@ DBImpl::~DBImpl() {
 
 
   //cyf add for printing link number info
+  /*
   uint64_t total = 0;
   for (int i = 0; i < config::kBufferResveredNum; ++i) {
-      std::cout << "LDC_link_num:"<<i<<" 's compaction did "<<link_stats_LDC_[i]<<" times.\n "<<std::endl;
+      std::cout << "LDC_link_num:"<<i<<" 's compaction did "<<link_stats_LDC_[i]<<" times."<<std::endl;
       total += link_stats_LDC_[i];
   }
   std::cout <<"the total link times are: "<<total<<std::endl;
+  */
 
   delete versions_;
   if (mem_ != NULL) mem_->Unref();
@@ -1792,8 +1794,8 @@ Status DBImpl::BufferCompact(CompactionState* compact,int index){
   //std::cout<<"buffer compact end make iterator"<<std::endl;
   //return status;
   //cyf add for get real link number under link limitation
-  uint64_t link_num = compact->compaction->inputs_[0][index]->buffer->nodes.size();
-  if(link_num < config::kBufferResveredNum) link_stats_LDC_[link_num]++;
+  //uint64_t link_num = compact->compaction->inputs_[0][index]->buffer->nodes.size();
+  //if(link_num < config::kBufferResveredNum) link_stats_LDC_[link_num]++;
 
 
   input->SeekToFirst();

@@ -213,7 +213,7 @@ class DBImpl : public DB {
   // Have we encountered a background error in paranoid mode?
   Status bg_error_;
 
-  uint64_t link_stats_LDC_[config::kBufferResveredNum];//cyf add for test link limitation whether is OK
+  //uint64_t link_stats_LDC_[config::kBufferResveredNum];//cyf add for test link limitation whether is OK
 
 /*
   // Per level compaction stats.  stats_[level] stores the stats for
