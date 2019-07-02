@@ -333,7 +333,7 @@ DBImpl::DBImpl(const Options& raw_options, const std::string& dbname)
 DBImpl::~DBImpl() {
   // whc add
 	for(int i=0;i<config::kNumLevels;i++)
-        std::cout<<"level: \t"<<i<<"\t nums: \t"<<versions_->current_->NumFiles(i)<<std::endl;
+        std::cout<<"level: \t"<<i<<"\t Files nums: \t"<<versions_->current_->NumFiles(i)<<std::endl;
         
     std::cout<<"mem getnum: \t"<<ReadStatic::mem_get<<std::endl;
     for(int i=0;i<config::kNumLevels;i++)
@@ -378,6 +378,15 @@ DBImpl::~DBImpl() {
   std::cout << stats_property << std::endl;
   std::cout << "##lh_compact_times: \t" << std::endl;
   std::cout << lh_compact_times << std::endl;
+
+
+  //cyf add for printing link number info
+  uint64_t total = 0;
+  for (int i = 0; i < config::kBufferResveredNum; ++i) {
+      std::cout << "LDC_link_num:"<<i<<" 's compaction did "<<link_stats_LDC_[i]<<" times.\n "<<std::endl;
+      total += link_stats_LDC_[i];
+  }
+  std::cout <<"the total link times are: "<<total<<std::endl;
 
   delete versions_;
   if (mem_ != NULL) mem_->Unref();
@@ -1069,8 +1078,7 @@ void DBImpl::BackgroundCompaction() {
         versions_->LevelSummary(&tmp));
         
     //whc add
-    Log(w_log,"whc trivialmove in level%d\n",
-    c->level());
+    //Log(w_log,"whc trivialmove in level%d\n",c->level());
   } else {
     CompactionState* compact = new CompactionState(c);
    //std::cout<<"backgroundcompaction:exp2: "<<compact->compaction->inputs_[1].size()<<std::endl;
@@ -1658,7 +1666,7 @@ Status DBImpl::Dispatch(CompactionState* compact) {
           }
           else{
               link_size = static_cast<uint64_t>(options_.max_file_size
-                                                * (static_cast<double>(link_end -link_start ) / config::kLDCLinkKVSizeInterval));
+                                                * (static_cast<double>(link_end - link_start ) / config::kLDCLinkKVSizeInterval));
           }
           assert(link_size != 0);//cyf link size should not be 0
 
@@ -1687,7 +1695,7 @@ Status DBImpl::Dispatch(CompactionState* compact) {
     						compact->compaction->inputs_[0][i]->number,
                             link_size,//cyf change
                             //compact->compaction->inputs_[0][i]->file_size,
-							compact->compaction->inputs_[1][ptr1-1]->number,
+                            compact->compaction->inputs_[1][ptr1 - 1]->number,
                             compact->compaction->inputs_[0][i]->file_size,//0,
 							nsmallest,
                             nlargest,
@@ -1783,6 +1791,11 @@ Status DBImpl::BufferCompact(CompactionState* compact,int index){
     versions_->current()->sequence_);
   //std::cout<<"buffer compact end make iterator"<<std::endl;
   //return status;
+  //cyf add for get real link number under link limitation
+  uint64_t link_num = compact->compaction->inputs_[0][index]->buffer->nodes.size();
+  if(link_num < config::kBufferResveredNum) link_stats_LDC_[link_num]++;
+
+
   input->SeekToFirst();
   ParsedInternalKey ikey;
   std::string current_user_key;
@@ -2357,8 +2370,8 @@ bool DBImpl::GetProperty(const Slice& property, std::string* value) {
     char buf[200];
     snprintf(buf, sizeof(buf),
              "                               Compactions\n"
-             "Level    Files   Size(MB)    Time(sec)    Read(MB)    Write(MB)   ReadFiles    WriteFiles    CompactTimes\n"
-             "---------------------------------------------------------------------------------------------------------\n"
+             "Level   Files  Size(MB)   Time(sec)   Read(MB)   Write(MB)  ReadFiles   WriteFiles   CompactTimes\n"
+             "-------------------------------------------------------------------------------------------------\n"
              );
     value->append(buf);
     for (int level = 0; level < config::kNumLevels; level++) {
@@ -2366,7 +2379,7 @@ bool DBImpl::GetProperty(const Slice& property, std::string* value) {
       if (stats_[level].partial_stats.micros > 0 || files > 0) {
         snprintf(buf,
                  sizeof(buf),
-                 "%3d  %8d  %8.0f  %9.0f  %8.0f  %9.0f  %10lld  %10lld  %10lld\n",
+                 "\n %3d  %8d  %8.0f  %9.0f  %8.0f  %9.0f  %10lld  %10lld  %10lld\n",
                  level,
                  files,
                  versions_->NumLevelBytes(level) / 1048576.0,

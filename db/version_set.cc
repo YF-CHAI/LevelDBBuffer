@@ -1174,22 +1174,10 @@ void Apply(VersionEdit* edit) {
                  v->need_compact_[level].push_back(f);
 
          }
-
-         //cyf comment out for backup 2019.6.5
-         /*
-         if(f->buffer->nodes.size() >= config::kThresholdBufferNum ){
-             vset_->buffer_compact_switch_ = true;
-             v->bc_compaction_level_ = level;
-             if(std::find(v->need_compact_[level].begin(),v->need_compact_[level].end(),f)
-            ==v->need_compact_[level].end())
-                 v->need_compact_[level].push_back(f);
-            //std::cout<<"buffer fill: ="<<ptr<<"!"<<std::endl;
-         }
-         */
          
-      }
+      }//end for for(size_t j=0;j<levels_[level].added_buffer_nodes.size();j++)
 
-    }
+    }//end for for (int level = 0; level < config::kNumLevels; level++)
   }
 
   void MaybeAddFile(Version* v, int level, FileMetaData* f) {
