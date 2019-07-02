@@ -333,18 +333,18 @@ DBImpl::DBImpl(const Options& raw_options, const std::string& dbname)
 DBImpl::~DBImpl() {
   // whc add
 	for(int i=0;i<config::kNumLevels;i++)
-		std::cout<<"level"<<i<<"  nums"<<versions_->current_->NumFiles(i)<<std::endl;
+        std::cout<<"level: \t"<<i<<"\t nums: \t"<<versions_->current_->NumFiles(i)<<std::endl;
         
-    std::cout<<"mem getnum:"<<ReadStatic::mem_get<<std::endl;
+    std::cout<<"mem getnum: \t"<<ReadStatic::mem_get<<std::endl;
     for(int i=0;i<config::kNumLevels;i++)
-		std::cout<<"level"<<i<<" getnum:"<<ReadStatic::level_get[i]<<std::endl;
+        std::cout<<"level: \t"<<i<<"\t getnum: \t"<<ReadStatic::level_get[i]<<std::endl;
         
-    std::cout<<"table get "<<ReadStatic::table_get<<std::endl;
-    std::cout<<"bloomfilter miss "<<ReadStatic::table_bloomfilter_miss<<std::endl;
-    std::cout<<"readfile miss "<<ReadStatic::table_readfile_miss<<std::endl;
-    std::cout<<"table cache shoot "<<ReadStatic::table_cache_shoot<<std::endl;
-    std::cout<<"data block read "<<ReadStatic::data_block_read<<std::endl;
-    std::cout<<"index size "<<ReadStatic::index_block_size<<std::endl;
+    std::cout<<"table get: \t "<<ReadStatic::table_get<<std::endl;
+    std::cout<<"bloomfilter miss: \t "<<ReadStatic::table_bloomfilter_miss<<std::endl;
+    std::cout<<"readfile miss: \t"<<ReadStatic::table_readfile_miss<<std::endl;
+    std::cout<<"table cache shoot: \t"<<ReadStatic::table_cache_shoot<<std::endl;
+    std::cout<<"data block read: \t"<<ReadStatic::data_block_read<<std::endl;
+    std::cout<<"index size: \t"<<ReadStatic::index_block_size<<std::endl;
 
 
 	// Wait for background work to finish
@@ -372,11 +372,11 @@ DBImpl::~DBImpl() {
 
 //  std::cout << "##sst_property" << std::endl;
 //  std::cout << sst_property << std::endl;
-  std::cout << "##mem_usage" << std::endl;
+  std::cout << "##mem_usage :\t" << std::endl;
   std::cout << mem_usage << std::endl;
-  std::cout << "##stats_property" << std::endl;
+  std::cout << "##stats_property: \t" << std::endl;
   std::cout << stats_property << std::endl;
-  std::cout << "##lh_compact_times" << std::endl;
+  std::cout << "##lh_compact_times: \t" << std::endl;
   std::cout << lh_compact_times << std::endl;
 
   delete versions_;
@@ -1169,6 +1169,7 @@ Status DBImpl::OpenCompactionOutputFile(CompactionState* compact) {
     pending_outputs_.insert(file_number);
     CompactionState::Output out;
     out.number = file_number;
+    out.file_size = 0;
     out.smallest.Clear();
     out.largest.Clear();
 
@@ -2356,8 +2357,8 @@ bool DBImpl::GetProperty(const Slice& property, std::string* value) {
     char buf[200];
     snprintf(buf, sizeof(buf),
              "                               Compactions\n"
-             "Level  Files Size(MB) Time(sec) Read(MB) Write(MB) ReadFiles WriteFiles CompactTimes\n"
-             "--------------------------------------------------\n"
+             "Level    Files   Size(MB)    Time(sec)    Read(MB)    Write(MB)   ReadFiles    WriteFiles    CompactTimes\n"
+             "---------------------------------------------------------------------------------------------------------\n"
              );
     value->append(buf);
     for (int level = 0; level < config::kNumLevels; level++) {
@@ -2365,7 +2366,7 @@ bool DBImpl::GetProperty(const Slice& property, std::string* value) {
       if (stats_[level].partial_stats.micros > 0 || files > 0) {
         snprintf(buf,
                  sizeof(buf),
-                 "%3d %8d %8.0f %9.0f %8.0f %9.0f %10lld %10lld %10lld\n",
+                 "%3d  %8d  %8.0f  %9.0f  %8.0f  %9.0f  %10lld  %10lld  %10lld\n",
                  level,
                  files,
                  versions_->NumLevelBytes(level) / 1048576.0,
@@ -2405,7 +2406,7 @@ bool DBImpl::GetProperty(const Slice& property, std::string* value) {
         for(int i = 0; i < stats_[level-1].max_read_file_nums; i++){
           for(int j = 0; j < stats_[level].max_read_file_nums; j++){
             if(stats_[level].lh_compact_times[i][j] > 0){
-              snprintf(buf, sizeof(buf), "%d+%d,%lld;", i, j, stats_[level].lh_compact_times[i][j]);
+              snprintf(buf, sizeof(buf), "%d + %d, %lld;", i, j, stats_[level].lh_compact_times[i][j]);
               value->append(buf);
             }
           }

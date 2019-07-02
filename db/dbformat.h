@@ -83,9 +83,6 @@ class BCJudge{
     public:
     static bool IsBufferCompactLevel(int level){
         return (level >= config::kBufferCompactStartLevel && level<=config::kBufferCompactEndLevel);
-        //return (level>=config::kBufferCompactStartLevel);
-        //return (level==1);
-        //return false;
     }
 };
 
@@ -102,18 +99,10 @@ class ReadStatic{
     static uint64_t index_block_size;
     static int open_num;
     static int get_flag;
-    //static int level1_get;
-    //static int level2_get;
-    //static int level3_get;
-    //static int level4_get;
-    //static int level5_get;
+
 };
 
-//int ReadStatic::mem_get = 0;
 
-
-
-//class InternalKey;
 
 // Value types encoded as the last component of internal keys.
 // DO NOT CHANGE THESE ENUM VALUES: they are embedded in the on-disk

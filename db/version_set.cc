@@ -299,7 +299,7 @@ Iterator* Version::NewConcatenatingIterator(const ReadOptions& options,
 
 void Version::AddIterators(const ReadOptions& options,
                            std::vector<Iterator*>* iters) {
-   std::cout<<"version::additerators:sequence="<<sequence_<<std::endl;
+   //std::cout<<"version::additerators:sequence="<<sequence_<<std::endl;
    // Merge all level zero files together since they may overlap
   for (size_t i = 0; i < files_[0].size(); i++) {
     iters->push_back(
