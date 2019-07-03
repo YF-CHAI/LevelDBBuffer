@@ -2428,7 +2428,7 @@ bool DBImpl::GetProperty(const Slice& property, std::string* value) {
         for(int i = 0; i < stats_[level-1].max_read_file_nums; i++){
           for(int j = 0; j < stats_[level].max_read_file_nums; j++){
             if(stats_[level].lh_compact_times[i][j] > 0){
-              snprintf(buf, sizeof(buf), "(%d+%d,%lld)\t", i, j, stats_[level].lh_compact_times[i][j]);
+              snprintf(buf, sizeof(buf), " ( %d+%d,%lld ) ", i, j, stats_[level].lh_compact_times[i][j]);
               value->append(buf);
             }
           }
