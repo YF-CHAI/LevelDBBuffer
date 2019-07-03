@@ -143,7 +143,7 @@ struct DBImpl::CompactionStats {
   PartialCompactionStats partial_stats;
 
   // ll_num + hl_num compact times
-  int64_t lh_compact_times[max_read_file_nums][max_read_file_nums];
+  uint64_t lh_compact_times[max_read_file_nums][max_read_file_nums];
 
   CompactionStats() : partial_stats() {
     memset(lh_compact_times, 0, sizeof(lh_compact_times));
@@ -178,7 +178,9 @@ void DBImpl::CompactionStats::UpdateWhileCompact(const CompactionState* compact,
   ll_stats.partial_stats.read_file_nums = compact->compaction->num_input_files(0);
   
   for (int i = 0; i < compact->compaction->num_input_files(0); i++) {
-    hl_stats.partial_stats.bytes_read += compact->compaction->input(0, i)->file_size;
+    //hl_stats.partial_stats.bytes_read += compact->compaction->input(0, i)->file_size;
+    //cyf change hl_stats to ll_stats
+    ll_stats.partial_stats.bytes_read += compact->compaction->input(0, i)->file_size;
   }
   
   // High-level
@@ -218,7 +220,9 @@ void DBImpl::CompactionStats::UpdateWhileBufferCompact(const CompactionState* co
   }
   */
   // low-level(buffer total size)
-  ll_stats.partial_stats.read_file_nums = 0;
+  //ll_stats.partial_stats.read_file_nums = 0;
+  //cyf change for use buffers' num as low level read file num
+  ll_stats.partial_stats.read_file_nums = compact->compaction->input(0,0)->buffer->nodes.size();
   //ll_stats.partial_stats.bytes_read += inputsize - hl_stats.partial_stats.bytes_read;
   
   // High-level
@@ -232,11 +236,14 @@ void DBImpl::CompactionStats::UpdateWhileBufferCompact(const CompactionState* co
 
   hl_stats.partial_stats.compact_times++;
 
-  hl_stats.ll_file_num = 0;
+  //hl_stats.ll_file_num = 0;
+  //cyf change for use buffers' num as low level read file num
+  hl_stats.ll_file_num = ll_stats.partial_stats.read_file_nums;
+
   hl_stats.hl_file_num = 1;
 }
 
-DBImpl::CompactionStats stats_[config::kNumLevels];
+struct DBImpl::CompactionStats stats_[config::kNumLevels];
 
 
 
@@ -1907,7 +1914,7 @@ Status DBImpl::BufferCompact(CompactionState* compact,int index){
           compact->compaction->MaxOutputFileSize()) {
           //cyf add
           if(key_distribution_index < config::kLDCLinkKVSizeInterval){
-              for (int index = key_distribution_index; index < config::kLDCLinkKVSizeInterval; index++) {
+              for (size_t index = key_distribution_index; index < config::kLDCLinkKVSizeInterval; index++) {
                   compact->current_output()->p_size_key[index].DecodeFrom(key);
               }
 
@@ -1985,7 +1992,7 @@ Status DBImpl::BufferCompact(CompactionState* compact,int index){
       OneTimeCompactionStats ll_stats;
       OneTimeCompactionStats hl_stats;
 
-      int mylevel = compact->compaction->level();
+      //int mylevel = compact->compaction->level();
       int64_t micros = env_->NowMicros() - start_micros - imm_micros;
 
       CompactionStats::UpdateWhileBufferCompact(compact, micros, ll_stats, hl_stats,input_size,output_size);
@@ -2416,12 +2423,12 @@ bool DBImpl::GetProperty(const Slice& property, std::string* value) {
     for (int level = 1; level < config::kNumLevels; level++) {
       int files = versions_->NumLevelFiles(level);
       if (stats_[level].partial_stats.micros > 0 || files > 0) {
-        snprintf(buf, sizeof(buf), "Level%d: ", level);
+        snprintf(buf, sizeof(buf), "Level %d: ", level);
         value->append(buf);
         for(int i = 0; i < stats_[level-1].max_read_file_nums; i++){
           for(int j = 0; j < stats_[level].max_read_file_nums; j++){
             if(stats_[level].lh_compact_times[i][j] > 0){
-              snprintf(buf, sizeof(buf), "%d + %d, %lld;", i, j, stats_[level].lh_compact_times[i][j]);
+              snprintf(buf, sizeof(buf), " [%d+%d ,%lld;] ", i, j, stats_[level].lh_compact_times[i][j]);
               value->append(buf);
             }
           }
