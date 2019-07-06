@@ -347,7 +347,7 @@ class VersionSet {
  //whc add
     bool buffer_compact_switch_;
     Logger* w_log;
-   
+
 //whc change
     const InternalKeyComparator icmp_;
  
