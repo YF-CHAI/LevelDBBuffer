@@ -18,17 +18,17 @@ Options::Options()
       paranoid_checks(false),
       env(Env::Default()),
       info_log(NULL),
-      write_buffer_size(32<<20),//cyf changed default:4MB
+      write_buffer_size(64<<20),//cyf changed default:4MB
       max_open_files(5000),
       block_cache(NULL),
       block_size(4096),
       block_restart_interval(16),
-      max_file_size(16<<20),//cyf changed default:2MB
+      max_file_size(32<<20),//cyf changed default:2MB
       compression(kSnappyCompression),
       reuse_logs(false),
       filter_policy(NewBloomFilterPolicy(128)),
-      amplify(10.0),
-      top_level_size(100.0*1048576.0){//cyf changed default: 10MB
+      amplify(5.0),
+      top_level_size(128.0*1048576.0){//cyf changed default: 10MB
           //std::cout<<"options:filter:"<<filter_policy<<std::endl;
 }
 
