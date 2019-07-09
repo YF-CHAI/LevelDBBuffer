@@ -2377,6 +2377,8 @@ bool DBImpl::GetProperty(const Slice& property, std::string* value) {
   } else if (in == "stats") {
     //whc change
     char buf[200];
+    uint64_t total_compaction_num = 0;//cyf add
+    uint64_t total_compaction_duration = 0;
     snprintf(buf, sizeof(buf),
              "                               Compactions\n"
              "Level   Files  Size(MB)   Time(sec)   Read(MB)   Write(MB)  ReadFiles   WriteFiles   CompactTimes\n"
@@ -2388,7 +2390,7 @@ bool DBImpl::GetProperty(const Slice& property, std::string* value) {
       if (stats_[level].partial_stats.micros > 0 || files > 0) {
         snprintf(buf,
                  sizeof(buf),
-                 "\n %3d  %8d  %8.0f  %9.0f  %8.0f  %9.0f  %10lld  %10lld  %10lld\n",
+                 "\n %3d  %8d  %9.0lf  %9.0lf  %9.0lf  %9.0lf  %10lld  %10lld  %10lld\n",
                  level,
                  files,
                  versions_->NumLevelBytes(level) / 1048576.0,
@@ -2399,8 +2401,12 @@ bool DBImpl::GetProperty(const Slice& property, std::string* value) {
                  stats_[level].partial_stats.write_file_nums,
                  stats_[level].partial_stats.compact_times);
                  value->append(buf);
+                 total_compaction_num += stats_[level].partial_stats.compact_times;//cyf add
+                 total_compaction_duration += stats_[level].partial_stats.micros;
       }
     }
+    snprintf(buf,sizeof (buf),"Total compaction times: %llu \n", total_compaction_num);
+    snprintf(buf,sizeof (buf),"Total compaction duration: %llu \n", total_compaction_duration);
     return true;
   } else if (in == "sstables") {
     *value = versions_->current()->DebugString();
@@ -2413,13 +2419,13 @@ bool DBImpl::GetProperty(const Slice& property, std::string* value) {
     if (imm_) {
       total_usage += imm_->ApproximateMemoryUsage();
     }
-    char buf[50];
+    char buf[100];
     snprintf(buf, sizeof(buf), "%llu",
              static_cast<unsigned long long>(total_usage));
     value->append(buf);
     return true;
   }else if (in == "lh_compact_times"){   // whc add
-    char buf[10];
+    char buf[100];
     for (int level = 1; level < config::kNumLevels; level++) {
       int files = versions_->NumLevelFiles(level);
       if (stats_[level].partial_stats.micros > 0 || files > 0) {
