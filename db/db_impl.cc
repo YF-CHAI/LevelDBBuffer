@@ -277,7 +277,7 @@ Options SanitizeOptions(const std::string& dbname,
   }
   //whc change
   if (result.block_cache == NULL) {
-    result.block_cache = NewLRUCache(1 << 30);//cyf changed, default 8MB
+    result.block_cache = NewLRUCache(1 << 30);//cyf changed to 1GB, default 8MB
     //result.block_cache = NewLRUCache(8);
   }
   return result;
