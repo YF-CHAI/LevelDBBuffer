@@ -24,7 +24,7 @@ Options::Options()
       block_size(4096),
       block_restart_interval(16),
       max_file_size(32<<20),//cyf changed default:2MB
-      compression(kNoCompression),
+      compression(kNoCompression),//cyf change for test, default:kSnappyCompression
       reuse_logs(false),
       filter_policy(NewBloomFilterPolicy(128)),
       amplify(5.0),

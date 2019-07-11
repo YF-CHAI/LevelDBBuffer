@@ -1154,7 +1154,7 @@ void Apply(VersionEdit* edit) {
          
          uint64_t buffer_size_tmp = f->buffer->size;
          uint64_t file_size_tmp = f->file_size;
-         uint64_t max = 2<<20;
+         uint64_t max = config::kLDCMaxFileSizeLimit;
 
          assert(file_size_tmp != 0);
 

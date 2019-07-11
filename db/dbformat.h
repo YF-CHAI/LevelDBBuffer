@@ -51,6 +51,8 @@ static const int kBufferCompactEndLevel = 7;
 
 //cyf LDC trigger condition
 static const bool kIsLDCSizeTrigger = true;
+static const uint64_t kLDCMaxFileSizeLimit = 32 << 20;
+
 //whc add
 static const int kThresholdBufferNum  = 5;
 
