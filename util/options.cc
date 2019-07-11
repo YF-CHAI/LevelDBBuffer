@@ -19,7 +19,7 @@ Options::Options()
       env(Env::Default()),
       info_log(NULL),
       write_buffer_size(64<<20),//cyf changed default:4MB
-      max_open_files(5000),
+      max_open_files(50000),
       block_cache(NULL),
       block_size(4096),
       block_restart_interval(16),

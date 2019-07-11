@@ -53,7 +53,7 @@ Status TableCache::FindTable(uint64_t file_number, uint64_t file_size,
   //whc add
   ReadStatic::table_cache_shoot++;
   
-  *handle = cache_->Lookup(key);
+  *handle = cache_->Lookup(key);//key is the file number to search in the cache
   if (*handle == NULL) {
     //whc add
     ReadStatic::table_cache_shoot--;
