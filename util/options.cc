@@ -3,7 +3,7 @@
 // found in the LICENSE file. See the AUTHORS file for names of contributors.
 
 #include "leveldb/options.h"
-
+#include "dbformat.h"
 #include "leveldb/comparator.h"
 #include "leveldb/env.h"
 #include "leveldb/filter_policy.h"
@@ -18,12 +18,12 @@ Options::Options()
       paranoid_checks(false),
       env(Env::Default()),
       info_log(NULL),
-      write_buffer_size(64<<20),//cyf changed default:4MB
+      write_buffer_size(config::kLDCMaxWriteBufferSize),//cyf changed default:4MB
       max_open_files(50000),
       block_cache(NULL),
       block_size(4096),
       block_restart_interval(16),
-      max_file_size(32<<20),//cyf changed default:2MB
+      max_file_size(config::kLDCMaxFileSizeLimit),//cyf changed default:2MB
       compression(kNoCompression),//cyf change for test, default:kSnappyCompression
       reuse_logs(false),
       filter_policy(NewBloomFilterPolicy(128)),
