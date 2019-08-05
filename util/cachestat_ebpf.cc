@@ -16,10 +16,16 @@ leveldb::Cachestat_eBPF::Cachestat_eBPF()
 
 void leveldb::Cachestat_eBPF:: attach_kernel_probe_event()
 {
-    bpf_.attach_kprobe(bpf_.get_syscall_fnname("add_to_page_cache_lru"), "do_count");
-    bpf_.attach_kprobe(bpf_.get_syscall_fnname("mark_page_accessed"), "do_count");
-    bpf_.attach_kprobe(bpf_.get_syscall_fnname("account_page_dirtied"), "do_count");
-    bpf_.attach_kprobe(bpf_.get_syscall_fnname("mark_buffer_dirty"), "do_count");
+    std::string apcl = bpf_.get_syscall_fnname("add_to_page_cache_lru");
+    std::string mpa = bpf_.get_syscall_fnname("mark_page_accessed");
+    std::string apd = bpf_.get_syscall_fnname("account_page_dirtied");
+    std::string mbd = bpf_.get_syscall_fnname("mark_buffer_dirty");
+    std::cout <<"apcl: "<<apcl<<" mpa: "<<mpa<<" apd: "<<apd<<" mbd: "<<mbd<<std::endl;
+
+    bpf_.attach_kprobe("add_to_page_cache_lru", "do_count");
+    bpf_.attach_kprobe("mark_page_accessed", "do_count");
+    bpf_.attach_kprobe("account_page_dirtied", "do_count");
+    bpf_.attach_kprobe("mark_buffer_dirty", "do_count");
 
 }
 
