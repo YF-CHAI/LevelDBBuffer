@@ -20,7 +20,8 @@ void leveldb::Cachestat_eBPF:: attach_kernel_probe_event()
     std::string mpa = bpf_.get_syscall_fnname("mark_page_accessed");
     std::string apd = bpf_.get_syscall_fnname("account_page_dirtied");
     std::string mbd = bpf_.get_syscall_fnname("mark_buffer_dirty");
-    std::cout <<"apcl: "<<apcl<<" mpa: "<<mpa<<" apd: "<<apd<<" mbd: "<<mbd<<std::endl;
+    std::string hello = bpf_.get_syscall_fnname("hello");
+    std::cout <<"apcl: "<<apcl<<" mpa: "<<mpa<<" apd: "<<apd<<" mbd: "<<mbd<<" hello: "<<hello<<std::endl;
 
     bpf_.attach_kprobe("add_to_page_cache_lru", "do_count");
     bpf_.attach_kprobe("mark_page_accessed", "do_count");
