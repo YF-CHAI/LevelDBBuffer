@@ -44,14 +44,17 @@ leveldb::cache_info leveldb::Cachestat_eBPF::get_cache_info()
     std::string pid_name;
     auto cache_hash_table = bpf_.get_hash_table<struct key_t, uint64_t>("counts");
     std::cout<< "Cachestat_eBPF::get_cache_info() table_size:"<<cache_hash_table.get_table_offline().size()<<std::endl;
-    for (auto it: cache_hash_table.get_table_offline()) {
+    //for (auto it: cache_hash_table.get_table_offline()) {
+    auto v_tmp = cache_hash_table.get_table_offline();
+    for (size_t i=0; i<v_tmp.size();i++) {
         pid_name.clear();
-        pid_name = it.first.comm;
+        //pid_name = it.first.comm;
+        pid_name = v_tmp[i].first.comm;
         //std::cout <<"The pid name: "<< pid_name <<std::endl;//cyf add
         //this if is used to judge whether the process belongs to ycsb
         if(pid_name.find("db_bench") == 0){
-            std::cout <<"PID: "<<it.first.pid<<" We need pid_name: "<<pid_name<<" value: "<<it.second<<std::endl;
-            printf("%p\n",it.first.ip);
+            std::cout <<"PID: "<<v_tmp[i].first.pid<<" We need pid_name: "<<pid_name<<" value: "<<v_tmp[i].second<<std::endl;
+            printf("%p\n",v_tmp[i].first.ip);
 
             struct bcc_symbol b_symbol;
             //struct bpf_stack_build_id *bsb_id = (struct bpf_stack_build_id*)(it.first.ip);
@@ -64,6 +67,7 @@ leveldb::cache_info leveldb::Cachestat_eBPF::get_cache_info()
         }
     }
     cache_hash_table.clear_table_non_atomic();
+    v_tmp.clear();
     std::cout <<"============================================================================================"<<std::endl;
 
 
@@ -80,4 +84,5 @@ leveldb::Cachestat_eBPF::~Cachestat_eBPF()
 {
     std::cout<<"Cachestat_eBPF::~Cachestat_eBPF()"<<std::endl;
     detach_kernel_probe_event();
+    bpf_.detach_all();
 }
