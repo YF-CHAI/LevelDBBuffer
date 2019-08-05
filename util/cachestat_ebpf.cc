@@ -76,5 +76,6 @@ ebpf::StatusTuple leveldb::Cachestat_eBPF::attach_kernel_fun(std::string kernel_
 
 leveldb::Cachestat_eBPF::~Cachestat_eBPF()
 {
+    std::cout<<"Cachestat_eBPF::~Cachestat_eBPF()"<<std::endl;
     detach_kernel_probe_event();
 }
