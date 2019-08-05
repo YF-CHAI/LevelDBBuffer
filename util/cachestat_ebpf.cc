@@ -40,7 +40,7 @@ leveldb::cache_info leveldb::Cachestat_eBPF::get_cache_info()
         std::string pid_name = it.first.comm;
         std::cout <<"The pid name: "<< pid_name <<std::endl;//cyf add
         //this if is used to judge whether the process belongs to ycsb
-        if(pid_name.find("db_bennch") >= 0){
+        if(pid_name.find("db_bench") >= 0){
             struct bcc_symbol b_symbol;
 
             struct bpf_stack_build_id *bsb_id = (struct bpf_stack_build_id*)(it.first.ip);
