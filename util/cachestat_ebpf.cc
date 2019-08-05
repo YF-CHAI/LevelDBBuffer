@@ -41,10 +41,12 @@ void leveldb::Cachestat_eBPF::detach_kernel_probe_event()
 leveldb::cache_info leveldb::Cachestat_eBPF::get_cache_info()
 {
     struct cache_info info;
+    std::string pid_name;
     auto cache_hash_table = bpf_.get_hash_table<struct key_t, uint64_t>("counts");
     std::cout<< "Cachestat_eBPF::get_cache_info() table_size:"<<cache_hash_table.get_table_offline().size()<<std::endl;
     for (auto it: cache_hash_table.get_table_offline()) {
-        std::string pid_name = it.first.comm;
+        pid_name.clear();
+        pid_name = it.first.comm;
         std::cout <<"The pid name: "<< pid_name <<std::endl;//cyf add
         //this if is used to judge whether the process belongs to ycsb
         if(pid_name.find("db_bench") >= 0){
