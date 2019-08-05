@@ -23,7 +23,7 @@
 #include "port/port.h"
 #include "port/thread_annotations.h"
 #include "db/db_impl.h"
-
+#include "util/cachestat_ebpf.h"//cyf add for performance probe
 namespace leveldb {
 
 namespace log { class Writer; }
@@ -408,6 +408,8 @@ class VersionSet {
   // No copying allowed
   VersionSet(const VersionSet&);
   void operator=(const VersionSet&);
+
+  Cachestat_eBPF eBPF;//cyf add
 };//end of VersionSet
 
 // A Compaction encapsulates information about a compaction.

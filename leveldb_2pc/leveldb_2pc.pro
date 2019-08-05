@@ -6,6 +6,10 @@ CONFIG -= qt
 INCLUDEPATH += ../
 INCLUDEPATH += ../db
 INCLUDEPATH += ../include/
+#cyf add for using eBPF
+INCLUDEPATH += ../../bcc/src/cc/libbpf/include/uapi/
+INCLUDEPATH += ../../bcc/src/cc/api
+INCLUDEPATH += ../../bcc/src/cc/
 
 SOURCES += \
     ../db/autocompact_test.cc \
@@ -62,6 +66,7 @@ SOURCES += \
     ../util/bloom_test.cc \
     ../util/cache.cc \
     ../util/cache_test.cc \
+    ../util/cachestat_ebpf.cc \
     ../util/coding.cc \
     ../util/coding_test.cc \
     ../util/comparator.cc \
@@ -148,6 +153,7 @@ HEADERS += \
     ../table/merger.h \
     ../table/two_level_iterator.h \
     ../util/arena.h \
+    ../util/cachestat_ebpf.h \
     ../util/coding.h \
     ../util/crc32c.h \
     ../util/hash.h \

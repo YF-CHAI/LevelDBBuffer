@@ -624,7 +624,7 @@ Status Version::BufferGet(const ReadOptions& options,
           return s;
       }
     }
-  }
+  }//end for (int level = 0; level < config::kNumLevels; level++)
 
   return Status::NotFound(Slice());  // Use an empty error message for speed
 }

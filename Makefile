@@ -62,8 +62,15 @@ BENCHMARKS = \
 CFLAGS += -I. -I./include $(PLATFORM_CCFLAGS) $(OPT)
 CXXFLAGS += -I. -I./include $(PLATFORM_CXXFLAGS) $(OPT)
 
+#cyf add to use eBPF
+CFLAGS += -I ../bcc/src/cc/libbpf/include/uapi/ -I ../bcc/src/cc/api -I ../bcc/src/cc/
+CXXFLAGS += -I ../bcc/src/cc/libbpf/include/uapi/ -I ../bcc/src/cc/api -I ../bcc/src/cc/
+
 LDFLAGS += $(PLATFORM_LDFLAGS)
 LIBS += $(PLATFORM_LIBS)
+
+#cyf add to use eBPF
+LIBS += -L../bcc/src/cc -lbcc
 
 SIMULATOR_OUTDIR=out-ios-x86
 DEVICE_OUTDIR=out-ios-arm
