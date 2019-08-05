@@ -1,6 +1,7 @@
 #include "cachestat_ebpf.h"
 
 #include <bcc_syms.h>
+#include "syms.h"
 
 
 leveldb::Cachestat_eBPF::Cachestat_eBPF()
@@ -61,6 +62,10 @@ leveldb::cache_info leveldb::Cachestat_eBPF::get_cache_info()
 
             //int res = bcc_buildsymcache_resolve(bpf_.get_bsymcache(), bsb_id, &b_symbol);
             //std::cout << b_symbol.name<<std::endl;
+            KSyms ksyms;
+            ksyms.resolve_addr(v_tmp[i].first.ip, &b_symbol);
+            std::cout<<"the kernel fun is: "<<b_symbol.name<< " "<<b_symbol.module<<" "<<b_symbol.demangle_name<<std::endl;
+
 
 
 
