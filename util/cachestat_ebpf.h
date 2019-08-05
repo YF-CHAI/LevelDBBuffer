@@ -15,29 +15,29 @@ namespace cache_ebpf {
 //cyf notice: do not insert any comments in BPF_PROGRAM
 //https://github.com/iovisor/bcc/blob/master/docs/reference_guide.md
 const std::string BPF_PROGRAM = R"(
-                                #include <uapi/linux/ptrace.h>
-                                struct key_t {
-                                    u64 ip;
-                                    u32 pid;
-                                    u32 uid;
-                                    char comm[16];
-                                };
+#include <uapi/linux/ptrace.h>
+struct key_t {
+    u64 ip;
+    u32 pid;
+    u32 uid;
+    char comm[16];
+};
 
-                                BPF_HASH(counts, struct key_t);
+    BPF_HASH(counts, struct key_t);
 
-                                int do_count(struct pt_regs *ctx) {
-                                    struct key_t key = {};
-                                    u64 pid = bpf_get_current_pid_tgid();
-                                    u32 uid = bpf_get_current_uid_gid();
+    int do_count(struct pt_regs *ctx) {
+        struct key_t key = {};
+        u64 pid = bpf_get_current_pid_tgid();
+        u32 uid = bpf_get_current_uid_gid();
 
-                                    key.ip = PT_REGS_IP(ctx);
-                                    key.pid = pid & 0xFFFFFFFF;
-                                    key.uid = uid & 0xFFFFFFFF;
-                                    bpf_get_current_comm(&(key.comm), 16);
+        key.ip = PT_REGS_IP(ctx);
+        key.pid = pid & 0xFFFFFFFF;
+        key.uid = uid & 0xFFFFFFFF;
+        bpf_get_current_comm(&(key.comm), 16);
 
-                                    counts.increment(key);
-                                    return 0;
-                                }
+        counts.increment(key);
+        return 0;
+}
 )";
 
 

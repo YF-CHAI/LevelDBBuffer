@@ -68,5 +68,5 @@ leveldb::cache_info leveldb::Cachestat_eBPF::get_cache_info()
 ebpf::StatusTuple leveldb::Cachestat_eBPF::attach_kernel_fun(std::string kernel_fun, std::string probe_fun)
 {
     ebpf::StatusTuple s = bpf_.attach_kprobe(kernel_fun,probe_fun);
-    if(1) std::cout <<"attach_kernel_fun: " << s.msg() <<std::endl;
+    if(s.code() != 0) std::cout <<"attach_kernel_fun: " << s.msg() <<std::endl;
 }

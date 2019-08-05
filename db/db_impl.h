@@ -15,6 +15,8 @@
 #include "port/port.h"
 #include "port/thread_annotations.h"
 
+#include "util/cachestat_ebpf.h"
+
 namespace leveldb {
 
 class MemTable;
@@ -92,6 +94,7 @@ class DBImpl : public DB {
   struct CompactionStats;
 
  private:
+  Cachestat_eBPF ebpf_;
   friend class DB;
   struct CompactionState;
   struct Writer;

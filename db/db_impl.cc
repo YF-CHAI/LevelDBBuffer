@@ -945,6 +945,7 @@ void DBImpl::RecordBackgroundError(const Status& s) {
 }
 
 void DBImpl::MaybeScheduleCompaction() {
+    struct cache_info cif =  this->ebpf_.get_cache_info();//cyf add
   mutex_.AssertHeld();
   if (bg_compaction_scheduled_) {
     // Already scheduled

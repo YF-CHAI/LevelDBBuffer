@@ -876,7 +876,7 @@ std::string Version::DebugString() const {
 // Versions that contain full copies of the intermediate state.
 class VersionSet::Builder {
  private:
-  Cachestat_eBPF eBPF;//cyf add
+
   // Helper to sort by v->files_[file_number].smallest
   struct BySmallestKey {
     const InternalKeyComparator* internal_comparator;
@@ -1158,8 +1158,7 @@ void Apply(VersionEdit* edit) {
          uint64_t max = config::kLDCMaxFileSizeLimit;
 
          assert(file_size_tmp != 0);
-         //eBPF.attach_kernel_probe_event();
-         struct cache_info cif = eBPF.get_cache_info();
+
 
 
          double merge_score = 0.0;
