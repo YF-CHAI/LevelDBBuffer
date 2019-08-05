@@ -63,6 +63,7 @@ leveldb::cache_info leveldb::Cachestat_eBPF::get_cache_info()
 
         }
     }
+    cache_hash_table.clear_table_non_atomic();
 
 
 
