@@ -73,6 +73,7 @@ public:
     void detach_kernel_probe_event();
     struct cache_info get_cache_info();
     ebpf::StatusTuple attach_kernel_fun(std::string kernel_fun, std::string probe_fun);
+    ~Cachestat_eBPF();
 
 
 
