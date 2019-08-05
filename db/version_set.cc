@@ -1158,7 +1158,7 @@ void Apply(VersionEdit* edit) {
          uint64_t max = config::kLDCMaxFileSizeLimit;
 
          assert(file_size_tmp != 0);
-         eBPF.attach_kernel_probe_event();
+         //eBPF.attach_kernel_probe_event();
          struct cache_info cif = eBPF.get_cache_info();
 
 

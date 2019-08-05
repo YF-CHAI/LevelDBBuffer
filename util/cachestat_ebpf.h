@@ -72,6 +72,7 @@ public:
     void detach_kernel_probe_event();
     struct cache_info get_cache_info();
 
+
 private:
     ebpf::BPF bpf_;
     struct cache_info cache_info_;
