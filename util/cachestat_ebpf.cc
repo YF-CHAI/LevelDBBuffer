@@ -35,6 +35,7 @@ leveldb::cache_info leveldb::Cachestat_eBPF::get_cache_info()
 {
     struct cache_info info;
     auto cache_hash_table = bpf_.get_hash_table<struct key_t, uint64_t>("counts");
+    std::cout<< "get into leveldb::cache_info leveldb::Cachestat_eBPF::get_cache_info()"<<std::endl;
     for (auto it: cache_hash_table.get_table_offline()) {
         std::string pid_name = it.first.comm;
         std::cout <<"The pid name: "<< pid_name <<std::endl;//cyf add
