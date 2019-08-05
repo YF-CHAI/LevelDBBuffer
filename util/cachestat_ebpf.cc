@@ -54,10 +54,10 @@ leveldb::cache_info leveldb::Cachestat_eBPF::get_cache_info()
             printf("%p\n",it.first.ip);
 
             struct bcc_symbol b_symbol;
-            struct bpf_stack_build_id *bsb_id = (struct bpf_stack_build_id*)(it.first.ip);
+            //struct bpf_stack_build_id *bsb_id = (struct bpf_stack_build_id*)(it.first.ip);
 
-            int res = bcc_buildsymcache_resolve(bpf_.get_bsymcache(), bsb_id, &b_symbol);
-            std::cout << b_symbol.name<<std::endl;
+            //int res = bcc_buildsymcache_resolve(bpf_.get_bsymcache(), bsb_id, &b_symbol);
+            //std::cout << b_symbol.name<<std::endl;
 
 
 
