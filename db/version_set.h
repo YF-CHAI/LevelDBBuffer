@@ -350,6 +350,7 @@ class VersionSet {
 
 //whc change
     const InternalKeyComparator icmp_;
+
  
  private:
   class Builder;
@@ -409,7 +410,7 @@ class VersionSet {
   VersionSet(const VersionSet&);
   void operator=(const VersionSet&);
 
-  Cachestat_eBPF eBPF;//cyf add
+
 };//end of VersionSet
 
 // A Compaction encapsulates information about a compaction.
