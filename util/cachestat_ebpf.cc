@@ -64,7 +64,8 @@ leveldb::cache_info leveldb::Cachestat_eBPF::get_cache_info()
             //std::cout << b_symbol.name<<std::endl;
             KSyms ksyms;
             ksyms.resolve_addr(v_tmp[i].first.ip, &b_symbol);
-            std::cout<<"the kernel fun is: "<<b_symbol.name<< " "<<b_symbol.module<<" "<<b_symbol.demangle_name<<std::endl;
+            std::cout<<"b_symbol.name: "<<b_symbol.name<< " b_symbol.module: "<<b_symbol.module
+                    <<" b_symbol.demangle_name: "<<b_symbol.demangle_name<<std::endl;
 
 
 
