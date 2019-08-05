@@ -55,7 +55,7 @@ leveldb::cache_info leveldb::Cachestat_eBPF::get_cache_info()
         pid_name = v_tmp[i].first.comm;
         //std::cout <<"The pid name: "<< pid_name <<std::endl;//cyf add
         //this if is used to judge whether the process belongs to ycsb
-        if(pid_name.find("db_bench") == 0){
+        if(pid_name.find("ycsbc") == 0){
             //std::cout <<"PID: "<<v_tmp[i].first.pid<<" pid_name: "<<pid_name<<" value: "<<v_tmp[i].second<<std::endl;
             //printf("%p\n",v_tmp[i].first.ip);
 
