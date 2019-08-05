@@ -16,17 +16,17 @@ leveldb::Cachestat_eBPF::Cachestat_eBPF()
 
 void leveldb::Cachestat_eBPF:: attach_kernel_probe_event()
 {
-    std::string apcl = bpf_.get_syscall_fnname("add_to_page_cache_lru");
-    std::string mpa = bpf_.get_syscall_fnname("mark_page_accessed");
-    std::string apd = bpf_.get_syscall_fnname("account_page_dirtied");
-    std::string mbd = bpf_.get_syscall_fnname("mark_buffer_dirty");
-    std::string hello = bpf_.get_syscall_fnname("hello");
-    std::cout <<"apcl: "<<apcl<<" mpa: "<<mpa<<" apd: "<<apd<<" mbd: "<<mbd<<" hello: "<<hello<<std::endl;
+//    std::string apcl = bpf_.get_syscall_fnname("add_to_page_cache_lru");
+//    std::string mpa = bpf_.get_syscall_fnname("mark_page_accessed");
+//    std::string apd = bpf_.get_syscall_fnname("account_page_dirtied");
+//    std::string mbd = bpf_.get_syscall_fnname("mark_buffer_dirty");
+//    std::string hello = bpf_.get_syscall_fnname("hello");
+//    std::cout <<"apcl: "<<apcl<<" mpa: "<<mpa<<" apd: "<<apd<<" mbd: "<<mbd<<" hello: "<<hello<<std::endl;
 
-    bpf_.attach_kprobe("add_to_page_cache_lru", "do_count");
-    bpf_.attach_kprobe("mark_page_accessed", "do_count");
-    bpf_.attach_kprobe("account_page_dirtied", "do_count");
-    bpf_.attach_kprobe("mark_buffer_dirty", "do_count");
+    attach_kernel_fun("add_to_page_cache_lru", "do_count");
+    attach_kernel_fun("mark_page_accessed", "do_count");
+    attach_kernel_fun("account_page_dirtied", "do_count");
+    attach_kernel_fun("mark_buffer_dirty", "do_count");
 
 }
 
@@ -63,4 +63,10 @@ leveldb::cache_info leveldb::Cachestat_eBPF::get_cache_info()
 
 
 
+}
+
+ebpf::StatusTuple leveldb::Cachestat_eBPF::attach_kernel_fun(std::string kernel_fun, std::string probe_fun)
+{
+    ebpf::StatusTuple s = bpf_.attach_kprobe(kernel_fun,probe_fun);
+    if(1) std::cout <<"attach_kernel_fun: " << s.msg() <<std::endl;
 }

@@ -7,6 +7,7 @@
 #include <string>
 
 #include "BPF.h"
+#include "bcc_exception.h"
 
 namespace  leveldb{
 
@@ -71,6 +72,8 @@ public:
     void attach_kernel_probe_event();
     void detach_kernel_probe_event();
     struct cache_info get_cache_info();
+    ebpf::StatusTuple attach_kernel_fun(std::string kernel_fun, std::string probe_fun);
+
 
 
 private:
