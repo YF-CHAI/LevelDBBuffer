@@ -38,7 +38,7 @@ leveldb::cache_info leveldb::Cachestat_eBPF::get_cache_info()
     for (auto it: cache_hash_table.get_table_offline()) {
         std::string pid_name = it.first.comm;
         //this if is used to judge whether the process belongs to ycsb
-        if(pid_name.find("ycsb") >= 0){
+        if(pid_name.find("db_bennch") >= 0){
             struct bcc_symbol b_symbol;
 
             struct bpf_stack_build_id *bsb_id = (struct bpf_stack_build_id*)(it.first.ip);
