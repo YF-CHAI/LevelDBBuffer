@@ -43,6 +43,8 @@ leveldb::cache_info leveldb::Cachestat_eBPF::get_cache_info()
 {
     struct cache_info info;
     std::string pid_name;
+    struct cache_info cif;
+
     auto cache_hash_table = bpf_.get_hash_table<struct key_t, uint64_t>("counts");
     std::cout<< "Cachestat_eBPF::get_cache_info() table_size:"<<cache_hash_table.get_table_offline().size()<<std::endl;
     //for (auto it: cache_hash_table.get_table_offline()) {
@@ -54,18 +56,29 @@ leveldb::cache_info leveldb::Cachestat_eBPF::get_cache_info()
         //std::cout <<"The pid name: "<< pid_name <<std::endl;//cyf add
         //this if is used to judge whether the process belongs to ycsb
         if(pid_name.find("db_bench") == 0){
-            std::cout <<"PID: "<<v_tmp[i].first.pid<<" We need pid_name: "<<pid_name<<" value: "<<v_tmp[i].second<<std::endl;
-            printf("%p\n",v_tmp[i].first.ip);
+            //std::cout <<"PID: "<<v_tmp[i].first.pid<<" pid_name: "<<pid_name<<" value: "<<v_tmp[i].second<<std::endl;
+            //printf("%p\n",v_tmp[i].first.ip);
 
             struct bcc_symbol b_symbol;
-            //struct bpf_stack_build_id *bsb_id = (struct bpf_stack_build_id*)(it.first.ip);
-
-            //int res = bcc_buildsymcache_resolve(bpf_.get_bsymcache(), bsb_id, &b_symbol);
-            //std::cout << b_symbol.name<<std::endl;
             KSyms ksyms;
             ksyms.resolve_addr(v_tmp[i].first.ip, &b_symbol);
-            std::cout<<"b_symbol.name: "<<b_symbol.name<< " b_symbol.module: "<<b_symbol.module
-                    <<" b_symbol.demangle_name: "<<b_symbol.demangle_name<<std::endl;
+
+            std::cout<<"PID: "<<v_tmp[i].first.pid<<" pid_name: "<<pid_name
+                    <<"b_symbol.name: "<<b_symbol.name<<" count times: "<<v_tmp[i].second<<std::endl;
+
+            std::string fun_name = b_symbol.name;
+            if(fun_name.find("add_to_page_cache_lru")>=0){
+                cif.apcl += v_tmp[i].second;
+            }
+            else if (fun_name.find("mark_page_accessed")>=0) {
+                cif.mpa += v_tmp[i].second;
+            }
+            else if (fun_name.find("account_page_dirtied")>=0) {
+                cif.apd += v_tmp[i].second;
+            }
+            else if (fun_name.find("mark_buffer_dirty")>=0) {
+                cif.mbd += v_tmp[i].second;
+            }
 
 
 

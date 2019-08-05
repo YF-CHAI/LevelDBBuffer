@@ -70,7 +70,8 @@ LDFLAGS += $(PLATFORM_LDFLAGS)
 LIBS += $(PLATFORM_LIBS)
 
 #cyf add to use eBPF
-LIBS += -L../bcc/src/cc -lbcc
+#LIBS += -L../bcc/src/cc -lbcc
+LIBS += -L../bcc/src/cc/libbcc.a
 
 SIMULATOR_OUTDIR=out-ios-x86
 DEVICE_OUTDIR=out-ios-arm
