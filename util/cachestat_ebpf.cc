@@ -68,16 +68,16 @@ leveldb::cache_info leveldb::Cachestat_eBPF::get_cache_info()
             */
 
             std::string fun_name = b_symbol.name;
-            if(fun_name.find("add_to_page_cache_lru")>=0){
+            if(fun_name.find("add_to_page_cache_lru") != std::string::npos){
                 cif.apcl += v_tmp[i].second;
             }
-            else if (fun_name.find("mark_page_accessed")>=0) {
+            else if(fun_name.find("mark_page_accessed") != std::string::npos) {
                 cif.mpa += v_tmp[i].second;
             }
-            else if (fun_name.find("account_page_dirtied")>=0) {
+            else if(fun_name.find("account_page_dirtied") != std::string::npos) {
                 cif.apd += v_tmp[i].second;
             }
-            else if (fun_name.find("mark_buffer_dirty")>=0) {
+            else if(fun_name.find("mark_buffer_dirty") != std::string::npos) {
                 cif.mbd += v_tmp[i].second;
             }
 
