@@ -46,7 +46,7 @@ leveldb::cache_info leveldb::Cachestat_eBPF::get_cache_info()
     struct cache_info cif;
 
     auto cache_hash_table = bpf_.get_hash_table<struct key_t, uint64_t>("counts");
-    std::cout<< "Cachestat_eBPF::get_cache_info() table_size:"<<cache_hash_table.get_table_offline().size()<<std::endl;
+    //std::cout<< "Cachestat_eBPF::get_cache_info() table_size:"<<cache_hash_table.get_table_offline().size()<<std::endl;
     //for (auto it: cache_hash_table.get_table_offline()) {
     auto v_tmp = cache_hash_table.get_table_offline();
     for (size_t i=0; i<v_tmp.size();i++) {
@@ -63,8 +63,9 @@ leveldb::cache_info leveldb::Cachestat_eBPF::get_cache_info()
             KSyms ksyms;
             ksyms.resolve_addr(v_tmp[i].first.ip, &b_symbol);
 
-            std::cout<<"PID: "<<v_tmp[i].first.pid<<" pid_name: "<<pid_name
+            /* std::cout<<"PID: "<<v_tmp[i].first.pid<<" pid_name: "<<pid_name
                     <<"b_symbol.name: "<<b_symbol.name<<" count times: "<<v_tmp[i].second<<std::endl;
+            */
 
             std::string fun_name = b_symbol.name;
             if(fun_name.find("add_to_page_cache_lru")>=0){
