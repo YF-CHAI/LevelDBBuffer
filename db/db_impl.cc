@@ -1032,7 +1032,7 @@ void DBImpl::BackgroundCompaction() {
     CompactMemTable();
     return;
   }
-  struct cache_info cif =  this->ebpf_.get_cache_info();//cyf add
+  //struct cache_info cif =  this->ebpf_.get_cache_info();//cyf add
   Compaction* c;
   bool is_manual = (manual_compaction_ != NULL);
   InternalKey manual_end;
