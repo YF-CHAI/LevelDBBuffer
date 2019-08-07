@@ -1316,7 +1316,10 @@ void DBImpl::ProbeKernelFunction()
 {
     while(1){
     sleep(10);
-    std::cout<<"ProbeKernelFunction() is sleeping~"<<std::endl;
+    DBImpl::CompactionStats Stmp[config::kNumLevels];
+    memcpy(Stmp, stats_,sizeof(DBImpl::CompactionStats));
+
+    std::cout<<"ProbeKernelFunction():"<<Stmp[1].partial_stats.bytes_read<<std::endl;
     }
 }
 
