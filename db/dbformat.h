@@ -13,6 +13,7 @@
 #include "leveldb/table_builder.h"
 #include "util/coding.h"
 #include "util/logging.h"
+#include <atomic>
 
 namespace leveldb {
 
@@ -50,6 +51,7 @@ static const int kBufferCompactEndLevel = 7;
 
 
 //cyf LDC trigger condition
+static bool kUseBccInLDC = true;//cyf use to open libbcc to probe kernel function, maybe use std::atomic better
 static const bool kIsLDCSizeTrigger = true;
 static const uint64_t kLDCMaxFileSizeLimit = 32 << 20;
 static const uint64_t kLDCBlockCacheSize = 8 << 20;

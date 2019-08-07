@@ -335,6 +335,7 @@ DBImpl::DBImpl(const Options& raw_options, const std::string& dbname)
   Status s = options_.env->NewLogger("/tmp/WLOG", &w_log);
   versions_->w_log = w_log;
   //VersionSet::Builder::TableCount = 0;
+  env_->Schedule(&BCC_BGWork, this);//cyf add for kernel probe
 }
 
 DBImpl::~DBImpl() {
@@ -1304,6 +1305,19 @@ Status DBImpl::FinishBufferCompactionOutputFile(CompactionState* compact,
   //compact->outfile = NULL;
   
   return s;
+}
+
+void DBImpl::BCC_BGWork(void *db)
+{
+    reinterpret_cast<DBImpl*>(db)->ProbeKernelFunction();
+}
+
+void DBImpl::ProbeKernelFunction()
+{
+    while(1){
+    sleep(10);
+    std::cout<<"ProbeKernelFunction() is sleeping~"<<std::endl;
+    }
 }
 
 
