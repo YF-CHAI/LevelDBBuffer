@@ -335,7 +335,7 @@ DBImpl::DBImpl(const Options& raw_options, const std::string& dbname)
   Status s = options_.env->NewLogger("/tmp/WLOG", &w_log);
   versions_->w_log = w_log;
   //VersionSet::Builder::TableCount = 0;
-  env_->Schedule(&BCC_BGWork, this);//cyf add for kernel probe
+  env_->StartThread(&BCC_BGWork,nullptr);//cyf add for kernel probe
 }
 
 DBImpl::~DBImpl() {
