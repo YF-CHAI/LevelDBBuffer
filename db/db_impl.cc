@@ -1340,11 +1340,16 @@ void DBImpl::ProbeKernelFunction()
     while(true){
     sleep(10);
     std::cout << "ProbeKernelFunction is running~ "<< std::endl;
-    continue;
-    DBImpl::CompactionStats Stmp[config::kNumLevels];
-    memcpy(Stmp, stats_, sizeof(DBImpl::CompactionStats) * config::kNumLevels);
 
-    //std::cout << "ProbeKernelFunction is running~ "<< std::endl;
+    DBImpl::CompactionStats Stmp[config::kNumLevels];
+    memcpy(Stmp, stats_, sizeof(struct DBImpl::CompactionStats) * config::kNumLevels);
+
+
+
+    std::cout << "Stmp[0].partial_stats.bytes_written"<<Stmp[0].partial_stats.bytes_written<< std::endl;
+    std::cout << "stats_[0].partial_stats.bytes_written"<<stats_[0].partial_stats.bytes_written<< std::endl;
+
+    continue;
     for(int i = 0; i < config::kNumLevels; i++)
         Stmp[i].SubstractBy(stats_[i]);
 
