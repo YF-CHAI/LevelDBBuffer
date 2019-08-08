@@ -41,6 +41,8 @@ namespace leveldb {
 
 const int kNumNonTableCacheFiles = 10;
 
+bool DBImpl::isProbingEnd =false;
+
 // Information kept for every waiting writer
 struct DBImpl::Writer {
   Status status;
@@ -328,7 +330,6 @@ DBImpl::DBImpl(const Options& raw_options, const std::string& dbname)
       bg_compaction_scheduled_(false),
       manual_compaction_(NULL),
       swith_isprobe_start(false),
-      isProbingEnd(false),
       probe__cv_(&probe_mutex_)
       //ssdname_() {
     {

@@ -159,7 +159,7 @@ class DBImpl : public DB {
   static void BCC_BGWork(void* db);//cyf add
   void ProbeKernelFunction();//cyf add
   bool swith_isprobe_start;
-  bool isProbingEnd;
+  static bool isProbingEnd;
   port::Mutex probe_mutex_;
   port::CondVar probe__cv_;//cyf add for probing linux kernel function
 
