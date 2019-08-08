@@ -1350,17 +1350,17 @@ void DBImpl::ProbeKernelFunction()
     memcpy(stmp_, stats_, sizeof(struct DBImpl::CompactionStats) * config::kNumLevels);
     sleep(10);
 
-    std::cout <<"current tid: " << tid << "stmp_[0].partial_stats.bytes_written: "<<stmp_[1].partial_stats.bytes_written<< std::endl;
-    std::cout <<"current tid: " << tid <<"stats_[0].partial_stats.bytes_written: "<<stats_[1].partial_stats.bytes_written<< std::endl;
+    std::cout <<"current tid: " << tid << "stmp_[1].partial_stats.bytes_written: "<<stmp_[1].partial_stats.bytes_written<< std::endl;
+    std::cout <<"current tid: " << tid <<"stats_[1].partial_stats.bytes_written: "<<stats_[1].partial_stats.bytes_written<< std::endl;
 
     for(int i = 0; i < config::kNumLevels; i++)
         stmp_[i].SubstractBy(stats_[i]);
 
-    std::cout << "SubstractBy stmp_[0].partial_stats.bytes_written: "<<stmp_[1].partial_stats.bytes_written<< std::endl;
+    std::cout << "SubstractBy stmp_[1].partial_stats.bytes_written: "<<stmp_[1].partial_stats.bytes_written<< std::endl;
 
-    if (1) {
+
         std::string value;
-        char buf[200];
+        char buf[1000];
         uint64_t total_compaction_num = 0;//cyf add
         uint64_t total_compaction_duration = 0;
         snprintf(buf, sizeof(buf),
@@ -1369,8 +1369,6 @@ void DBImpl::ProbeKernelFunction()
                  "-------------------------------------------------------------------------------------------------\n"
                  );
         value.append(buf);
-        std::cout << value <<std::endl;
-        //continue;
 
         for (int level = 0; level < config::kNumLevels; level++) {
           int files = versions_->NumLevelFiles(level);
@@ -1398,7 +1396,6 @@ void DBImpl::ProbeKernelFunction()
         //value.append(buf);
         //std::cout << value <<std::endl;
 
-      }
 
 
 
