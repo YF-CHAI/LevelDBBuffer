@@ -36,6 +36,7 @@
 #include <fstream>
 
 #include <thread>
+#include <pthread.h>
 
 namespace leveldb {
 
@@ -1339,15 +1340,18 @@ Status DBImpl::FinishBufferCompactionOutputFile(CompactionState* compact,
 void DBImpl::BCC_BGWork(void *db)
 {
     std::cout <<"BCC_BGWork is running~" <<std::endl;
+    while(1){
+        sleep(2);
     int files = reinterpret_cast<DBImpl*>(db)->versions_->NumLevelFiles(0);
-    std::cout <<"NumLevelFiles: "<<files<<std::endl;
-    reinterpret_cast<DBImpl*>(db)->ProbeKernelFunction(db);
+    std::cout << "BCC_BGWork NumLevelFiles:"<<files <<std::endl;
+    }
+    //reinterpret_cast<DBImpl*>(db)->ProbeKernelFunction();
 
 }
 
-void DBImpl::ProbeKernelFunction(void *db)
+void DBImpl::ProbeKernelFunction()
 {
-    auto d = reinterpret_cast<DBImpl*>(db);
+
     std::cout << "ProbeKernelFunction while outer~ "<< std::endl;
     struct cache_info cinfo;
     while(true){
@@ -2287,7 +2291,8 @@ Status DBImpl::Write(const WriteOptions& options, WriteBatch* my_batch) {
 
   if(!swith_isprobe_start){
       //std::thread thrd(&BCC_BGWork,nullptr);//cyf add for kernel probe
-      env_->StartThread(&BCC_BGWork,nullptr);
+      //env_->StartThread(&BCC_BGWork,nullptr);
+      pthread_create(&pth,NULL,&BCC_BGWork,(void*)this);
       swith_isprobe_start = true;
   }
 
