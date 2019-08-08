@@ -1351,10 +1351,9 @@ void DBImpl::ProbeKernelFunction()
     std::cout <<"current tid: " << tid << "Stmp[0].partial_stats.bytes_written"<<Stmp[0].partial_stats.bytes_written<< std::endl;
     std::cout <<"current tid: " << tid <<"stats_[0].partial_stats.bytes_written"<<stats_[0].partial_stats.bytes_written<< std::endl;
 
-    //for(int i = 0; i < config::kNumLevels; i++)
-        //Stmp[i].SubstractBy(stats_[i]);
+    for(int i = 0; i < config::kNumLevels; i++)
+        Stmp[i].SubstractBy(stats_[i]);
     std::cout << "SubstractBy Stmp[0].partial_stats.bytes_written"<<Stmp[0].partial_stats.bytes_written<< std::endl;
-    continue;
 
     if (true) {
         //whc change
@@ -1388,14 +1387,14 @@ void DBImpl::ProbeKernelFunction()
                      total_compaction_duration += Stmp[level].partial_stats.micros;
           }
         }
-        //snprintf(buf,sizeof (buf),"Total compaction times: %llu \n", total_compaction_num);
-        //value.append(buf);
-        //snprintf(buf,sizeof (buf),"Total compaction duration: %llu \n", total_compaction_duration);
-        //value.append(buf);
+        snprintf(buf,sizeof (buf),"Total compaction times: %llu \n", total_compaction_num);
+        value.append(buf);
+        snprintf(buf,sizeof (buf),"Total compaction duration: %llu \n", total_compaction_duration);
+        value.append(buf);
         std::cout << value <<std::endl;
 
       }
-    //struct cache_info cif = this->ebpf_.get_cache_info();
+    struct cache_info cif = this->ebpf_.get_cache_info();
 
 
 
