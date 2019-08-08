@@ -1349,13 +1349,13 @@ void DBImpl::ProbeKernelFunction()
     memcpy(stmp_, stats_, sizeof(struct DBImpl::CompactionStats) * config::kNumLevels);
     sleep(10);
 
-    std::cout <<"current tid: " << tid << "stmp_[0].partial_stats.bytes_written"<<stmp_[1].partial_stats.bytes_written<< std::endl;
-    std::cout <<"current tid: " << tid <<"stats_[0].partial_stats.bytes_written"<<stats_[1].partial_stats.bytes_written<< std::endl;
+    std::cout <<"current tid: " << tid << "stmp_[0].partial_stats.bytes_written: "<<stmp_[1].partial_stats.bytes_written<< std::endl;
+    std::cout <<"current tid: " << tid <<"stats_[0].partial_stats.bytes_written: "<<stats_[1].partial_stats.bytes_written<< std::endl;
 
     for(int i = 0; i < config::kNumLevels; i++)
         stmp_[i].SubstractBy(stats_[i]);
 
-    std::cout << "SubstractBy stmp_[0].partial_stats.bytes_written"<<stmp_[0].partial_stats.bytes_written<< std::endl;
+    std::cout << "SubstractBy stmp_[0].partial_stats.bytes_written: "<<stmp_[1].partial_stats.bytes_written<< std::endl;
 
     if (1) {
         std::string value;
