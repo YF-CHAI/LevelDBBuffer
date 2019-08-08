@@ -385,7 +385,7 @@ DBImpl::~DBImpl() {
   probe_mutex_.Lock();
   isProbingEnd = true;
   probe_mutex_.Unlock();
-  probe__cv_.wait();
+  probe__cv_.Wait();
 
 	// Wait for background work to finish
   mutex_.Lock();
@@ -1351,8 +1351,13 @@ void DBImpl::ProbeKernelFunction()
     std::cout << "ProbeKernelFunction is running~ "<< std::endl;
     struct cache_info cinfo;
     while(true){
+        if(isProbingEnd){
+            probe__cv_.SignalAll();
+            break;
+
+        }
     std::thread::id tid = std::this_thread::get_id();
-    //cinfo = ebpf_.get_cache_info();
+    cinfo = ebpf_.get_cache_info();
 
     memcpy(stmp_, stats_, sizeof(struct DBImpl::CompactionStats) * config::kNumLevels);
     sleep(10);
