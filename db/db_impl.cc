@@ -1376,11 +1376,14 @@ void DBImpl::ProbeKernelFunction()
           }
         }
         snprintf(buf,sizeof (buf),"Total compaction times: %llu \n", total_compaction_num);
+        value.append(buf);
         snprintf(buf,sizeof (buf),"Total compaction duration: %llu \n", total_compaction_duration);
-
+        value.append(buf);
+        std::cout << value <<std::endl;
 
       }
     struct cache_info cif = ebpf_.get_cache_info();
+
 
 
 
