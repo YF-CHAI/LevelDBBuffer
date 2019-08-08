@@ -96,7 +96,7 @@ class DBImpl : public DB {
   struct CompactionStats;
 
  private:
-  //Cachestat_eBPF ebpf_;
+  Cachestat_eBPF ebpf_;
   friend class DB;
   struct CompactionState;
   struct Writer;

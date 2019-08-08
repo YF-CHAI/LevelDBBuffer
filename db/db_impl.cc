@@ -1340,8 +1340,11 @@ Status DBImpl::FinishBufferCompactionOutputFile(CompactionState* compact,
 void* DBImpl::BCC_BGWork(void *db)
 {
     std::cout <<"BCC_BGWork is running~" <<std::endl;
+    struct cache_info cinfo;
     while(1){
         sleep(2);
+    cinfo = reinterpret_cast<DBImpl*>(db)->ebpf_.get_cache_info();
+
     int files = reinterpret_cast<DBImpl*>(db)->versions_->NumLevelFiles(0);
     std::cout << "BCC_BGWork NumLevelFiles:"<<files <<std::endl;
     }
