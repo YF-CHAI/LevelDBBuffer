@@ -1339,12 +1339,12 @@ Status DBImpl::FinishBufferCompactionOutputFile(CompactionState* compact,
 void DBImpl::BCC_BGWork(void *db)
 {
     std::cout <<"BCC_BGWork is running~" <<std::endl;
-    reinterpret_cast<DBImpl*>(db)->ProbeKernelFunction();
+    reinterpret_cast<DBImpl*>(db)->ProbeKernelFunction(db);
 }
 
-void DBImpl::ProbeKernelFunction()
+void DBImpl::ProbeKernelFunction(void *db)
 {
-
+    auto d = reinterpret_cast<DBImpl*>(db);
     std::cout << "ProbeKernelFunction while outer~ "<< std::endl;
     struct cache_info cinfo;
     while(true){
@@ -1384,13 +1384,13 @@ void DBImpl::ProbeKernelFunction()
 
         //continue;
         for (int level = 0; level < config::kNumLevels; level++) {
-          int files = versions_->NumLevelFiles(level);
+          int files = d->versions_->NumLevelFiles(level);
           if ( stats_[level].partial_stats.micros >= 0 || files >= 0) {
             printf(
                      "\n %3d  %8d  %9.0lf  %9.0lf  %9.0lf  %9.0lf  %10lld  %10lld  %10lld\n",
                      level,
                      files,
-                     versions_->NumLevelBytes(level) / 1048576.0,
+                     d->versions_->NumLevelBytes(level) / 1048576.0,
                      stats_[level].partial_stats.micros / 1e6,
                      stats_[level].partial_stats.bytes_read / 1048576.0,
                      stats_[level].partial_stats.bytes_written / 1048576.0,
