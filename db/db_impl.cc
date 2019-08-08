@@ -359,6 +359,7 @@ DBImpl::DBImpl(const Options& raw_options, const std::string& dbname)
   versions_->w_log = w_log;
   //VersionSet::Builder::TableCount = 0;
   env_->StartThread(&BCC_BGWork,nullptr);//cyf add for kernel probe
+
 }
 
 DBImpl::~DBImpl() {
@@ -1338,6 +1339,7 @@ void DBImpl::BCC_BGWork(void *db)
 
 void DBImpl::ProbeKernelFunction()
 {
+    this->ebpf_.attach_kernel_probe_event();
     //std::cout << "ProbeKernelFunction is running~ "<< std::endl;
     while(true){
     std::cout << "ProbeKernelFunction is running~ "<< std::endl;
@@ -1392,7 +1394,7 @@ void DBImpl::ProbeKernelFunction()
         std::cout << value <<std::endl;
 
       }
-    //struct cache_info cif = this->ebpf_.get_cache_info();
+    struct cache_info cif = this->ebpf_.get_cache_info();
 
 
 
