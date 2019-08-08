@@ -1385,7 +1385,7 @@ void DBImpl::ProbeKernelFunction()
         std::cout << value <<std::endl;
 
       }
-    struct cache_info cif = ebpf_.get_cache_info();
+    //struct cache_info cif = this->ebpf_.get_cache_info();
 
 
 
