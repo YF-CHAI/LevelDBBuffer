@@ -41,7 +41,7 @@ void leveldb::Cachestat_eBPF::detach_kernel_probe_event()
 
 leveldb::cache_info leveldb::Cachestat_eBPF::get_cache_info()
 {
-    struct cache_info info;
+    //struct cache_info info;
     std::string pid_name;
     struct cache_info cif;
 

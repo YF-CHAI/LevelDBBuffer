@@ -1330,20 +1330,21 @@ Status DBImpl::FinishBufferCompactionOutputFile(CompactionState* compact,
 
 void DBImpl::BCC_BGWork(void *db)
 {
+    std::cout <<"BCC_BGWork is running~" <<std::endl;
     reinterpret_cast<DBImpl*>(db)->ProbeKernelFunction();
 }
 
 void DBImpl::ProbeKernelFunction()
 {
-    while(1){
+    while(true){
     DBImpl::CompactionStats Stmp[config::kNumLevels];
-    memcpy(Stmp, stats_,sizeof(DBImpl::CompactionStats)*config::kNumLevels);
+    memcpy(Stmp, stats_, sizeof(DBImpl::CompactionStats)*config::kNumLevels);
 
-    sleep(5);
+    sleep(10);
     for(int i = 0; i < config::kNumLevels; i++)
         Stmp[i].SubstractBy(stats_[i]);
 
-    if (1) {
+    if (true) {
         //whc change
         std::string value;
         char buf[200];
