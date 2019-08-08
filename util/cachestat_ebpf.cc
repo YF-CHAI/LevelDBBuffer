@@ -10,6 +10,7 @@ leveldb::Cachestat_eBPF::Cachestat_eBPF()
       if (init_res.code() != 0)
           std::cout << init_res.msg() << std::endl;
       attach_kernel_probe_event();
+      std::cout <<"initial Cachestat_eBPF()"<<std::endl;
       //struct cache_info cif=  get_cache_info();
       //detach_kernel_probe_event();
 
@@ -104,6 +105,6 @@ ebpf::StatusTuple leveldb::Cachestat_eBPF::attach_kernel_fun(std::string kernel_
 leveldb::Cachestat_eBPF::~Cachestat_eBPF()
 {
     std::cout<<"Cachestat_eBPF::~Cachestat_eBPF()"<<std::endl;
-    detach_kernel_probe_event();
-    bpf_.detach_all();
+    //detach_kernel_probe_event();
+    //bpf_.detach_all();
 }
