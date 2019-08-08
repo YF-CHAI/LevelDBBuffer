@@ -534,7 +534,7 @@ class Benchmark {
                   name.ToString().c_str());
           method = NULL;
         } else {
-          delete db_;
+          //delete db_;
           db_ = NULL;
           DestroyDB(FLAGS_db, Options());
           Open();
