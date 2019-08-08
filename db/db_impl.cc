@@ -1349,7 +1349,7 @@ void DBImpl::ProbeKernelFunction()
 
     memcpy(stmp_, stats_, sizeof(struct DBImpl::CompactionStats) * config::kNumLevels);
     sleep(10);
-    continue;
+
 
     std::cout <<"current tid: " << tid << "stmp_[1].partial_stats.bytes_written: "<<stmp_[1].partial_stats.bytes_written<< std::endl;
     std::cout <<"current tid: " << tid <<"stats_[1].partial_stats.bytes_written: "<<stats_[1].partial_stats.bytes_written<< std::endl;
