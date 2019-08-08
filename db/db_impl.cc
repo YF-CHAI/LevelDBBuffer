@@ -1369,7 +1369,7 @@ void DBImpl::ProbeKernelFunction()
                  "-------------------------------------------------------------------------------------------------\n"
                  );
         value.append(buf);
-
+        continue;
         for (int level = 0; level < config::kNumLevels; level++) {
           int files = versions_->NumLevelFiles(level);
           if ( stats_[level].partial_stats.micros > 0 || files > 0) {
