@@ -184,8 +184,8 @@ struct DBImpl::CompactionStats {
   void SubstractBy(const CompactionStats& c) {
     this->partial_stats.SubstractBy(c.partial_stats);
 
-      for(int i =0; i< max_read_file_nums; i++)
-          for(int j =0; i < max_read_file_nums; j++)
+      for(int i = 0; i< max_read_file_nums; i++)
+          for(int j =0; j < max_read_file_nums; j++)
               this->lh_compact_times[i][j] = c.lh_compact_times[i][j] - this->lh_compact_times[i][j];
 
 
@@ -1355,8 +1355,7 @@ void DBImpl::ProbeKernelFunction()
         Stmp[i].SubstractBy(stats_[i]);
     std::cout << "SubstractBy Stmp[0].partial_stats.bytes_written"<<Stmp[0].partial_stats.bytes_written<< std::endl;
 
-    if (false) {
-        //whc change
+    if (true) {
         std::string value;
         char buf[200];
         uint64_t total_compaction_num = 0;//cyf add
@@ -1394,7 +1393,7 @@ void DBImpl::ProbeKernelFunction()
         std::cout << value <<std::endl;
 
       }
-    //struct cache_info cif = this->ebpf_.get_cache_info();
+    struct cache_info cif = this->ebpf_.get_cache_info();
 
 
 
