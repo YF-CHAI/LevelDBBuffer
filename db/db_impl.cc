@@ -361,7 +361,7 @@ DBImpl::DBImpl(const Options& raw_options, const std::string& dbname)
   Status s = options_.env->NewLogger("/tmp/WLOG", &w_log);
   versions_->w_log = w_log;
   //VersionSet::Builder::TableCount = 0;
-  env_->StartThread(BCC_BGWork,nullptr);//cyf add for kernel probe
+  //env_->StartThread(BCC_BGWork,nullptr);//cyf add for kernel probe
 
 }
 
@@ -382,10 +382,6 @@ DBImpl::~DBImpl() {
     std::cout<<"index size: \t"<<ReadStatic::index_block_size<<std::endl;
 
 
-  probe_mutex_.Lock();
-  isProbingEnd = true;
-  probe_mutex_.Unlock();
-  probe__cv_.Wait();
 
 	// Wait for background work to finish
   mutex_.Lock();
@@ -2286,7 +2282,8 @@ Status DBImpl::Write(const WriteOptions& options, WriteBatch* my_batch) {
   w.done = false;
 
   if(!swith_isprobe_start){
-      std::thread thrd(&BCC_BGWork,nullptr);//cyf add for kernel probe
+      //std::thread thrd(&BCC_BGWork,nullptr);//cyf add for kernel probe
+      env_->StartThread(&BCC_BGWork,nullptr);
       swith_isprobe_start = true;
   }
 
