@@ -1058,7 +1058,7 @@ void DBImpl::BackgroundCompaction() {
     CompactMemTable();
     return;
   }
-  struct cache_info cif =  this->ebpf_.get_cache_info();//cyf add
+  //struct cache_info cif =  this->ebpf_.get_cache_info();//cyf add
   Compaction* c;
   bool is_manual = (manual_compaction_ != NULL);
   InternalKey manual_end;
@@ -1354,8 +1354,8 @@ void DBImpl::ProbeKernelFunction()
     std::cout <<"current tid: " << tid << "stmp_[1].partial_stats.bytes_written: "<<stmp_[1].partial_stats.bytes_written<< std::endl;
     std::cout <<"current tid: " << tid <<"stats_[1].partial_stats.bytes_written: "<<stats_[1].partial_stats.bytes_written<< std::endl;
 
-    for(int i = 0; i < config::kNumLevels; i++)
-        stmp_[i].SubstractBy(stats_[i]);
+    //for(int i = 0; i < config::kNumLevels; i++)
+        //stmp_[i].SubstractBy(stats_[i]);
 
     std::cout << "SubstractBy stmp_[1].partial_stats.bytes_written: "<<stmp_[1].partial_stats.bytes_written<< std::endl;
 
@@ -1372,8 +1372,8 @@ void DBImpl::ProbeKernelFunction()
 
         //continue;
         for (int level = 0; level < config::kNumLevels; level++) {
-          int files = 0;//versions_->NumLevelFiles(level);
-          if ( stats_[level].partial_stats.micros > 0 || files > 0) {
+          int files = this->versions_->NumLevelFiles(level);
+          if ( stats_[level].partial_stats.micros >= 0 || files >= 0) {
             printf(
                      "\n %3d  %8d  %9.0lf  %9.0lf  %9.0lf  %9.0lf  %10lld  %10lld  %10lld\n",
                      level,

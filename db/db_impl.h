@@ -17,6 +17,8 @@
 
 #include "util/cachestat_ebpf.h"
 
+#include <thread>//cyf add for test probe linux kernel function
+
 namespace leveldb {
 
 class MemTable;
@@ -157,6 +159,8 @@ class DBImpl : public DB {
   static void BCC_BGWork(void* db);//cyf add
   void ProbeKernelFunction();//cyf add
   bool swith_isprobe_start;
+  std::thread* t_probe;
+
 
   // Constant after construction
   Env* const env_;
