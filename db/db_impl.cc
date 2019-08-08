@@ -185,9 +185,9 @@ struct DBImpl::CompactionStats {
     this->partial_stats.SubstractBy(c.partial_stats);
 
       for(int i = 0; i< max_read_file_nums; i++)
-          for(int j =0; j < max_read_file_nums; j++)
+          for(int j = 0; j < max_read_file_nums; j++){
               this->lh_compact_times[i][j] = c.lh_compact_times[i][j] - this->lh_compact_times[i][j];
-
+          }
 
   }
 
@@ -1343,19 +1343,18 @@ void DBImpl::ProbeKernelFunction()
     std::cout << "ProbeKernelFunction is running~ "<< std::endl;
     std::thread::id tid = std::this_thread::get_id();
 
-
     DBImpl::CompactionStats Stmp[config::kNumLevels];
     sleep(10);
     memcpy(Stmp, stats_, sizeof(struct DBImpl::CompactionStats) * config::kNumLevels);
 
-    std::cout <<"current tid: " << tid << "Stmp[0].partial_stats.bytes_written"<<Stmp[0].partial_stats.bytes_written<< std::endl;
-    std::cout <<"current tid: " << tid <<"stats_[0].partial_stats.bytes_written"<<stats_[0].partial_stats.bytes_written<< std::endl;
+    std::cout <<"current tid: " << tid << "Stmp[0].partial_stats.bytes_written"<<Stmp[1].partial_stats.bytes_written<< std::endl;
+    std::cout <<"current tid: " << tid <<"stats_[0].partial_stats.bytes_written"<<stats_[1].partial_stats.bytes_written<< std::endl;
 
-    for(int i = 0; i < config::kNumLevels; i++)
-        Stmp[i].SubstractBy(stats_[i]);
-    std::cout << "SubstractBy Stmp[0].partial_stats.bytes_written"<<Stmp[0].partial_stats.bytes_written<< std::endl;
+    //for(int i = 0; i < config::kNumLevels; i++)
+        //Stmp[i].SubstractBy(stats_[i]);
+    //std::cout << "SubstractBy Stmp[0].partial_stats.bytes_written"<<Stmp[0].partial_stats.bytes_written<< std::endl;
 
-    if (true) {
+    if (false) {
         std::string value;
         char buf[200];
         uint64_t total_compaction_num = 0;//cyf add
