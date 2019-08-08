@@ -1341,9 +1341,14 @@ void* DBImpl::BCC_BGWork(void *db)
 {
     std::cout <<"BCC_BGWork is running~" <<std::endl;
     struct cache_info cinfo;
+    Cachestat_eBPF bp;
+    bp.attach_kernel_probe_event();
     while(1){
         sleep(2);
-    cinfo = reinterpret_cast<DBImpl*>(db)->ebpf_.get_cache_info();
+        bp.get_cache_info();
+    //cinfo = reinterpret_cast<DBImpl*>(db)->ebpf_.get_cache_info();
+
+
 
     int files = reinterpret_cast<DBImpl*>(db)->versions_->NumLevelFiles(0);
     std::cout << "BCC_BGWork NumLevelFiles:"<<files <<std::endl;
