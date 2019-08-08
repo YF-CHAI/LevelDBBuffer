@@ -267,7 +267,7 @@ void DBImpl::CompactionStats::UpdateWhileBufferCompact(const CompactionState* co
 }
 
 struct DBImpl::CompactionStats stats_[config::kNumLevels];
-
+struct DBImpl::CompactionStats stmp_[config::kNumLevels];//cyf add for get values in a period
 
 
 // Fix user-supplied options to be reasonable
@@ -1341,21 +1341,21 @@ void DBImpl::ProbeKernelFunction()
 {
     //this->ebpf_.attach_kernel_probe_event();
     std::cout << "ProbeKernelFunction is running~ "<< std::endl;
-    DBImpl::CompactionStats Stmp[config::kNumLevels];
+
     while(true){
     std::thread::id tid = std::this_thread::get_id();
     //struct cache_info cif = ebpf_.get_cache_info();
 
-    memcpy(Stmp, stats_, sizeof(struct DBImpl::CompactionStats) * config::kNumLevels);
+    memcpy(stmp_, stats_, sizeof(struct DBImpl::CompactionStats) * config::kNumLevels);
     sleep(10);
 
-    std::cout <<"current tid: " << tid << "Stmp[0].partial_stats.bytes_written"<<Stmp[1].partial_stats.bytes_written<< std::endl;
+    std::cout <<"current tid: " << tid << "stmp_[0].partial_stats.bytes_written"<<stmp_[1].partial_stats.bytes_written<< std::endl;
     std::cout <<"current tid: " << tid <<"stats_[0].partial_stats.bytes_written"<<stats_[1].partial_stats.bytes_written<< std::endl;
 
     for(int i = 0; i < config::kNumLevels; i++)
-        Stmp[i].SubstractBy(stats_[i]);
+        stmp_[i].SubstractBy(stats_[i]);
 
-    std::cout << "SubstractBy Stmp[0].partial_stats.bytes_written"<<Stmp[0].partial_stats.bytes_written<< std::endl;
+    std::cout << "SubstractBy stmp_[0].partial_stats.bytes_written"<<stmp_[0].partial_stats.bytes_written<< std::endl;
 
     if (1) {
         std::string value;
@@ -1370,22 +1370,22 @@ void DBImpl::ProbeKernelFunction()
         value.append(buf);
         for (int level = 0; level < config::kNumLevels; level++) {
           int files = versions_->NumLevelFiles(level);
-          if ( Stmp[level].partial_stats.micros > 0 || files > 0) {
+          if ( stmp_[level].partial_stats.micros > 0 || files > 0) {
             snprintf(buf,
                      sizeof(buf),
                      "\n %3d  %8d  %9.0lf  %9.0lf  %9.0lf  %9.0lf  %10lld  %10lld  %10lld\n",
                      level,
                      files,
                      versions_->NumLevelBytes(level) / 1048576.0,
-                     Stmp[level].partial_stats.micros / 1e6,
-                     Stmp[level].partial_stats.bytes_read / 1048576.0,
-                     Stmp[level].partial_stats.bytes_written / 1048576.0,
-                     Stmp[level].partial_stats.read_file_nums,
-                     Stmp[level].partial_stats.write_file_nums,
-                     Stmp[level].partial_stats.compact_times);
+                     stmp_[level].partial_stats.micros / 1e6,
+                     stmp_[level].partial_stats.bytes_read / 1048576.0,
+                     stmp_[level].partial_stats.bytes_written / 1048576.0,
+                     stmp_[level].partial_stats.read_file_nums,
+                     stmp_[level].partial_stats.write_file_nums,
+                     stmp_[level].partial_stats.compact_times);
                      value.append(buf);
-                     total_compaction_num += Stmp[level].partial_stats.compact_times;//cyf add
-                     total_compaction_duration += Stmp[level].partial_stats.micros;
+                     total_compaction_num += stmp_[level].partial_stats.compact_times;//cyf add
+                     total_compaction_duration += stmp_[level].partial_stats.micros;
           }
         }
         //snprintf(buf,sizeof (buf),"Total compaction times: %llu \n", total_compaction_num);
