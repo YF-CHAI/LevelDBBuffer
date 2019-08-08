@@ -1347,10 +1347,10 @@ void DBImpl::ProbeKernelFunction()
     std::cout << "Stmp[0].partial_stats.bytes_written"<<Stmp[0].partial_stats.bytes_written<< std::endl;
     std::cout << "stats_[0].partial_stats.bytes_written"<<stats_[0].partial_stats.bytes_written<< std::endl;
 
-    for(int i = 0; i < config::kNumLevels; i++)
-        Stmp[i].SubstractBy(stats_[i]);
+    //for(int i = 0; i < config::kNumLevels; i++)
+        //Stmp[i].SubstractBy(stats_[i]);
     std::cout << "SubstractBy Stmp[0].partial_stats.bytes_written"<<Stmp[0].partial_stats.bytes_written<< std::endl;
-    continue;
+
 
     if (true) {
         //whc change
