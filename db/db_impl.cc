@@ -1339,7 +1339,7 @@ void DBImpl::BCC_BGWork(void *db)
 
 void DBImpl::ProbeKernelFunction()
 {
-    this->ebpf_.attach_kernel_probe_event();
+    //this->ebpf_.attach_kernel_probe_event();
     //std::cout << "ProbeKernelFunction is running~ "<< std::endl;
     while(true){
     std::cout << "ProbeKernelFunction is running~ "<< std::endl;
