@@ -35,6 +35,8 @@
 #include <iostream>
 #include <fstream>
 
+#include <thread>
+
 namespace leveldb {
 
 const int kNumNonTableCacheFiles = 10;
@@ -1339,13 +1341,15 @@ void DBImpl::ProbeKernelFunction()
     //std::cout << "ProbeKernelFunction is running~ "<< std::endl;
     while(true){
     std::cout << "ProbeKernelFunction is running~ "<< std::endl;
+    std::thread::id tid = std::this_thread::get_id();
+
 
     DBImpl::CompactionStats Stmp[config::kNumLevels];
     sleep(10);
     memcpy(Stmp, stats_, sizeof(struct DBImpl::CompactionStats) * config::kNumLevels);
 
-    std::cout << "Stmp[0].partial_stats.bytes_written"<<Stmp[0].partial_stats.bytes_written<< std::endl;
-    std::cout << "stats_[0].partial_stats.bytes_written"<<stats_[0].partial_stats.bytes_written<< std::endl;
+    std::cout <<"current tid: " << tid << "Stmp[0].partial_stats.bytes_written"<<Stmp[0].partial_stats.bytes_written<< std::endl;
+    std::cout <<"current tid: " << tid <<"stats_[0].partial_stats.bytes_written"<<stats_[0].partial_stats.bytes_written<< std::endl;
 
     //for(int i = 0; i < config::kNumLevels; i++)
         //Stmp[i].SubstractBy(stats_[i]);
