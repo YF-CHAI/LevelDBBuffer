@@ -1348,9 +1348,12 @@ void DBImpl::BCC_BGWork(void *db)
 void DBImpl::ProbeKernelFunction()
 {
 
-    std::cout << "ProbeKernelFunction is running~ "<< std::endl;
+    std::cout << "ProbeKernelFunction while outer~ "<< std::endl;
     struct cache_info cinfo;
     while(true){
+        std::cout << "ProbeKernelFunction while inner"<< std::endl;
+
+
         if(isProbingEnd){
             probe__cv_.SignalAll();
             break;
