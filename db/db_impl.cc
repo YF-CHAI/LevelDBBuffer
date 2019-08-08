@@ -1345,7 +1345,7 @@ void DBImpl::ProbeKernelFunction()
 
     while(true){
     std::thread::id tid = std::this_thread::get_id();
-    //struct cache_info cif = ebpf_.get_cache_info();
+    //struct cache_info cinfo = ebpf_.get_cache_info();
 
     memcpy(stmp_, stats_, sizeof(struct DBImpl::CompactionStats) * config::kNumLevels);
     sleep(10);
@@ -1370,7 +1370,7 @@ void DBImpl::ProbeKernelFunction()
                  );
         value.append(buf);
         std::cout << value <<std::endl;
-        continue;
+        //continue;
 
         for (int level = 0; level < config::kNumLevels; level++) {
           int files = versions_->NumLevelFiles(level);
