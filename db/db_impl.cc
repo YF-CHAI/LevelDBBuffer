@@ -1360,7 +1360,7 @@ void DBImpl::ProbeKernelFunction()
         value.append(buf);
         for (int level = 0; level < config::kNumLevels; level++) {
           int files = versions_->NumLevelFiles(level);
-          if (Stmp[level].partial_stats.micros > 0 || files > 0) {
+          if ( true || Stmp[level].partial_stats.micros > 0 || files > 0) {
             snprintf(buf,
                      sizeof(buf),
                      "\n %3d  %8d  %9.0lf  %9.0lf  %9.0lf  %9.0lf  %10lld  %10lld  %10lld\n",
@@ -1378,10 +1378,10 @@ void DBImpl::ProbeKernelFunction()
                      total_compaction_duration += Stmp[level].partial_stats.micros;
           }
         }
-        snprintf(buf,sizeof (buf),"Total compaction times: %llu \n", total_compaction_num);
-        value.append(buf);
-        snprintf(buf,sizeof (buf),"Total compaction duration: %llu \n", total_compaction_duration);
-        value.append(buf);
+        //snprintf(buf,sizeof (buf),"Total compaction times: %llu \n", total_compaction_num);
+        //value.append(buf);
+        //snprintf(buf,sizeof (buf),"Total compaction duration: %llu \n", total_compaction_duration);
+        //value.append(buf);
         std::cout << value <<std::endl;
 
       }
