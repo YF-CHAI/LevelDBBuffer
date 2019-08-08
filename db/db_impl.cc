@@ -326,7 +326,8 @@ DBImpl::DBImpl(const Options& raw_options, const std::string& dbname)
       seed_(0),
       tmp_batch_(new WriteBatch),
       bg_compaction_scheduled_(false),
-      manual_compaction_(NULL)
+      manual_compaction_(NULL),
+      swith_probe(false)
       //ssdname_() {
     {
     has_imm_.Release_Store(NULL);
@@ -358,7 +359,7 @@ DBImpl::DBImpl(const Options& raw_options, const std::string& dbname)
   Status s = options_.env->NewLogger("/tmp/WLOG", &w_log);
   versions_->w_log = w_log;
   //VersionSet::Builder::TableCount = 0;
-  env_->StartThread(&BCC_BGWork,nullptr);//cyf add for kernel probe
+  //env_->StartThread(&BCC_BGWork,nullptr);//cyf add for kernel probe
 
 }
 
@@ -2271,6 +2272,11 @@ Status DBImpl::Write(const WriteOptions& options, WriteBatch* my_batch) {
   w.batch = my_batch;
   w.sync = options.sync;
   w.done = false;
+
+  if(!swith_probe){
+      env_->StartThread(&BCC_BGWork,nullptr);//cyf add for kernel probe
+      swith_probe = false;
+  }
 
   MutexLock l(&mutex_);
   writers_.push_back(&w);
