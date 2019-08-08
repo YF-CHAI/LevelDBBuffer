@@ -9,7 +9,7 @@ leveldb::Cachestat_eBPF::Cachestat_eBPF()
     auto init_res = bpf_.init(cache_ebpf::BPF_PROGRAM);
       if (init_res.code() != 0)
           std::cout << init_res.msg() << std::endl;
-      //attach_kernel_probe_event();
+      attach_kernel_probe_event();
       //std::cout <<"initial Cachestat_eBPF()"<<std::endl;
       //struct cache_info cif=  get_cache_info();
       //detach_kernel_probe_event();
