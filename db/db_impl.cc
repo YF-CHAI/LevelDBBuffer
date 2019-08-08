@@ -1384,13 +1384,13 @@ void DBImpl::ProbeKernelFunction()
 
         //continue;
         for (int level = 0; level < config::kNumLevels; level++) {
-          int files = this->versions_->NumLevelFiles(level);
+          int files = versions_->NumLevelFiles(level);
           if ( stats_[level].partial_stats.micros >= 0 || files >= 0) {
             printf(
                      "\n %3d  %8d  %9.0lf  %9.0lf  %9.0lf  %9.0lf  %10lld  %10lld  %10lld\n",
                      level,
                      files,
-                     0.0,//versions_->NumLevelBytes(level) / 1048576.0,
+                     versions_->NumLevelBytes(level) / 1048576.0,
                      stats_[level].partial_stats.micros / 1e6,
                      stats_[level].partial_stats.bytes_read / 1048576.0,
                      stats_[level].partial_stats.bytes_written / 1048576.0,
