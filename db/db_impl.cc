@@ -1346,8 +1346,8 @@ void DBImpl::ProbeKernelFunction()
     //struct cache_info cif = ebpf_.get_cache_info();
 
     DBImpl::CompactionStats Stmp[config::kNumLevels];
-    sleep(10);
     memcpy(Stmp, stats_, sizeof(struct DBImpl::CompactionStats) * config::kNumLevels);
+    sleep(10);
 
     std::cout <<"current tid: " << tid << "Stmp[0].partial_stats.bytes_written"<<Stmp[1].partial_stats.bytes_written<< std::endl;
     std::cout <<"current tid: " << tid <<"stats_[0].partial_stats.bytes_written"<<stats_[1].partial_stats.bytes_written<< std::endl;
@@ -1357,7 +1357,7 @@ void DBImpl::ProbeKernelFunction()
 
     std::cout << "SubstractBy Stmp[0].partial_stats.bytes_written"<<Stmp[0].partial_stats.bytes_written<< std::endl;
 
-    if (0) {
+    if (1) {
         std::string value;
         char buf[200];
         uint64_t total_compaction_num = 0;//cyf add
