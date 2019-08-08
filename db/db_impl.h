@@ -156,7 +156,7 @@ class DBImpl : public DB {
       EXCLUSIVE_LOCKS_REQUIRED(mutex_);
   static void BCC_BGWork(void* db);//cyf add
   void ProbeKernelFunction();//cyf add
-  bool swith_probe;
+  bool swith_isprobe_start;
 
   // Constant after construction
   Env* const env_;

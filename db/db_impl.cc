@@ -327,7 +327,7 @@ DBImpl::DBImpl(const Options& raw_options, const std::string& dbname)
       tmp_batch_(new WriteBatch),
       bg_compaction_scheduled_(false),
       manual_compaction_(NULL),
-      swith_probe(false)
+      swith_isprobe_start(false)
       //ssdname_() {
     {
     has_imm_.Release_Store(NULL);
@@ -2273,9 +2273,9 @@ Status DBImpl::Write(const WriteOptions& options, WriteBatch* my_batch) {
   w.sync = options.sync;
   w.done = false;
 
-  if(!swith_probe){
+  if(!swith_isprobe_start){
       env_->StartThread(&BCC_BGWork,nullptr);//cyf add for kernel probe
-      swith_probe = false;
+      swith_isprobe_start = true;
   }
 
   MutexLock l(&mutex_);
