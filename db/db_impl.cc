@@ -1335,7 +1335,7 @@ Status DBImpl::FinishBufferCompactionOutputFile(CompactionState* compact,
 void DBImpl::BCC_BGWork(void *db)
 {
     std::cout <<"BCC_BGWork is running~" <<std::endl;
-    reinterpret_cast<DBImpl*>(db)->ProbeKernelFunction();
+    reinterpret_cast<DBImpl*>(db)->ebpf_.get_cache_info();
 }
 
 void DBImpl::ProbeKernelFunction()
