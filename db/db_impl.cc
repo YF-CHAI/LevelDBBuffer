@@ -1340,15 +1340,16 @@ void DBImpl::BCC_BGWork(void *db)
 
 void DBImpl::ProbeKernelFunction()
 {
-    //this->ebpf_.attach_kernel_probe_event();
+    this->ebpf_.attach_kernel_probe_event();
     std::cout << "ProbeKernelFunction is running~ "<< std::endl;
     struct cache_info cinfo;
     while(true){
     std::thread::id tid = std::this_thread::get_id();
-    //cinfo = ebpf_.get_cache_info();
+    cinfo = ebpf_.get_cache_info();
 
     memcpy(stmp_, stats_, sizeof(struct DBImpl::CompactionStats) * config::kNumLevels);
     sleep(10);
+    continue;
 
     std::cout <<"current tid: " << tid << "stmp_[1].partial_stats.bytes_written: "<<stmp_[1].partial_stats.bytes_written<< std::endl;
     std::cout <<"current tid: " << tid <<"stats_[1].partial_stats.bytes_written: "<<stats_[1].partial_stats.bytes_written<< std::endl;
