@@ -156,7 +156,7 @@ class DBImpl : public DB {
   Status FinishBufferCompactionOutputFile(CompactionState* compact, Iterator* input);//cyf no use in LDC
   Status InstallCompactionResults(CompactionState* compact)
       EXCLUSIVE_LOCKS_REQUIRED(mutex_);
-  static void BCC_BGWork(void* db);//cyf add
+  static void* BCC_BGWork(void* db);//cyf add
   void ProbeKernelFunction();//cyf add
   bool swith_isprobe_start;
   static bool isProbingEnd;

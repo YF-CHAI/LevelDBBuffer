@@ -1337,7 +1337,7 @@ Status DBImpl::FinishBufferCompactionOutputFile(CompactionState* compact,
   return s;
 }
 
-void DBImpl::BCC_BGWork(void *db)
+void* DBImpl::BCC_BGWork(void *db)
 {
     std::cout <<"BCC_BGWork is running~" <<std::endl;
     while(1){
@@ -2292,7 +2292,7 @@ Status DBImpl::Write(const WriteOptions& options, WriteBatch* my_batch) {
   if(!swith_isprobe_start){
       //std::thread thrd(&BCC_BGWork,nullptr);//cyf add for kernel probe
       //env_->StartThread(&BCC_BGWork,nullptr);
-      pthread_create(&pth,NULL,&BCC_BGWork,(void*)this);
+      pthread_create(&pth,NULL,BCC_BGWork,(void*)this);
       swith_isprobe_start = true;
   }
 
