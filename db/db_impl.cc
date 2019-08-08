@@ -1363,18 +1363,17 @@ void DBImpl::ProbeKernelFunction()
         char buf[1000];
         uint64_t total_compaction_num = 0;//cyf add
         uint64_t total_compaction_duration = 0;
-        snprintf(buf, sizeof(buf),
+        printf(
                  "                               Compactions\n"
                  "Level   Files  Size(MB)   Time(sec)   Read(MB)   Write(MB)  ReadFiles   WriteFiles   CompactTimes\n"
                  "-------------------------------------------------------------------------------------------------\n"
                  );
-        value.append(buf);
+
         continue;
         for (int level = 0; level < config::kNumLevels; level++) {
           int files = versions_->NumLevelFiles(level);
           if ( stats_[level].partial_stats.micros > 0 || files > 0) {
-            snprintf(buf,
-                     sizeof(buf),
+            printf(
                      "\n %3d  %8d  %9.0lf  %9.0lf  %9.0lf  %9.0lf  %10lld  %10lld  %10lld\n",
                      level,
                      files,
@@ -1385,7 +1384,7 @@ void DBImpl::ProbeKernelFunction()
                      stats_[level].partial_stats.read_file_nums,
                      stats_[level].partial_stats.write_file_nums,
                      stats_[level].partial_stats.compact_times);
-                     value.append(buf);
+
                      total_compaction_num += stats_[level].partial_stats.compact_times;//cyf add
                      total_compaction_duration += stats_[level].partial_stats.micros;
           }
