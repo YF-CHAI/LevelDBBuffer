@@ -1339,7 +1339,10 @@ Status DBImpl::FinishBufferCompactionOutputFile(CompactionState* compact,
 void DBImpl::BCC_BGWork(void *db)
 {
     std::cout <<"BCC_BGWork is running~" <<std::endl;
+    int files = reinterpret_cast<DBImpl*>(db)->versions_->NumLevelFiles(0);
+    std::cout <<"NumLevelFiles: "<<files<<std::endl;
     reinterpret_cast<DBImpl*>(db)->ProbeKernelFunction(db);
+
 }
 
 void DBImpl::ProbeKernelFunction(void *db)
