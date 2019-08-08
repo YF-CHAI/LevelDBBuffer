@@ -1343,14 +1343,16 @@ void DBImpl::ProbeKernelFunction()
     //std::cout << "ProbeKernelFunction is running~ "<< std::endl;
     while(true){
     std::cout << "ProbeKernelFunction is running~ "<< std::endl;
-    std::thread::id tid = std::this_thread::get_id();
+    //std::thread::id tid = std::this_thread::get_id();
+    struct cache_info cif = this->ebpf_.get_cache_info();
 
-    DBImpl::CompactionStats Stmp[config::kNumLevels];
+    //DBImpl::CompactionStats Stmp[config::kNumLevels];
     sleep(10);
-    memcpy(Stmp, stats_, sizeof(struct DBImpl::CompactionStats) * config::kNumLevels);
+    continue;
+    //memcpy(Stmp, stats_, sizeof(struct DBImpl::CompactionStats) * config::kNumLevels);
 
-    std::cout <<"current tid: " << tid << "Stmp[0].partial_stats.bytes_written"<<Stmp[1].partial_stats.bytes_written<< std::endl;
-    std::cout <<"current tid: " << tid <<"stats_[0].partial_stats.bytes_written"<<stats_[1].partial_stats.bytes_written<< std::endl;
+    //std::cout <<"current tid: " << tid << "Stmp[0].partial_stats.bytes_written"<<Stmp[1].partial_stats.bytes_written<< std::endl;
+    //std::cout <<"current tid: " << tid <<"stats_[0].partial_stats.bytes_written"<<stats_[1].partial_stats.bytes_written<< std::endl;
 
     //for(int i = 0; i < config::kNumLevels; i++)
         //Stmp[i].SubstractBy(stats_[i]);
@@ -1394,7 +1396,7 @@ void DBImpl::ProbeKernelFunction()
         std::cout << value <<std::endl;
 
       }
-    struct cache_info cif = this->ebpf_.get_cache_info();
+
 
 
 
