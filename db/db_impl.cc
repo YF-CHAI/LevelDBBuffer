@@ -1342,7 +1342,7 @@ void DBImpl::ProbeKernelFunction()
 {
     //this->ebpf_.attach_kernel_probe_event();
     std::cout << "ProbeKernelFunction is running~ "<< std::endl;
-
+    struct cache_info cinfo = ebpf_.get_cache_info();
     while(true){
     std::thread::id tid = std::this_thread::get_id();
     //struct cache_info cinfo = ebpf_.get_cache_info();
