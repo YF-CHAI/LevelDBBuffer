@@ -1355,7 +1355,7 @@ void DBImpl::ProbeKernelFunction()
         //Stmp[i].SubstractBy(stats_[i]);
     std::cout << "SubstractBy Stmp[0].partial_stats.bytes_written"<<Stmp[0].partial_stats.bytes_written<< std::endl;
 
-    if (true) {
+    if (false) {
         //whc change
         std::string value;
         char buf[200];
