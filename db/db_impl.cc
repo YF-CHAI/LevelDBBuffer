@@ -1057,7 +1057,7 @@ void DBImpl::BackgroundCompaction() {
     CompactMemTable();
     return;
   }
-  struct cache_info cif =  this->ebpf_.get_cache_info();//cyf add
+  //struct cache_info cif =  this->ebpf_.get_cache_info();//cyf add
   Compaction* c;
   bool is_manual = (manual_compaction_ != NULL);
   InternalKey manual_end;
@@ -1340,23 +1340,22 @@ void DBImpl::BCC_BGWork(void *db)
 void DBImpl::ProbeKernelFunction()
 {
     //this->ebpf_.attach_kernel_probe_event();
-    //std::cout << "ProbeKernelFunction is running~ "<< std::endl;
-    while(true){
     std::cout << "ProbeKernelFunction is running~ "<< std::endl;
-    //std::thread::id tid = std::this_thread::get_id();
+    while(true){
+    std::thread::id tid = std::this_thread::get_id();
     //struct cache_info cif = ebpf_.get_cache_info();
 
     DBImpl::CompactionStats Stmp[config::kNumLevels];
     sleep(10);
-    continue;
-    //memcpy(Stmp, stats_, sizeof(struct DBImpl::CompactionStats) * config::kNumLevels);
+    memcpy(Stmp, stats_, sizeof(struct DBImpl::CompactionStats) * config::kNumLevels);
 
-    //std::cout <<"current tid: " << tid << "Stmp[0].partial_stats.bytes_written"<<Stmp[1].partial_stats.bytes_written<< std::endl;
-    //std::cout <<"current tid: " << tid <<"stats_[0].partial_stats.bytes_written"<<stats_[1].partial_stats.bytes_written<< std::endl;
+    std::cout <<"current tid: " << tid << "Stmp[0].partial_stats.bytes_written"<<Stmp[1].partial_stats.bytes_written<< std::endl;
+    std::cout <<"current tid: " << tid <<"stats_[0].partial_stats.bytes_written"<<stats_[1].partial_stats.bytes_written<< std::endl;
 
-    //for(int i = 0; i < config::kNumLevels; i++)
-        //Stmp[i].SubstractBy(stats_[i]);
-    //std::cout << "SubstractBy Stmp[0].partial_stats.bytes_written"<<Stmp[0].partial_stats.bytes_written<< std::endl;
+    for(int i = 0; i < config::kNumLevels; i++)
+        Stmp[i].SubstractBy(stats_[i]);
+
+    std::cout << "SubstractBy Stmp[0].partial_stats.bytes_written"<<Stmp[0].partial_stats.bytes_written<< std::endl;
 
     if (0) {
         std::string value;
