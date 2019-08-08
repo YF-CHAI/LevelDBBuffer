@@ -1372,22 +1372,22 @@ void DBImpl::ProbeKernelFunction()
 
         for (int level = 0; level < config::kNumLevels; level++) {
           int files = versions_->NumLevelFiles(level);
-          if ( stmp_[level].partial_stats.micros > 0 || files > 0) {
+          if ( stats_[level].partial_stats.micros > 0 || files > 0) {
             snprintf(buf,
                      sizeof(buf),
                      "\n %3d  %8d  %9.0lf  %9.0lf  %9.0lf  %9.0lf  %10lld  %10lld  %10lld\n",
                      level,
                      files,
                      versions_->NumLevelBytes(level) / 1048576.0,
-                     stmp_[level].partial_stats.micros / 1e6,
-                     stmp_[level].partial_stats.bytes_read / 1048576.0,
-                     stmp_[level].partial_stats.bytes_written / 1048576.0,
-                     stmp_[level].partial_stats.read_file_nums,
-                     stmp_[level].partial_stats.write_file_nums,
-                     stmp_[level].partial_stats.compact_times);
+                     stats_[level].partial_stats.micros / 1e6,
+                     stats_[level].partial_stats.bytes_read / 1048576.0,
+                     stats_[level].partial_stats.bytes_written / 1048576.0,
+                     stats_[level].partial_stats.read_file_nums,
+                     stats_[level].partial_stats.write_file_nums,
+                     stats_[level].partial_stats.compact_times);
                      value.append(buf);
-                     total_compaction_num += stmp_[level].partial_stats.compact_times;//cyf add
-                     total_compaction_duration += stmp_[level].partial_stats.micros;
+                     total_compaction_num += stats_[level].partial_stats.compact_times;//cyf add
+                     total_compaction_duration += stats_[level].partial_stats.micros;
           }
         }
         //snprintf(buf,sizeof (buf),"Total compaction times: %llu \n", total_compaction_num);
