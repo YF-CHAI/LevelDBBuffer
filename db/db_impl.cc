@@ -1368,6 +1368,9 @@ void DBImpl::ProbeKernelFunction()
                  "-------------------------------------------------------------------------------------------------\n"
                  );
         value.append(buf);
+        std::cout << value <<std::endl;
+        continue;
+
         for (int level = 0; level < config::kNumLevels; level++) {
           int files = versions_->NumLevelFiles(level);
           if ( stmp_[level].partial_stats.micros > 0 || files > 0) {
