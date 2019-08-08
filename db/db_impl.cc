@@ -1341,11 +1341,11 @@ void DBImpl::ProbeKernelFunction()
 {
     //this->ebpf_.attach_kernel_probe_event();
     std::cout << "ProbeKernelFunction is running~ "<< std::endl;
+    DBImpl::CompactionStats Stmp[config::kNumLevels];
     while(true){
     std::thread::id tid = std::this_thread::get_id();
     //struct cache_info cif = ebpf_.get_cache_info();
 
-    DBImpl::CompactionStats Stmp[config::kNumLevels];
     memcpy(Stmp, stats_, sizeof(struct DBImpl::CompactionStats) * config::kNumLevels);
     sleep(10);
 
@@ -1370,7 +1370,7 @@ void DBImpl::ProbeKernelFunction()
         value.append(buf);
         for (int level = 0; level < config::kNumLevels; level++) {
           int files = versions_->NumLevelFiles(level);
-          if ( true || Stmp[level].partial_stats.micros > 0 || files > 0) {
+          if ( Stmp[level].partial_stats.micros > 0 || files > 0) {
             snprintf(buf,
                      sizeof(buf),
                      "\n %3d  %8d  %9.0lf  %9.0lf  %9.0lf  %9.0lf  %10lld  %10lld  %10lld\n",
@@ -1388,11 +1388,11 @@ void DBImpl::ProbeKernelFunction()
                      total_compaction_duration += Stmp[level].partial_stats.micros;
           }
         }
-        snprintf(buf,sizeof (buf),"Total compaction times: %llu \n", total_compaction_num);
-        value.append(buf);
-        snprintf(buf,sizeof (buf),"Total compaction duration: %llu \n", total_compaction_duration);
-        value.append(buf);
-        std::cout << value <<std::endl;
+        //snprintf(buf,sizeof (buf),"Total compaction times: %llu \n", total_compaction_num);
+        //value.append(buf);
+        //snprintf(buf,sizeof (buf),"Total compaction duration: %llu \n", total_compaction_duration);
+        //value.append(buf);
+        //std::cout << value <<std::endl;
 
       }
 
