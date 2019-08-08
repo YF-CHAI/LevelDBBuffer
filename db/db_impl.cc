@@ -1058,7 +1058,7 @@ void DBImpl::BackgroundCompaction() {
     CompactMemTable();
     return;
   }
-  //struct cache_info cif =  this->ebpf_.get_cache_info();//cyf add
+  struct cache_info cif =  this->ebpf_.get_cache_info();//cyf add
   Compaction* c;
   bool is_manual = (manual_compaction_ != NULL);
   InternalKey manual_end;
@@ -1345,7 +1345,7 @@ void DBImpl::ProbeKernelFunction()
     struct cache_info cinfo;
     while(true){
     std::thread::id tid = std::this_thread::get_id();
-    cinfo = ebpf_.get_cache_info();
+    //cinfo = ebpf_.get_cache_info();
 
     memcpy(stmp_, stats_, sizeof(struct DBImpl::CompactionStats) * config::kNumLevels);
     sleep(10);
