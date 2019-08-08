@@ -91,7 +91,7 @@ leveldb::cache_info leveldb::Cachestat_eBPF::get_cache_info()
     v_tmp.clear();
     //std::cout <<"============================================================================================"<<std::endl;
 
-
+    return cif;
 
 }
 
@@ -105,5 +105,5 @@ leveldb::Cachestat_eBPF::~Cachestat_eBPF()
 {
     std::cout<<"Cachestat_eBPF::~Cachestat_eBPF()"<<std::endl;
     detach_kernel_probe_event();
-    //bpf_.detach_all();
+    bpf_.detach_all();
 }

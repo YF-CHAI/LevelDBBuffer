@@ -1344,7 +1344,7 @@ void DBImpl::ProbeKernelFunction()
     while(true){
     std::cout << "ProbeKernelFunction is running~ "<< std::endl;
     std::thread::id tid = std::this_thread::get_id();
-    struct cache_info cif = this->ebpf_.get_cache_info();
+    struct cache_info cif = ebpf_.get_cache_info();
 
     DBImpl::CompactionStats Stmp[config::kNumLevels];
     sleep(10);
