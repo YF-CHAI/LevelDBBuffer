@@ -327,7 +327,9 @@ DBImpl::DBImpl(const Options& raw_options, const std::string& dbname)
       tmp_batch_(new WriteBatch),
       bg_compaction_scheduled_(false),
       manual_compaction_(NULL),
-      swith_isprobe_start(false)
+      swith_isprobe_start(false),
+      isProbingEnd(false),
+      probe__cv_(&probe_mutex_)
       //ssdname_() {
     {
     has_imm_.Release_Store(NULL);
@@ -359,7 +361,7 @@ DBImpl::DBImpl(const Options& raw_options, const std::string& dbname)
   Status s = options_.env->NewLogger("/tmp/WLOG", &w_log);
   versions_->w_log = w_log;
   //VersionSet::Builder::TableCount = 0;
-  //env_->StartThread(&BCC_BGWork,nullptr);//cyf add for kernel probe
+  env_->StartThread(BCC_BGWork,nullptr);//cyf add for kernel probe
 
 }
 
@@ -379,6 +381,11 @@ DBImpl::~DBImpl() {
     std::cout<<"data block read: \t"<<ReadStatic::data_block_read<<std::endl;
     std::cout<<"index size: \t"<<ReadStatic::index_block_size<<std::endl;
 
+
+  probe_mutex_.Lock();
+  isProbingEnd = true;
+  probe_mutex_.Unlock();
+  probe__cv_.wait();
 
 	// Wait for background work to finish
   mutex_.Lock();
@@ -1335,7 +1342,7 @@ Status DBImpl::FinishBufferCompactionOutputFile(CompactionState* compact,
 void DBImpl::BCC_BGWork(void *db)
 {
     std::cout <<"BCC_BGWork is running~" <<std::endl;
-    reinterpret_cast<DBImpl*>(db)->ebpf_.get_cache_info();
+    reinterpret_cast<DBImpl*>(db)->ProbeKernelFunction();
 }
 
 void DBImpl::ProbeKernelFunction()
@@ -2271,7 +2278,7 @@ Status DBImpl::Write(const WriteOptions& options, WriteBatch* my_batch) {
   w.done = false;
 
   if(!swith_isprobe_start){
-      env_->StartThread(&BCC_BGWork,nullptr);//cyf add for kernel probe
+      std::thread thrd(&BCC_BGWork,nullptr);//cyf add for kernel probe
       swith_isprobe_start = true;
   }
 
