@@ -1348,7 +1348,7 @@ Status DBImpl::FinishBufferCompactionOutputFile(CompactionState* compact,
 }
 
 void* DBImpl::BCC_BGWork(void *db)
-{   sleep(2);
+{
     std::cout <<"BCC_BGWork is running~" <<std::endl;
     struct cache_info cinfo;
     Cachestat_eBPF bpf;
