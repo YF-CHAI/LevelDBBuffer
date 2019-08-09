@@ -1357,6 +1357,7 @@ void* DBImpl::BCC_BGWork(void *db)
     int64_t bytes_inlevel[config::kNumLevels];
     class ReadStatic readStatic;
     double probe_time;
+    Probe_Timer<double> probe_timer;
 
     cinfo = bpf.get_cache_info();
     while(1){
@@ -1365,8 +1366,7 @@ void* DBImpl::BCC_BGWork(void *db)
             break;
         }
         //start probe time count
-        if(reinterpret_cast<DBImpl*>(db)->env_ != nullptr)
-        probe_time = reinterpret_cast<DBImpl*>(db)->env_->NowMicros();
+        probe_timer.Start();
 
 
     //reinterpret_cast<DBImpl*>(db)->ebpf_.attach_kernel_probe_event();
@@ -1391,8 +1391,8 @@ void* DBImpl::BCC_BGWork(void *db)
 
             readStatic.getReadStaticDelta();
             if(reinterpret_cast<DBImpl*>(db)->env_ != nullptr)
-                probe_time = probe_time - reinterpret_cast<DBImpl*>(db)->env_->NowMicros();
-            std::cout << "Probing cost time is: "<<probe_time/1e6<<" Seconds"<<std::endl;
+                probe_time = probe_timer.End();
+            std::cout << "Probing cost time is: "<<probe_time<<" Seconds"<<std::endl;
 
             std::cout<<"Delta mem getnum: \t"<<readStatic.mem_get<<std::endl;
             for(int i=0;i<config::kNumLevels;i++)

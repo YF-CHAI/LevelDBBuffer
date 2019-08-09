@@ -44,6 +44,27 @@ private:
     double reads_num_;
 };
 
+template <typename T>
+class Probe_Timer {
+ public:
+  void Start() {
+    time_ = Clock::now();
+  }
+
+  T End() {
+    Duration span;
+    Clock::time_point t = Clock::now();
+    span = std::chrono::duration_cast<Duration>(t - time_);
+    return span.count();
+  }
+
+ private:
+  //typedef std::chrono::high_resolution_clock Clock;
+  typedef std::chrono::steady_clock Clock;
+  typedef std::chrono::duration<T> Duration;
+
+  Clock::time_point time_;
+};
 
 class DBImpl : public DB {
  public:
