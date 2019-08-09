@@ -1341,12 +1341,14 @@ void* DBImpl::BCC_BGWork(void *db)
 {
     std::cout <<"BCC_BGWork is running~" <<std::endl;
     struct cache_info cinfo;
-    Cachestat_eBPF bp;
-    bp.attach_kernel_probe_event();
+    //Cachestat_eBPF bpf;
+    //bpf.attach_kernel_probe_event();
     while(1){
         sleep(2);
-        bp.get_cache_info();
-    //cinfo = reinterpret_cast<DBImpl*>(db)->ebpf_.get_cache_info();
+        //cinfo = bpf.get_cache_info();
+    reinterpret_cast<DBImpl*>(db)->ebpf_.attach_kernel_probe_event();
+    cinfo = reinterpret_cast<DBImpl*>(db)->ebpf_.get_cache_info();
+
 
 
 
