@@ -1437,6 +1437,8 @@ void* DBImpl::BCC_BGWork(void *db)
     //std::cout << "BCC_BGWork NumLevelFiles:"<<files <<std::endl;
     }
     DBImpl::swith_isprobe_start = false;
+    DBImpl::isProbingEnd = false;
+    if(!DBImpl::swith_isprobe_start && !DBImpl::isProbingEnd)
     std::cout <<"thread is finished !"<<std::endl;
     //reinterpret_cast<DBImpl*>(db)->ProbeKernelFunction();
 
