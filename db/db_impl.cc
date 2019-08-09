@@ -1355,6 +1355,7 @@ void* DBImpl::BCC_BGWork(void *db)
         if(isProbingEnd){
             reinterpret_cast<DBImpl*>(db)->probe__cv_.SignalAll();
             break;
+        }
 
         cinfo = bpf.get_cache_info();
     //reinterpret_cast<DBImpl*>(db)->ebpf_.attach_kernel_probe_event();
