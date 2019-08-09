@@ -1355,15 +1355,18 @@ void* DBImpl::BCC_BGWork(void *db)
     int64_t files_num_inlevel[config::kNumLevels];
     int64_t bytes_inlevel[config::kNumLevels];
     class ReadStatic readStatic;
+    double probe_time;
 
-
+    cinfo = bpf.get_cache_info();
     while(1){
         if(isProbingEnd){
             reinterpret_cast<DBImpl*>(db)->probe__cv_.SignalAll();
             break;
         }
+        //start probe time count
+        probe_time = reinterpret_cast<DBImpl*>(db)->env_->NowMicros();
 
-        cinfo = bpf.get_cache_info();
+
     //reinterpret_cast<DBImpl*>(db)->ebpf_.attach_kernel_probe_event();
     //cinfo = reinterpret_cast<DBImpl*>(db)->ebpf_.get_cache_info();
         if(1){
@@ -1375,16 +1378,18 @@ void* DBImpl::BCC_BGWork(void *db)
                 bytes_inlevel[i] = reinterpret_cast<DBImpl*>(db)->versions_->NumLevelBytes(i);
             }
             readStatic.getSnapShot();
+
             sleep(config::kLDCBCCProbeInterval);
 
+            cinfo = bpf.get_cache_info();
 
-            //std::cout <<"current tid: " << tid <<"stmp_[1].partial_stats.bytes_written: "<<stmp_[1].partial_stats.bytes_written<< std::endl;
-            //std::cout <<"current tid: " << tid <<"stats_[1].partial_stats.bytes_written: "<<stats_[1].partial_stats.bytes_written<< std::endl;
 
             for(int i = 0; i < config::kNumLevels; i++)
                 stmp_[i].SubstractBy(stats_[i]);
 
             readStatic.getReadStaticDelta();
+
+            probe_time = probe_time - reinterpret_cast<DBImpl*>(db)->env_->NowMicros();
 
             std::cout<<"Delta mem getnum: \t"<<readStatic.mem_get<<std::endl;
             for(int i=0;i<config::kNumLevels;i++)
@@ -1435,6 +1440,7 @@ void* DBImpl::BCC_BGWork(void *db)
 
     //int files = reinterpret_cast<DBImpl*>(db)->versions_->NumLevelFiles(0);
     //std::cout << "BCC_BGWork NumLevelFiles:"<<files <<std::endl;
+
     }
     DBImpl::swith_isprobe_start = false;
     DBImpl::isProbingEnd = false;
