@@ -1390,8 +1390,8 @@ void* DBImpl::BCC_BGWork(void *db)
                 stmp_[i].SubstractBy(stats_[i]);
 
             readStatic.getReadStaticDelta();
-            if(reinterpret_cast<DBImpl*>(db)->env_ != nullptr)
-                probe_time = probe_timer.End();
+
+            probe_time = probe_timer.End();
             std::cout << "Probing cost time is: "<<probe_time<<" Seconds"<<std::endl;
 
             std::cout<<"Delta mem getnum: \t"<<readStatic.mem_get<<std::endl;
