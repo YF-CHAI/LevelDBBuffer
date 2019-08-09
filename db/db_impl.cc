@@ -1364,6 +1364,7 @@ void* DBImpl::BCC_BGWork(void *db)
             break;
         }
         //start probe time count
+        if(reinterpret_cast<DBImpl*>(db)->env_ != nullptr)
         probe_time = reinterpret_cast<DBImpl*>(db)->env_->NowMicros();
 
 
@@ -1388,8 +1389,9 @@ void* DBImpl::BCC_BGWork(void *db)
                 stmp_[i].SubstractBy(stats_[i]);
 
             readStatic.getReadStaticDelta();
-
-            probe_time = probe_time - reinterpret_cast<DBImpl*>(db)->env_->NowMicros();
+            if(reinterpret_cast<DBImpl*>(db)->env_ != nullptr)
+                probe_time = probe_time - reinterpret_cast<DBImpl*>(db)->env_->NowMicros();
+            std::cout << "Probing cost time is: "<<probe_time/1e6<<" Seconds"<<std::endl;
 
             std::cout<<"Delta mem getnum: \t"<<readStatic.mem_get<<std::endl;
             for(int i=0;i<config::kNumLevels;i++)
