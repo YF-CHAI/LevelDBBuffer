@@ -158,7 +158,7 @@ class DBImpl : public DB {
       EXCLUSIVE_LOCKS_REQUIRED(mutex_);
   static void* BCC_BGWork(void* db);//cyf add
   void ProbeKernelFunction();//cyf add
-  bool swith_isprobe_start;
+  static bool swith_isprobe_start;
   static bool isProbingEnd;
   pthread_t pth;
   port::Mutex probe_mutex_;

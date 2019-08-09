@@ -43,6 +43,7 @@ namespace leveldb {
 const int kNumNonTableCacheFiles = 10;
 
 bool DBImpl::isProbingEnd =false;
+bool DBImpl::swith_isprobe_start = false;
 
 // Information kept for every waiting writer
 struct DBImpl::Writer {
@@ -330,7 +331,6 @@ DBImpl::DBImpl(const Options& raw_options, const std::string& dbname)
       tmp_batch_(new WriteBatch),
       bg_compaction_scheduled_(false),
       manual_compaction_(NULL),
-      swith_isprobe_start(false),
       probe__cv_(&probe_mutex_)
       //ssdname_() {
     {
@@ -364,6 +364,12 @@ DBImpl::DBImpl(const Options& raw_options, const std::string& dbname)
   versions_->w_log = w_log;
   //VersionSet::Builder::TableCount = 0;
   //env_->StartThread(BCC_BGWork,nullptr);//cyf add for kernel probe
+  if(!swith_isprobe_start){
+      //std::thread thrd(&BCC_BGWork,nullptr);//cyf add for kernel probe
+      //env_->StartThread(&BCC_BGWork,nullptr);
+      pthread_create(&pth,NULL,BCC_BGWork,(void*)this);
+      swith_isprobe_start = true;
+  }
 
 }
 
@@ -1430,6 +1436,7 @@ void* DBImpl::BCC_BGWork(void *db)
     //int files = reinterpret_cast<DBImpl*>(db)->versions_->NumLevelFiles(0);
     //std::cout << "BCC_BGWork NumLevelFiles:"<<files <<std::endl;
     }
+    DBImpl::swith_isprobe_start = false;
     //reinterpret_cast<DBImpl*>(db)->ProbeKernelFunction();
 
 }
@@ -2373,12 +2380,7 @@ Status DBImpl::Write(const WriteOptions& options, WriteBatch* my_batch) {
   w.sync = options.sync;
   w.done = false;
 
-  if(!swith_isprobe_start){
-      //std::thread thrd(&BCC_BGWork,nullptr);//cyf add for kernel probe
-      //env_->StartThread(&BCC_BGWork,nullptr);
-      pthread_create(&pth,NULL,BCC_BGWork,(void*)this);
-      swith_isprobe_start = true;
-  }
+
 
   MutexLock l(&mutex_);
   writers_.push_back(&w);
