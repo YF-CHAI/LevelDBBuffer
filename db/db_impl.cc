@@ -364,6 +364,12 @@ DBImpl::DBImpl(const Options& raw_options, const std::string& dbname)
   versions_->w_log = w_log;
   //VersionSet::Builder::TableCount = 0;
   //env_->StartThread(BCC_BGWork,nullptr);//cyf add for kernel probe
+  if(!swith_isprobe_start){
+      //std::thread thrd(&BCC_BGWork,nullptr);//cyf add for kernel probe
+      //env_->StartThread(&BCC_BGWork,nullptr);
+      pthread_create(&pth,NULL,BCC_BGWork,(void*)this);
+      swith_isprobe_start = true;
+  }
 
 
 }
@@ -1342,7 +1348,7 @@ Status DBImpl::FinishBufferCompactionOutputFile(CompactionState* compact,
 }
 
 void* DBImpl::BCC_BGWork(void *db)
-{
+{   sleep(2);
     std::cout <<"BCC_BGWork is running~" <<std::endl;
     struct cache_info cinfo;
     Cachestat_eBPF bpf;
@@ -2386,12 +2392,7 @@ Status DBImpl::Write(const WriteOptions& options, WriteBatch* my_batch) {
   w.sync = options.sync;
   w.done = false;
 
-  if(!swith_isprobe_start){
-      //std::thread thrd(&BCC_BGWork,nullptr);//cyf add for kernel probe
-      //env_->StartThread(&BCC_BGWork,nullptr);
-      pthread_create(&pth,NULL,BCC_BGWork,(void*)this);
-      swith_isprobe_start = true;
-  }
+
 
   MutexLock l(&mutex_);
   writers_.push_back(&w);
