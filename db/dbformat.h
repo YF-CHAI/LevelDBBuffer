@@ -95,10 +95,24 @@ class BCJudge{
 };
 
 //whc add
+struct ReadStaticDelta{
+     uint64_t mem_get;
+     uint64_t level_get[config::kNumLevels];
+     uint64_t table_get;
+     uint64_t table_bloomfilter_miss;
+     uint64_t table_readfile_miss;
+     uint64_t table_cache_shoot;
+     uint64_t data_block_read;
+     uint64_t index_block_size;
+     int open_num;
+     int get_flag;
+
+};
+
 class ReadStatic{
   public:
     static uint64_t mem_get;
-    static uint64_t level_get[7];
+    static uint64_t level_get[config::kNumLevels];
     static uint64_t table_get;
     static uint64_t table_bloomfilter_miss;
     static uint64_t table_readfile_miss;
@@ -108,6 +122,39 @@ class ReadStatic{
     static int open_num;
     static int get_flag;
 
+    void getSnapShot(){
+        this->mem_get = ReadStatic::mem_get;
+        for(int i =0;i<config::kNumLevels;i++)
+           this->level_get[i] = ReadStatic::level_get[i];
+
+        this->table_get = ReadStatic::table_get;
+        this->table_bloomfilter_miss = ReadStatic::table_bloomfilter_miss;
+        this->table_readfile_miss = ReadStatic::table_readfile_miss;
+        this->table_cache_shoot = ReadStatic::table_cache_shoot;
+        this->data_block_read = ReadStatic::data_block_read;
+        this->index_block_size = ReadStatic::index_block_size;
+        this->open_num = ReadStatic::open_num;
+        this->get_flag = ReadStatic::get_flag;
+
+    }
+
+    void getReadStaticDelta(){
+        this->mem_get = ReadStatic::mem_get - this->mem_get;
+        for(int i =0;i<config::kNumLevels;i++)
+           this->level_get[i] = ReadStatic::level_get[i] - this->level_get[i];
+
+        this->table_get = ReadStatic::table_get - this->table_get;
+        this->table_bloomfilter_miss = ReadStatic::table_bloomfilter_miss -this->table_bloomfilter_miss;
+        this->table_readfile_miss = ReadStatic::table_readfile_miss - this->table_readfile_miss;
+        this->table_cache_shoot = ReadStatic::table_cache_shoot - this->table_cache_shoot;
+        this->data_block_read = ReadStatic::data_block_read - this->data_block_read;
+        this->index_block_size = ReadStatic::index_block_size - this->index_block_size;
+        this->open_num = ReadStatic::open_num - this->open_num;
+        this->get_flag = ReadStatic::get_flag - this->get_flag;
+
+    }
+private:
+    struct ReadStaticDelta readStaticDelta_;
 };
 
 

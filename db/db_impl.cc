@@ -1343,9 +1343,13 @@ void* DBImpl::BCC_BGWork(void *db)
     struct cache_info cinfo;
     Cachestat_eBPF bpf;
     bpf.attach_kernel_probe_event();
+    int64_t files_num_inlevel[config::kNumLevels];
+    int64_t bytes_inlevel[config::kNumLevels];
+    class ReadStatic readStatic;
+
 
     while(1){
-        sleep(config::kLDCBCCProbeInterval);
+
         cinfo = bpf.get_cache_info();
     //reinterpret_cast<DBImpl*>(db)->ebpf_.attach_kernel_probe_event();
     //cinfo = reinterpret_cast<DBImpl*>(db)->ebpf_.get_cache_info();
@@ -1353,42 +1357,60 @@ void* DBImpl::BCC_BGWork(void *db)
             std::thread::id tid = std::this_thread::get_id();
 
             memcpy(stmp_, stats_, sizeof(struct DBImpl::CompactionStats) * config::kNumLevels);
-            sleep(10);
+            for(int i = 0; i < config::kNumLevels; i++){
+                files_num_inlevel[i] = reinterpret_cast<DBImpl*>(db)->versions_->NumLevelFiles(i);
+                bytes_inlevel[i] = reinterpret_cast<DBImpl*>(db)->versions_->NumLevelBytes(i);
+            }
+            readStatic.getSnapShot();
+            sleep(config::kLDCBCCProbeInterval);
 
 
-            std::cout <<"current tid: " << tid << "stmp_[1].partial_stats.bytes_written: "<<stmp_[1].partial_stats.bytes_written<< std::endl;
-            std::cout <<"current tid: " << tid <<"stats_[1].partial_stats.bytes_written: "<<stats_[1].partial_stats.bytes_written<< std::endl;
+            //std::cout <<"current tid: " << tid <<"stmp_[1].partial_stats.bytes_written: "<<stmp_[1].partial_stats.bytes_written<< std::endl;
+            //std::cout <<"current tid: " << tid <<"stats_[1].partial_stats.bytes_written: "<<stats_[1].partial_stats.bytes_written<< std::endl;
 
             for(int i = 0; i < config::kNumLevels; i++)
                 stmp_[i].SubstractBy(stats_[i]);
 
-            std::cout << "SubstractBy stmp_[1].partial_stats.bytes_written: "<<stmp_[1].partial_stats.bytes_written<< std::endl;
+            readStatic.getReadStaticDelta();
+
+            std::cout<<"Delta mem getnum: \t"<<readStatic.mem_get<<std::endl;
+            for(int i=0;i<config::kNumLevels;i++)
+                std::cout<<"Delta level: \t"<<i<<"\t getnum: \t"<<readStatic.level_get[i]<<std::endl;
+
+            std::cout<<"Delta table get: \t "<<readStatic.table_get<<std::endl;
+            std::cout<<"Delta bloomfilter miss: \t "<<readStatic.table_bloomfilter_miss<<std::endl;
+            std::cout<<"Delta readfile miss: \t"<<readStatic.table_readfile_miss<<std::endl;
+            std::cout<<"Delta table cache shoot: \t"<<readStatic.table_cache_shoot<<std::endl;
+            std::cout<<"Delta data block read: \t"<<readStatic.data_block_read<<std::endl;
+            std::cout<<"Delta index size: \t"<<readStatic.index_block_size<<std::endl;
+
+            //std::cout << "SubstractBy stmp_[1].partial_stats.bytes_written: "<<stmp_[1].partial_stats.bytes_written<< std::endl;
 
 
                 std::string value;
                 char buf[500];
 
                 printf(
-                         "                               Compactions\n"
+                         "                               Delta_Compactions\n"
                          "Level   Files  Size(MB)   Time(sec)   Read(MB)   Write(MB)  ReadFiles   WriteFiles   CompactTimes\n"
                          "-------------------------------------------------------------------------------------------------\n"
                          );
 
                 //continue;
                 for (int level = 0; level < config::kNumLevels; level++) {
-                  int files = reinterpret_cast<DBImpl*>(db)->versions_->NumLevelFiles(level);
-                  if ( stats_[level].partial_stats.micros >= 0 || files >= 0) {
+                  int files = reinterpret_cast<DBImpl*>(db)->versions_->NumLevelFiles(level) ;
+                  if ( true /*||stats_[level].partial_stats.micros >= 0 || files >= 0*/) {
                     printf(
                              "\n %3d  %8d  %9.0lf  %9.0lf  %9.0lf  %9.0lf  %10lld  %10lld  %10lld\n",
                              level,
-                             files,
-                             reinterpret_cast<DBImpl*>(db)->versions_->NumLevelBytes(level) / 1048576.0,
-                             stats_[level].partial_stats.micros / 1e6,
-                             stats_[level].partial_stats.bytes_read / 1048576.0,
-                             stats_[level].partial_stats.bytes_written / 1048576.0,
-                             stats_[level].partial_stats.read_file_nums,
-                             stats_[level].partial_stats.write_file_nums,
-                             stats_[level].partial_stats.compact_times);
+                             files - files_num_inlevel[level],
+                             (reinterpret_cast<DBImpl*>(db)->versions_->NumLevelBytes(level) - bytes_inlevel[level]) / 1048576.0,
+                             stmp_[level].partial_stats.micros / 1e6,
+                             stmp_[level].partial_stats.bytes_read / 1048576.0,
+                             stmp_[level].partial_stats.bytes_written / 1048576.0,
+                             stmp_[level].partial_stats.read_file_nums,
+                             stmp_[level].partial_stats.write_file_nums,
+                             stmp_[level].partial_stats.compact_times);
 
 
                   }
@@ -1405,7 +1427,7 @@ void* DBImpl::BCC_BGWork(void *db)
 
 }
 
-void DBImpl::ProbeKernelFunction()
+void DBImpl::ProbeKernelFunction()//cyf won't use anymore
 {
 
     std::cout << "ProbeKernelFunction while outer~ "<< std::endl;
