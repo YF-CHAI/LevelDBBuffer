@@ -391,6 +391,7 @@ DBImpl::~DBImpl() {
     std::cout<<"index size: \t"<<ReadStatic::index_block_size<<std::endl;
 
     probe_mutex_.Lock();
+    shutting_down_.Release_Store(this);
     DBImpl::isProbingEnd = true;
     probe__cv_.Wait();
     probe_mutex_.Unlock();
@@ -1382,7 +1383,7 @@ void* DBImpl::BCC_BGWork(void *db)
             readStatic.getSnapShot();
 
             sleep(config::kLDCBCCProbeInterval);
-
+            std::cout <<"=================================RUNNING STATISTIC==========================="<<std::endl;
             cinfo = bpf.get_cache_info();
 
 
