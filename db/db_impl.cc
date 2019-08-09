@@ -1414,7 +1414,7 @@ void* DBImpl::BCC_BGWork(void *db)
                   int files = reinterpret_cast<DBImpl*>(db)->versions_->NumLevelFiles(level) ;
                   if ( true /*||stats_[level].partial_stats.micros >= 0 || files >= 0*/) {
                     printf(
-                             "\n %3d  %8d  %9.0lf  %9.0lf  %9.0lf  %9.0lf  %10lld  %10lld  %10lld\n",
+                             " %3d  %8d  %9.0lf  %9.0lf  %9.0lf  %9.0lf  %10lld  %10lld  %10lld\n",
                              level,
                              files - files_num_inlevel[level],
                              (reinterpret_cast<DBImpl*>(db)->versions_->NumLevelBytes(level) - bytes_inlevel[level]) / 1048576.0,
