@@ -383,7 +383,10 @@ DBImpl::~DBImpl() {
     std::cout<<"data block read: \t"<<ReadStatic::data_block_read<<std::endl;
     std::cout<<"index size: \t"<<ReadStatic::index_block_size<<std::endl;
 
-
+    probe_mutex_.Lock();
+    DBImpl::isProbingEnd = true;
+    probe__cv_.Wait();
+    probe_mutex_.Unlock();
 
 	// Wait for background work to finish
   mutex_.Lock();
@@ -1349,6 +1352,9 @@ void* DBImpl::BCC_BGWork(void *db)
 
 
     while(1){
+        if(isProbingEnd){
+            reinterpret_cast<DBImpl*>(db)->probe__cv_.SignalAll();
+            break;
 
         cinfo = bpf.get_cache_info();
     //reinterpret_cast<DBImpl*>(db)->ebpf_.attach_kernel_probe_event();
