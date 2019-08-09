@@ -1341,19 +1341,65 @@ void* DBImpl::BCC_BGWork(void *db)
 {
     std::cout <<"BCC_BGWork is running~" <<std::endl;
     struct cache_info cinfo;
-    //Cachestat_eBPF bpf;
-    //bpf.attach_kernel_probe_event();
+    Cachestat_eBPF bpf;
+    bpf.attach_kernel_probe_event();
+
     while(1){
-        sleep(2);
-        //cinfo = bpf.get_cache_info();
-    reinterpret_cast<DBImpl*>(db)->ebpf_.attach_kernel_probe_event();
-    cinfo = reinterpret_cast<DBImpl*>(db)->ebpf_.get_cache_info();
+        sleep(config::kLDCBCCProbeInterval);
+        cinfo = bpf.get_cache_info();
+    //reinterpret_cast<DBImpl*>(db)->ebpf_.attach_kernel_probe_event();
+    //cinfo = reinterpret_cast<DBImpl*>(db)->ebpf_.get_cache_info();
+        if(1){
+            std::thread::id tid = std::this_thread::get_id();
+
+            memcpy(stmp_, stats_, sizeof(struct DBImpl::CompactionStats) * config::kNumLevels);
+            sleep(10);
+
+
+            std::cout <<"current tid: " << tid << "stmp_[1].partial_stats.bytes_written: "<<stmp_[1].partial_stats.bytes_written<< std::endl;
+            std::cout <<"current tid: " << tid <<"stats_[1].partial_stats.bytes_written: "<<stats_[1].partial_stats.bytes_written<< std::endl;
+
+            for(int i = 0; i < config::kNumLevels; i++)
+                stmp_[i].SubstractBy(stats_[i]);
+
+            std::cout << "SubstractBy stmp_[1].partial_stats.bytes_written: "<<stmp_[1].partial_stats.bytes_written<< std::endl;
+
+
+                std::string value;
+                char buf[500];
+
+                printf(
+                         "                               Compactions\n"
+                         "Level   Files  Size(MB)   Time(sec)   Read(MB)   Write(MB)  ReadFiles   WriteFiles   CompactTimes\n"
+                         "-------------------------------------------------------------------------------------------------\n"
+                         );
+
+                //continue;
+                for (int level = 0; level < config::kNumLevels; level++) {
+                  int files = reinterpret_cast<DBImpl*>(db)->versions_->NumLevelFiles(level);
+                  if ( stats_[level].partial_stats.micros >= 0 || files >= 0) {
+                    printf(
+                             "\n %3d  %8d  %9.0lf  %9.0lf  %9.0lf  %9.0lf  %10lld  %10lld  %10lld\n",
+                             level,
+                             files,
+                             reinterpret_cast<DBImpl*>(db)->versions_->NumLevelBytes(level) / 1048576.0,
+                             stats_[level].partial_stats.micros / 1e6,
+                             stats_[level].partial_stats.bytes_read / 1048576.0,
+                             stats_[level].partial_stats.bytes_written / 1048576.0,
+                             stats_[level].partial_stats.read_file_nums,
+                             stats_[level].partial_stats.write_file_nums,
+                             stats_[level].partial_stats.compact_times);
+
+
+                  }
+                }
+        }
 
 
 
 
-    int files = reinterpret_cast<DBImpl*>(db)->versions_->NumLevelFiles(0);
-    std::cout << "BCC_BGWork NumLevelFiles:"<<files <<std::endl;
+    //int files = reinterpret_cast<DBImpl*>(db)->versions_->NumLevelFiles(0);
+    //std::cout << "BCC_BGWork NumLevelFiles:"<<files <<std::endl;
     }
     //reinterpret_cast<DBImpl*>(db)->ProbeKernelFunction();
 
@@ -1415,8 +1461,7 @@ void DBImpl::ProbeKernelFunction()
                      stats_[level].partial_stats.write_file_nums,
                      stats_[level].partial_stats.compact_times);
 
-                     total_compaction_num += stats_[level].partial_stats.compact_times;//cyf add
-                     total_compaction_duration += stats_[level].partial_stats.micros;
+
           }
         }
         //snprintf(buf,sizeof (buf),"Total compaction times: %llu \n", total_compaction_num);

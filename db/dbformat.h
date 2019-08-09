@@ -57,6 +57,8 @@ static const uint64_t kLDCMaxFileSizeLimit = 32 << 20;
 static const uint64_t kLDCBlockCacheSize = 8 << 20;
 static const uint64_t kLDCMaxWriteBufferSize = 64 << 20;
 
+static const uint64_t kLDCBCCProbeInterval = 2;
+
 //whc add
 static const int kThresholdBufferNum  = 5;
 
