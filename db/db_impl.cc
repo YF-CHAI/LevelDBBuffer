@@ -393,8 +393,10 @@ DBImpl::~DBImpl() {
 
     probe_mutex_.Lock();
     //shutting_down_.Release_Store(this);
-    if(!pthread_cancel(pth))
-        pthread_join(pth,nullptr);
+    int pc = pthread_cancel(pth);
+    void * res ;
+    pthread_join(pth,&res);
+    if(res == PTHREAD_CANCELED) std::cout<< "BCC_WORK thread is canceled!"<<std::endl;
     //probe__cv_.Wait();
     probe_mutex_.Unlock();
     std::cout <<"run DBImpl::~DBImpl()"<<std::endl;
@@ -1354,7 +1356,7 @@ void* DBImpl::BCC_BGWork(void *db)
 {
 
     pthread_setcancelstate(PTHREAD_CANCEL_ENABLE,NULL);
-    pthread_setcanceltype(PTHREAD_CANCEL_DEFERRED,NULL);
+    //pthread_setcanceltype(PTHREAD_CANCEL_DEFERRED,NULL);
 
     std::cout <<"BCC_BGWork is running~" <<std::endl;
     struct cache_info cinfo;
