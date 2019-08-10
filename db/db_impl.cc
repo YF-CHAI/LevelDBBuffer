@@ -43,7 +43,7 @@ namespace leveldb {
 const int kNumNonTableCacheFiles = 10;
 
 bool DBImpl::isProbingEnd =false;
-//bool DBImpl::swith_isprobe_start = false;
+bool DBImpl::swith_isprobe_start = false;
 
 // Information kept for every waiting writer
 struct DBImpl::Writer {
