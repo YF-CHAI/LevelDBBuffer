@@ -396,7 +396,7 @@ DBImpl::~DBImpl() {
     pthread_join(pth,nullptr);
     //probe__cv_.Wait();
     probe_mutex_.Unlock();
-
+    std::cout <<"run DBImpl::~DBImpl()"<<std::endl;
 	// Wait for background work to finish
   mutex_.Lock();
   shutting_down_.Release_Store(this);  // Any non-NULL value is ok
