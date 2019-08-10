@@ -391,14 +391,14 @@ DBImpl::~DBImpl() {
     std::cout<<"data block read: \t"<<ReadStatic::data_block_read<<std::endl;
     std::cout<<"index size: \t"<<ReadStatic::index_block_size<<std::endl;
 
-    probe_mutex_.Lock();
+
     //shutting_down_.Release_Store(this);
     int pc = pthread_cancel(pth);
     void * res ;
     pthread_join(pth,&res);
     if(res == PTHREAD_CANCELED) std::cout<< "BCC_WORK thread is canceled!"<<std::endl;
     //probe__cv_.Wait();
-    probe_mutex_.Unlock();
+
     std::cout <<"run DBImpl::~DBImpl()"<<std::endl;
 	// Wait for background work to finish
   mutex_.Lock();
