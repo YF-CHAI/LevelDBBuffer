@@ -1449,8 +1449,10 @@ void* DBImpl::BCC_BGWork(void *db)
     }
     //DBImpl::swith_isprobe_start = false;
     //DBImpl::isProbingEnd = false;
-    if(!DBImpl::isProbingEnd)
+    if(!DBImpl::isProbingEnd){
     std::cout <<"thread is finished, tid:"<<std::this_thread::get_id()<<std::endl;
+    DBImpl::isProbingEnd = false;
+    }
     //reinterpret_cast<DBImpl*>(db)->ProbeKernelFunction();
 
 }
