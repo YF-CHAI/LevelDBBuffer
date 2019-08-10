@@ -365,12 +365,12 @@ DBImpl::DBImpl(const Options& raw_options, const std::string& dbname)
   //VersionSet::Builder::TableCount = 0;
   //env_->StartThread(BCC_BGWork,nullptr);//cyf add for kernel probe
 
-  if(1){
+
 
       //DBImpl::isProbingEnd = false;
       pthread_create(&pth,NULL,BCC_BGWork,(void*)this);
 
-  }
+
 
 
 }
@@ -394,7 +394,7 @@ DBImpl::~DBImpl() {
 
     //shutting_down_.Release_Store(this);
     int pc = pthread_cancel(pth);
-    void * res ;
+    void* res ;
     pthread_join(pth,&res);
     if(res == PTHREAD_CANCELED) std::cout<< "BCC_WORK thread is canceled!"<<std::endl;
     //probe__cv_.Wait();
@@ -1360,15 +1360,15 @@ void* DBImpl::BCC_BGWork(void *db)
 
     std::cout <<"BCC_BGWork is running~" <<std::endl;
     struct cache_info cinfo;
-    Cachestat_eBPF bpf;
-    bpf.attach_kernel_probe_event();
+    //Cachestat_eBPF bpf;
+    //bpf.attach_kernel_probe_event();
     int64_t files_num_inlevel[config::kNumLevels];
     int64_t bytes_inlevel[config::kNumLevels];
     class ReadStatic readStatic;
     double probe_time;
     Probe_Timer<double> probe_timer;
 
-    cinfo = bpf.get_cache_info();
+    //cinfo = bpf.get_cache_info();
     while(1){
 
         //start probe time count
@@ -1389,7 +1389,7 @@ void* DBImpl::BCC_BGWork(void *db)
 
             sleep(config::kLDCBCCProbeInterval);
             std::cout <<"=================================RUNNING STATISTIC==========================="<<std::endl;
-            cinfo = bpf.get_cache_info();
+            //cinfo = bpf.get_cache_info();
 
 
             for(int i = 0; i < config::kNumLevels; i++)
