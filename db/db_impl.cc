@@ -1389,7 +1389,7 @@ void* DBImpl::BCC_BGWork(void *db)
 
             sleep(config::kLDCBCCProbeInterval);
             std::cout <<"=================================RUNNING STATISTIC==========================="<<std::endl;
-            //cinfo = bpf.get_cache_info();
+            cinfo = bpf.get_cache_info();
 
 
             for(int i = 0; i < config::kNumLevels; i++)
