@@ -364,12 +364,12 @@ DBImpl::DBImpl(const Options& raw_options, const std::string& dbname)
   versions_->w_log = w_log;
   //VersionSet::Builder::TableCount = 0;
   //env_->StartThread(BCC_BGWork,nullptr);//cyf add for kernel probe
-  if(!swith_isprobe_start){
-      //std::thread thrd(&BCC_BGWork,nullptr);//cyf add for kernel probe
-      //env_->StartThread(&BCC_BGWork,nullptr);
-      DBImpl::isProbingEnd = false;
+
+  if(1){
+
+      //DBImpl::isProbingEnd = false;
       pthread_create(&pth,NULL,BCC_BGWork,(void*)this);
-      //swith_isprobe_start = true;
+
   }
 
 
@@ -393,8 +393,8 @@ DBImpl::~DBImpl() {
 
     probe_mutex_.Lock();
     //shutting_down_.Release_Store(this);
-    DBImpl::isProbingEnd = true;
-    pthread_join(pth,nullptr);
+    if(!pthread_cancel(pth))
+        pthread_join(pth,nullptr);
     //probe__cv_.Wait();
     probe_mutex_.Unlock();
     std::cout <<"run DBImpl::~DBImpl()"<<std::endl;
@@ -1352,6 +1352,10 @@ Status DBImpl::FinishBufferCompactionOutputFile(CompactionState* compact,
 
 void* DBImpl::BCC_BGWork(void *db)
 {
+
+    pthread_setcancelstate(PTHREAD_CANCEL_ENABLE,NULL);
+    pthread_setcanceltype(PTHREAD_CANCEL_DEFERRED,NULL);
+
     std::cout <<"BCC_BGWork is running~" <<std::endl;
     struct cache_info cinfo;
     Cachestat_eBPF bpf;
@@ -1364,10 +1368,7 @@ void* DBImpl::BCC_BGWork(void *db)
 
     cinfo = bpf.get_cache_info();
     while(1){
-        if(DBImpl::isProbingEnd){
-            //reinterpret_cast<DBImpl*>(db)->probe__cv_.SignalAll();
-            break;
-        }
+
         //start probe time count
         probe_timer.Start();
 
@@ -1448,13 +1449,9 @@ void* DBImpl::BCC_BGWork(void *db)
     //std::cout << "BCC_BGWork NumLevelFiles:"<<files <<std::endl;
 
     }
-    //DBImpl::swith_isprobe_start = false;
-    //DBImpl::isProbingEnd = false;
-    if(!DBImpl::isProbingEnd){
+
     std::cout <<"thread is finished, tid:"<<std::this_thread::get_id()<<std::endl;
-    DBImpl::isProbingEnd = false;
-    }
-    //reinterpret_cast<DBImpl*>(db)->ProbeKernelFunction();
+
 
 }
 
