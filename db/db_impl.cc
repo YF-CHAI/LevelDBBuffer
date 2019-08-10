@@ -43,7 +43,7 @@ namespace leveldb {
 const int kNumNonTableCacheFiles = 10;
 
 bool DBImpl::isProbingEnd =false;
-bool DBImpl::swith_isprobe_start = false;
+//bool DBImpl::swith_isprobe_start = false;
 
 // Information kept for every waiting writer
 struct DBImpl::Writer {
@@ -368,7 +368,7 @@ DBImpl::DBImpl(const Options& raw_options, const std::string& dbname)
       //std::thread thrd(&BCC_BGWork,nullptr);//cyf add for kernel probe
       //env_->StartThread(&BCC_BGWork,nullptr);
       pthread_create(&pth,NULL,BCC_BGWork,(void*)this);
-      swith_isprobe_start = true;
+      //swith_isprobe_start = true;
   }
 
 
@@ -391,9 +391,11 @@ DBImpl::~DBImpl() {
     std::cout<<"index size: \t"<<ReadStatic::index_block_size<<std::endl;
 
     probe_mutex_.Lock();
-    shutting_down_.Release_Store(this);
+    //shutting_down_.Release_Store(this);
     DBImpl::isProbingEnd = true;
-    probe__cv_.Wait();
+    pthread_join(pth,nullptr)
+
+    //probe__cv_.Wait();
     probe_mutex_.Unlock();
 
 	// Wait for background work to finish
@@ -1363,7 +1365,7 @@ void* DBImpl::BCC_BGWork(void *db)
     cinfo = bpf.get_cache_info();
     while(1){
         if(isProbingEnd){
-            reinterpret_cast<DBImpl*>(db)->probe__cv_.SignalAll();
+            //reinterpret_cast<DBImpl*>(db)->probe__cv_.SignalAll();
             break;
         }
         //start probe time count
@@ -1446,10 +1448,10 @@ void* DBImpl::BCC_BGWork(void *db)
     //std::cout << "BCC_BGWork NumLevelFiles:"<<files <<std::endl;
 
     }
-    DBImpl::swith_isprobe_start = false;
-    DBImpl::isProbingEnd = false;
-    if(!DBImpl::swith_isprobe_start && !DBImpl::isProbingEnd)
-    std::cout <<"thread is finished !"<<std::endl;
+    //DBImpl::swith_isprobe_start = false;
+    //DBImpl::isProbingEnd = false;
+    if(!DBImpl::isProbingEnd)
+    std::cout <<"thread is finished, tid:"<<std::this_thread::get_id()<<std::endl;
     //reinterpret_cast<DBImpl*>(db)->ProbeKernelFunction();
 
 }

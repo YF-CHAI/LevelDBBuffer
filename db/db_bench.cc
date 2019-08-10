@@ -536,7 +536,7 @@ class Benchmark {
         } else {
           if(db_ == nullptr) delete db_;
           std::cout<< "in db_bench.cc 538 use delete function"<<std::endl;
-          db_ = NULL;
+          db_ = nullptr;
           DestroyDB(FLAGS_db, Options());
           Open();
         }
