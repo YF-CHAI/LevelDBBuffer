@@ -393,8 +393,7 @@ DBImpl::~DBImpl() {
     probe_mutex_.Lock();
     //shutting_down_.Release_Store(this);
     DBImpl::isProbingEnd = true;
-    pthread_join(pth,nullptr)
-
+    pthread_join(pth,nullptr);
     //probe__cv_.Wait();
     probe_mutex_.Unlock();
 
@@ -1364,7 +1363,7 @@ void* DBImpl::BCC_BGWork(void *db)
 
     cinfo = bpf.get_cache_info();
     while(1){
-        if(isProbingEnd){
+        if(DBImpl::isProbingEnd){
             //reinterpret_cast<DBImpl*>(db)->probe__cv_.SignalAll();
             break;
         }
@@ -1465,7 +1464,7 @@ void DBImpl::ProbeKernelFunction()//cyf won't use anymore
         std::cout << "ProbeKernelFunction while inner"<< std::endl;
 
 
-        if(isProbingEnd){
+        if(DBImpl::isProbingEnd){
             probe__cv_.SignalAll();
             break;
 
