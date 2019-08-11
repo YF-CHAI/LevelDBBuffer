@@ -2555,7 +2555,7 @@ bool DBImpl::GetProperty(const Slice& property, std::string* value) {
     }
   } else if (in == "stats") {
     //whc change
-    char buf[200];
+    char buf[400];
     uint64_t total_compaction_num = 0;//cyf add
     uint64_t total_compaction_duration = 0;
     snprintf(buf, sizeof(buf),
@@ -2604,7 +2604,7 @@ bool DBImpl::GetProperty(const Slice& property, std::string* value) {
     value->append(buf);
     return true;
   }else if (in == "lh_compact_times"){   // whc add
-    char buf[100];
+    char buf[200];
     for (int level = 1; level < config::kNumLevels; level++) {
       int files = versions_->NumLevelFiles(level);
       if (stats_[level].partial_stats.micros > 0 || files > 0) {
