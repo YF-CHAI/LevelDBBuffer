@@ -856,12 +856,7 @@ Status DBImpl::WriteLevel0Table(MemTable* mem, VersionEdit* edit,
                   meta.smallest, meta.largest);
   }
 
-/*
-  CompactionStats stats;
-  stats.micros = env_->NowMicros() - start_micros;
-  stats.bytes_written = meta.file_size;
-  stats_[level].Add(stats);
-*/
+
 
   OneTimeCompactionStats hl_stats;
 
@@ -1478,13 +1473,13 @@ void DBImpl::ProbeKernelFunction()//cyf won't use anymore
     sleep(10);
 
 
-    std::cout <<"current tid: " << tid << "stmp_[1].partial_stats.bytes_written: "<<stmp_[1].partial_stats.bytes_written<< std::endl;
-    std::cout <<"current tid: " << tid <<"stats_[1].partial_stats.bytes_written: "<<stats_[1].partial_stats.bytes_written<< std::endl;
+    //std::cout <<"current tid: " << tid << "stmp_[1].partial_stats.bytes_written: "<<stmp_[1].partial_stats.bytes_written<< std::endl;
+    //std::cout <<"current tid: " << tid <<"stats_[1].partial_stats.bytes_written: "<<stats_[1].partial_stats.bytes_written<< std::endl;
 
     for(int i = 0; i < config::kNumLevels; i++)
         stmp_[i].SubstractBy(stats_[i]);
 
-    std::cout << "SubstractBy stmp_[1].partial_stats.bytes_written: "<<stmp_[1].partial_stats.bytes_written<< std::endl;
+    //std::cout << "SubstractBy stmp_[1].partial_stats.bytes_written: "<<stmp_[1].partial_stats.bytes_written<< std::endl;
 
 
         std::string value;
@@ -1737,50 +1732,10 @@ Status DBImpl::DoCompactionWork(CompactionState* compact) {
   delete input;
   input = NULL;
 
-/*
-  CompactionStats stats;
-  stats.micros = env_->NowMicros() - start_micros - imm_micros;
-  for (int which = 0; which < 2; which++) {
-    for (int i = 0; i < compact->compaction->num_input_files(which); i++) {
-      stats.bytes_read += compact->compaction->input(which, i)->file_size;
-    }
-  }
-  for (size_t i = 0; i < compact->outputs.size(); i++) {
-    stats.bytes_written += compact->outputs[i].file_size;
-  }
 
-//whc add
-uint64_t up_file = 0;
-for (int i = 0; i < compact->compaction->num_input_files(0); i++) {
-      up_file += compact->compaction->input(0, i)->file_size;
-}
 
-uint64_t down_file = 0;
-for (int i = 0; i < compact->compaction->num_input_files(1); i++) {
-      down_file += compact->compaction->input(1, i)->file_size;
-}
- */
-
-//whc add
-/*
-  Log(w_log,
-  "whc inlevel%d 1file:%lld 2file:%lld output:%lld \n",
-  compact->compaction->level(),
-  up_file,
-  down_file,
-  output_size);
-*/
-
-//Log(w_log,
-  //"level: %d \n",
-  //compact->compaction->level()
-  //);
-  
   mutex_.Lock();
-  //stats_[compact->compaction->level() + 1].Add(stats);
-  
-  //whc add
-  //statistics work
+
   
   if (status.ok()){
       OneTimeCompactionStats ll_stats;
@@ -2023,12 +1978,9 @@ Status DBImpl::BufferCompact(CompactionState* compact,int index){
 
   Iterator* input = versions_->MakeBufferInputIterator(compact->compaction->inputs_[0][index],
     versions_->current()->sequence_);
-  //std::cout<<"buffer compact end make iterator"<<std::endl;
-  //return status;
-  //cyf add for get real link number under link limitation
-  //uint64_t link_num = compact->compaction->inputs_[0][index]->buffer->nodes.size();
-  //if(link_num < config::kBufferResveredNum) link_stats_LDC_[link_num]++;
 
+  if(compact->compaction->inputs_[0][index]->buffer != nullptr)
+      input_size = compact->compaction->inputs_[0][index]->buffer->size;
 
   input->SeekToFirst();
   ParsedInternalKey ikey;
@@ -2039,7 +1991,7 @@ Status DBImpl::BufferCompact(CompactionState* compact,int index){
   for (; input->Valid() && !shutting_down_.Acquire_Load(); ) {
     //std::cout<<"buffer compact loop!!!"<<std::endl;
       // Prioritize immutable compaction work
-    input_size += input->value().size() + input->key().size();
+    //input_size += input->value().size() + input->key().size();//cyf change for get the origin buffer read data mount other than selected
     if (has_imm_.NoBarrier_Load() != NULL) {
       //std::cout<<"buffer compact imm!!!"<<std::endl;
         const uint64_t imm_start = env_->NowMicros();
