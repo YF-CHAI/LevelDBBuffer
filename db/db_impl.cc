@@ -1437,6 +1437,26 @@ void* DBImpl::BCC_BGWork(void *db)
 
                   }
                 }
+
+
+                for (int level = 1; level < config::kNumLevels; level++) {
+                  int files = reinterpret_cast<DBImpl*>(db)->versions_->NumLevelFiles(level);
+                  if (stmp_[level].partial_stats.micros > 0 || files > 0) {
+                    printf("Level %d: ", level);
+
+                    for(int i = 0; i < stmp_[level-1].max_read_file_nums; i++){
+                      for(int j = 0; j < stmp_[level].max_read_file_nums; j++){
+                        if(stmp_[level].lh_compact_times[i][j] > 0){
+                          printf(" (%d+%d,%lld) ", i, j, stmp_[level].lh_compact_times[i][j]);
+
+                        }
+                      }
+                    }
+
+                  }
+                  std::cout << std::endl;
+                }
+
         }
 
 
