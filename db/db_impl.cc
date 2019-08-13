@@ -1382,7 +1382,7 @@ void* DBImpl::BCC_BGWork(void *db)
             }
             readStatic.getSnapShot();
 
-            sleep(config::kLDCBCCProbeInterval);
+            usleep(config::kLDCBCCProbeInterval * 1000 * 1000);
             std::cout <<"=================================RUNNING STATISTIC==========================="<<std::endl;
             cinfo = bpf.get_cache_info();
 
