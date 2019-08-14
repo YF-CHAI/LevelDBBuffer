@@ -87,7 +87,7 @@ leveldb::cache_info leveldb::Cachestat_eBPF::get_cache_info()
 
         }
     }
-    std::cout << "mpa: "<<cif.mpa<<" mbd: "<<cif.mbd<<" apcl: "<<cif.apcl<<" apd: "<<cif.apd<<std::endl;
+    std::cout << "mpa: \t"<<cif.mpa<<"\t mbd: \t"<<cif.mbd<<"\t apcl: \t"<<cif.apcl<<"\t apd: \t"<<cif.apd<<std::endl;
     cache_hash_table.clear_table_non_atomic();
     v_tmp.clear();
     //std::cout <<"============================================================================================"<<std::endl;
