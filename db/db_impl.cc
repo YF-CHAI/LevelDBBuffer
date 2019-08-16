@@ -1348,6 +1348,8 @@ Status DBImpl::FinishBufferCompactionOutputFile(CompactionState* compact,
   return s;
 }
 
+Cachestat_eBPF bpf;//cyf add
+
 void* DBImpl::BCC_BGWork(void *db)
 {
 
@@ -1356,7 +1358,7 @@ void* DBImpl::BCC_BGWork(void *db)
 
     std::cout <<"BCC_BGWork is running~" <<std::endl;
     struct cache_info cinfo;
-    Cachestat_eBPF bpf;
+    //Cachestat_eBPF bpf;
     //bpf.attach_kernel_probe_event();
     //reinterpret_cast<DBImpl*>(db)->eBPF_ = new Cachestat_eBPF();
 
