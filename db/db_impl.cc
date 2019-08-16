@@ -330,7 +330,8 @@ DBImpl::DBImpl(const Options& raw_options, const std::string& dbname)
       seed_(0),
       tmp_batch_(new WriteBatch),
       bg_compaction_scheduled_(false),
-      manual_compaction_(NULL)
+      manual_compaction_(NULL),
+      pth(NULL)
       //eBPF_(NULL)
       //ssdname_() {
     {
@@ -392,12 +393,12 @@ DBImpl::~DBImpl() {
     std::cout<<"Users Get request num: \t"<<ReadStatic::get_num<<std::endl;
 
 
-    //shutting_down_.Release_Store(this);
+    if(pth != NULL){
     int pc = pthread_cancel(pth);
     void* res ;
     pthread_join(pth,&res);
     if(res == PTHREAD_CANCELED) std::cout<< "BCC_WORK thread is canceled!"<<std::endl;
-
+    }
 
     std::cout <<"run DBImpl::~DBImpl()"<<std::endl;
 	// Wait for background work to finish
@@ -2372,6 +2373,9 @@ Status DBImpl::Write(const WriteOptions& options, WriteBatch* my_batch) {
   w.batch = my_batch;
   w.sync = options.sync;
   w.done = false;
+  if(pth == NULL)//cyf add
+      pthread_create(&pth,NULL,BCC_BGWork,(void*)this);
+
 
   ReadStatic::put_num++;//cyf add
 
