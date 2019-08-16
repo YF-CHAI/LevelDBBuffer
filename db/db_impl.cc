@@ -1378,22 +1378,22 @@ void* DBImpl::BCC_BGWork(void *db)
         if(1){
             std::thread::id tid = std::this_thread::get_id();
 
-//            memcpy(stmp_, stats_, sizeof(struct DBImpl::CompactionStats) * config::kNumLevels);
-//            for(int i = 0; i < config::kNumLevels; i++){
-//                files_num_inlevel[i] = reinterpret_cast<DBImpl*>(db)->versions_->NumLevelFiles(i);
-//                bytes_inlevel[i] = reinterpret_cast<DBImpl*>(db)->versions_->NumLevelBytes(i);
-//            }
-//            readStatic.getSnapShot();
+            memcpy(stmp_, stats_, sizeof(struct DBImpl::CompactionStats) * config::kNumLevels);
+            for(int i = 0; i < config::kNumLevels; i++){
+                files_num_inlevel[i] = reinterpret_cast<DBImpl*>(db)->versions_->NumLevelFiles(i);
+                bytes_inlevel[i] = reinterpret_cast<DBImpl*>(db)->versions_->NumLevelBytes(i);
+            }
+            readStatic.getSnapShot();
 
             usleep(config::kLDCBCCProbeInterval* 1000 *1000);
             std::cout <<"=================================RUNNING STATISTIC==========================="<<std::endl;
             //cinfo = bpf.get_cache_info();
 
 
-//            for(int i = 0; i < config::kNumLevels; i++)
-//                stmp_[i].SubstractBy(stats_[i]);
+            for(int i = 0; i < config::kNumLevels; i++)
+                stmp_[i].SubstractBy(stats_[i]);
 
-//            readStatic.getReadStaticDelta();
+            readStatic.getReadStaticDelta();
 
             probe_time = probe_timer.End();
             std::cout << "Probing cost time is: "<<probe_time<<" Seconds"<<std::endl;

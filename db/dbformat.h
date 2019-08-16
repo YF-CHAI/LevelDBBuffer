@@ -129,37 +129,41 @@ class ReadStatic{
     static int get_num;
 
     void getSnapShot(){
-        this->mem_get = ReadStatic::mem_get;
+        readStaticDelta_.mem_get = ReadStatic::mem_get;
         for(int i =0;i<config::kNumLevels;i++)
-           this->level_get[i] = ReadStatic::level_get[i];
+           readStaticDelta_.level_get[i] = ReadStatic::level_get[i];
 
-        this->table_get = ReadStatic::table_get;
-        this->table_bloomfilter_miss = ReadStatic::table_bloomfilter_miss;
-        this->table_readfile_miss = ReadStatic::table_readfile_miss;
-        this->table_cache_shoot = ReadStatic::table_cache_shoot;
-        this->data_block_read = ReadStatic::data_block_read;
-        this->index_block_size = ReadStatic::index_block_size;
-        this->open_num = ReadStatic::open_num;
-        this->get_flag = ReadStatic::get_flag;
+        readStaticDelta_.table_get = ReadStatic::table_get;
+        readStaticDelta_.table_bloomfilter_miss = ReadStatic::table_bloomfilter_miss;
+        readStaticDelta_.table_readfile_miss = ReadStatic::table_readfile_miss;
+        readStaticDelta_.table_cache_shoot = ReadStatic::table_cache_shoot;
+        readStaticDelta_.data_block_read = ReadStatic::data_block_read;
+        readStaticDelta_.index_block_size = ReadStatic::index_block_size;
+        readStaticDelta_.open_num = ReadStatic::open_num;
+        readStaticDelta_.get_flag = ReadStatic::get_flag;
 
-        this->put_num = ReadStatic::put_num - this->put_num;
-        this->get_num = ReadStatic::get_num - this->get_num;
+        readStaticDelta_.put_num = ReadStatic::put_num;
+        readStaticDelta_.get_num = ReadStatic::get_num;
 
     }
 
     void getReadStaticDelta(){
-        this->mem_get = ReadStatic::mem_get - this->mem_get;
+        readStaticDelta_.mem_get = ReadStatic::mem_get - readStaticDelta_.mem_get;
         for(int i =0;i<config::kNumLevels;i++)
-           this->level_get[i] = ReadStatic::level_get[i] - this->level_get[i];
+           readStaticDelta_.level_get[i] = ReadStatic::level_get[i] - readStaticDelta_.level_get[i];
 
-        this->table_get = ReadStatic::table_get - this->table_get;
-        this->table_bloomfilter_miss = ReadStatic::table_bloomfilter_miss -this->table_bloomfilter_miss;
-        this->table_readfile_miss = ReadStatic::table_readfile_miss - this->table_readfile_miss;
-        this->table_cache_shoot = ReadStatic::table_cache_shoot - this->table_cache_shoot;
-        this->data_block_read = ReadStatic::data_block_read - this->data_block_read;
-        this->index_block_size = ReadStatic::index_block_size - this->index_block_size;
-        this->open_num = ReadStatic::open_num - this->open_num;
-        this->get_flag = ReadStatic::get_flag - this->get_flag;
+        readStaticDelta_.table_get = ReadStatic::table_get - readStaticDelta_.table_get;
+        readStaticDelta_.table_bloomfilter_miss =
+                ReadStatic::table_bloomfilter_miss - readStaticDelta_.table_bloomfilter_miss;
+        readStaticDelta_.table_readfile_miss = ReadStatic::table_readfile_miss - readStaticDelta_.table_readfile_miss;
+        readStaticDelta_.table_cache_shoot = ReadStatic::table_cache_shoot - readStaticDelta_.table_cache_shoot;
+        readStaticDelta_.data_block_read = ReadStatic::data_block_read - readStaticDelta_.data_block_read;
+        readStaticDelta_.index_block_size = ReadStatic::index_block_size - readStaticDelta_.index_block_size;
+        readStaticDelta_.open_num = ReadStatic::open_num - readStaticDelta_.open_num;
+        readStaticDelta_.get_flag = ReadStatic::get_flag - readStaticDelta_.get_flag;
+
+        readStaticDelta_.put_num = ReadStatic::put_num - readStaticDelta_.put_num;
+        readStaticDelta_.get_num = ReadStatic::get_num - readStaticDelta_.get_num;
 
     }
 private:
