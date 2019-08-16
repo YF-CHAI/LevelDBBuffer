@@ -1348,7 +1348,7 @@ Status DBImpl::FinishBufferCompactionOutputFile(CompactionState* compact,
   return s;
 }
 
-Cachestat_eBPF bpf;//cyf add
+leveldb::Cachestat_eBPF bpf;//cyf add
 
 void* DBImpl::BCC_BGWork(void *db)
 {
