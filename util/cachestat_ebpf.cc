@@ -6,7 +6,8 @@
 
 leveldb::Cachestat_eBPF::Cachestat_eBPF()
 {
-    auto init_res = bpf_.init(cache_ebpf::BPF_PROGRAM);
+    bpf_ = new ebpf::BPF;
+    auto init_res = bpf_->init(cache_ebpf::BPF_PROGRAM);
       if (init_res.code() != 0)
           std::cout << init_res.msg() << std::endl;
       attach_kernel_probe_event();
@@ -34,10 +35,10 @@ void leveldb::Cachestat_eBPF:: attach_kernel_probe_event()
 
 void leveldb::Cachestat_eBPF::detach_kernel_probe_event()
 {
-    bpf_.detach_kprobe("add_to_page_cache_lru");
-    bpf_.detach_kprobe("mark_page_accessed");
-    bpf_.detach_kprobe("account_page_dirtied");
-    bpf_.detach_kprobe("mark_buffer_dirty");
+    bpf_->detach_kprobe("add_to_page_cache_lru");
+    bpf_->detach_kprobe("mark_page_accessed");
+    bpf_->detach_kprobe("account_page_dirtied");
+    bpf_->detach_kprobe("mark_buffer_dirty");
 }
 
 leveldb::cache_info leveldb::Cachestat_eBPF::get_cache_info()
@@ -46,7 +47,7 @@ leveldb::cache_info leveldb::Cachestat_eBPF::get_cache_info()
     std::string pid_name;
     struct cache_info cif;
 
-    auto cache_hash_table = bpf_.get_hash_table<struct key_t, uint64_t>("counts");
+    auto cache_hash_table = bpf_->get_hash_table<struct key_t, uint64_t>("counts");
     //std::cout<< "Cachestat_eBPF::get_cache_info() table_size:"<<cache_hash_table.get_table_offline().size()<<std::endl;
     //for (auto it: cache_hash_table.get_table_offline()) {
     auto v_tmp = cache_hash_table.get_table_offline();
@@ -98,7 +99,7 @@ leveldb::cache_info leveldb::Cachestat_eBPF::get_cache_info()
 
 ebpf::StatusTuple leveldb::Cachestat_eBPF::attach_kernel_fun(std::string kernel_fun, std::string probe_fun)
 {
-    ebpf::StatusTuple s = bpf_.attach_kprobe(kernel_fun,probe_fun);
+    ebpf::StatusTuple s = bpf_->attach_kprobe(kernel_fun,probe_fun);
     if(s.code() != 0) std::cout <<"attach_kernel_fun: " << s.msg() <<std::endl;
 }
 
@@ -106,5 +107,6 @@ leveldb::Cachestat_eBPF::~Cachestat_eBPF()
 {
     std::cout<<"Cachestat_eBPF::~Cachestat_eBPF()"<<std::endl;
     detach_kernel_probe_event();
-    bpf_.detach_all();
+    bpf_->detach_all();
+    delete bpf_;
 }
