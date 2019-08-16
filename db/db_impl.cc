@@ -1372,6 +1372,7 @@ void* DBImpl::BCC_BGWork(void *db)
 
     cinfo = bpf.get_cache_info();
     while(1){
+        continue;
 
         //start probe time count
         probe_timer.Start();
