@@ -27,6 +27,9 @@ uint64_t ReadStatic::data_block_read = 0;
 uint64_t ReadStatic::index_block_size = 0;
 int ReadStatic::open_num = 0;
 int ReadStatic::get_flag = 0;
+
+int ReadStatic::get_num = 0;
+int ReadStatic::put_num = 0;
     
 static uint64_t PackSequenceAndType(uint64_t seq, ValueType t) {
   assert(seq <= kMaxSequenceNumber);

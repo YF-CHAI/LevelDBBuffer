@@ -107,6 +107,9 @@ struct ReadStaticDelta{
      int open_num;
      int get_flag;
 
+     int put_num;
+     int get_num;
+
 };
 
 class ReadStatic{
@@ -122,6 +125,9 @@ class ReadStatic{
     static int open_num;
     static int get_flag;
 
+    static int put_num;
+    static int get_num;
+
     void getSnapShot(){
         this->mem_get = ReadStatic::mem_get;
         for(int i =0;i<config::kNumLevels;i++)
@@ -135,6 +141,9 @@ class ReadStatic{
         this->index_block_size = ReadStatic::index_block_size;
         this->open_num = ReadStatic::open_num;
         this->get_flag = ReadStatic::get_flag;
+
+        this->put_num = ReadStatic::put_num - this->put_num;
+        this->get_num = ReadStatic::get_num - this->get_num;
 
     }
 

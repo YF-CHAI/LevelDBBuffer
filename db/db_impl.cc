@@ -388,6 +388,8 @@ DBImpl::~DBImpl() {
     std::cout<<"table cache shoot: \t"<<ReadStatic::table_cache_shoot<<std::endl;
     std::cout<<"data block read: \t"<<ReadStatic::data_block_read<<std::endl;
     std::cout<<"index size: \t"<<ReadStatic::index_block_size<<std::endl;
+    std::cout<<"Users Put request num: \t"<<ReadStatic::put_num<<std::endl;
+    std::cout<<"Users Get request num: \t"<<ReadStatic::get_num<<std::endl;
 
 
     //shutting_down_.Release_Store(this);
@@ -1405,6 +1407,8 @@ void* DBImpl::BCC_BGWork(void *db)
             std::cout<<"Delta table cache shoot: \t"<<readStatic.table_cache_shoot<<std::endl;
             std::cout<<"Delta data block read: \t"<<readStatic.data_block_read<<std::endl;
             std::cout<<"Delta index size: \t"<<readStatic.index_block_size<<std::endl;
+            std::cout<<"Users Get request num: \t"<<readStatic.get_num<<std::endl;
+            std::cout<<"Users Put request num: \t"<<readStatic.put_num<<std::endl;
 
             //std::cout << "SubstractBy stmp_[1].partial_stats.bytes_written: "<<stmp_[1].partial_stats.bytes_written<< std::endl;
 
@@ -2268,6 +2272,7 @@ int64_t DBImpl::TEST_MaxNextLevelOverlappingBytes() {
 Status DBImpl::Get(const ReadOptions& options,
                    const Slice& key,
                    std::string* value) {
+  ReadStatic::get_num++;//cyf add
   Status s;
   MutexLock l(&mutex_);
   SequenceNumber snapshot;
@@ -2368,7 +2373,7 @@ Status DBImpl::Write(const WriteOptions& options, WriteBatch* my_batch) {
   w.sync = options.sync;
   w.done = false;
 
-
+  ReadStatic::put_num++;//cyf add
 
   MutexLock l(&mutex_);
   writers_.push_back(&w);
