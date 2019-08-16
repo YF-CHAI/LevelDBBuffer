@@ -331,8 +331,7 @@ DBImpl::DBImpl(const Options& raw_options, const std::string& dbname)
       tmp_batch_(new WriteBatch),
       bg_compaction_scheduled_(false),
       manual_compaction_(NULL),
-      pth(NULL),
-      pid_bcc_(NULL)
+      pth(NULL)
       //eBPF_(NULL)
       //ssdname_() {
     {
