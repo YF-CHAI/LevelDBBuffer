@@ -35,10 +35,10 @@ void leveldb::Cachestat_eBPF:: attach_kernel_probe_event()
 
 void leveldb::Cachestat_eBPF::detach_kernel_probe_event()
 {
-    bpf_->detach_kprobe("add_to_page_cache_lru");
-    bpf_->detach_kprobe("mark_page_accessed");
-    bpf_->detach_kprobe("account_page_dirtied");
-    bpf_->detach_kprobe("mark_buffer_dirty");
+    bpf_.detach_kprobe("add_to_page_cache_lru");
+    bpf_.detach_kprobe("mark_page_accessed");
+    bpf_.detach_kprobe("account_page_dirtied");
+    bpf_.detach_kprobe("mark_buffer_dirty");
 }
 
 leveldb::cache_info leveldb::Cachestat_eBPF::get_cache_info()
