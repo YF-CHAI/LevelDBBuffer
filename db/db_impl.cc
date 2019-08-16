@@ -1397,7 +1397,7 @@ void* DBImpl::BCC_BGWork(void *db)
 
             probe_time = probe_timer.End();
             std::cout << "Probing cost time is: "<<probe_time<<" Seconds"<<std::endl;
-
+            continue;
             std::cout<<"Delta mem getnum: \t"<<readStatic.mem_get<<std::endl;
             for(int i=0;i<config::kNumLevels;i++)
                 std::cout<<"Delta level: \t"<<i<<"\t getnum: \t"<<readStatic.level_get[i]<<std::endl;
