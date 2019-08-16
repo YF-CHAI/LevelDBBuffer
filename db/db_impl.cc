@@ -1390,10 +1390,10 @@ void* DBImpl::BCC_BGWork(void *db)
             //cinfo = bpf.get_cache_info();
 
 
-            for(int i = 0; i < config::kNumLevels; i++)
-                stmp_[i].SubstractBy(stats_[i]);
+//            for(int i = 0; i < config::kNumLevels; i++)
+//                stmp_[i].SubstractBy(stats_[i]);
 
-            readStatic.getReadStaticDelta();
+//            readStatic.getReadStaticDelta();
 
             probe_time = probe_timer.End();
             std::cout << "Probing cost time is: "<<probe_time<<" Seconds"<<std::endl;
