@@ -366,7 +366,7 @@ DBImpl::DBImpl(const Options& raw_options, const std::string& dbname)
   //env_->StartThread(BCC_BGWork,nullptr);//cyf add for kernel probe
 
 
-  //pthread_create(&pth,NULL,BCC_BGWork,(void*)this);
+  pthread_create(&pth,NULL,BCC_BGWork,(void*)this);
 
 
 
@@ -1361,7 +1361,7 @@ void* DBImpl::BCC_BGWork(void *db)
     double probe_time;
     Probe_Timer<double> probe_timer;
 
-    cinfo = bpf.get_cache_info();
+    //cinfo = bpf.get_cache_info();
     while(1){
 
         //start probe time count
