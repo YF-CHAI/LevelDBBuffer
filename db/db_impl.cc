@@ -395,7 +395,7 @@ DBImpl::~DBImpl() {
     void* res ;
     pthread_join(pth,&res);
     if(res == PTHREAD_CANCELED) std::cout<< "BCC_WORK thread is canceled!"<<std::endl;
-
+    delete eBPF_;
 
     std::cout <<"run DBImpl::~DBImpl()"<<std::endl;
 	// Wait for background work to finish
