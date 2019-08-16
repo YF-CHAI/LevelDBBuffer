@@ -330,8 +330,8 @@ DBImpl::DBImpl(const Options& raw_options, const std::string& dbname)
       seed_(0),
       tmp_batch_(new WriteBatch),
       bg_compaction_scheduled_(false),
-      manual_compaction_(NULL),
-      probe__cv_(&probe_mutex_)
+      manual_compaction_(NULL)
+      //probe__cv_(&probe_mutex_)
       //ssdname_() {
     {
     has_imm_.Release_Store(NULL);
@@ -395,7 +395,7 @@ DBImpl::~DBImpl() {
     void* res ;
     pthread_join(pth,&res);
     if(res == PTHREAD_CANCELED) std::cout<< "BCC_WORK thread is canceled!"<<std::endl;
-    //probe__cv_.Wait();
+
 
     std::cout <<"run DBImpl::~DBImpl()"<<std::endl;
 	// Wait for background work to finish
@@ -1480,7 +1480,7 @@ void DBImpl::ProbeKernelFunction()//cyf won't use anymore
 
 
         if(DBImpl::isProbingEnd){
-            probe__cv_.SignalAll();
+
             break;
 
         }
