@@ -1354,7 +1354,7 @@ void* DBImpl::BCC_BGWork(void *db)
 
     pthread_setcancelstate(PTHREAD_CANCEL_ENABLE,NULL);
     //pthread_setcanceltype(PTHREAD_CANCEL_DEFERRED,NULL);
-
+    pthread_detach(pthread_self());
     std::cout <<"BCC_BGWork is running~" <<std::endl;
     struct cache_info cinfo;
     //Cachestat_eBPF bpf;
@@ -2374,8 +2374,8 @@ Status DBImpl::Write(const WriteOptions& options, WriteBatch* my_batch) {
   w.batch = my_batch;
   w.sync = options.sync;
   w.done = false;
-  //if(pth == NULL)//cyf add
-      //pthread_create(&pth,NULL,BCC_BGWork,(void*)this);
+  if(pth == NULL)//cyf add
+      pthread_create(&pth,NULL,BCC_BGWork,(void*)this);
 
 
   ReadStatic::put_num++;//cyf add
