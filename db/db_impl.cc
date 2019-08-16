@@ -1357,7 +1357,7 @@ void* DBImpl::BCC_BGWork(void *db)
     std::cout <<"BCC_BGWork is running~" <<std::endl;
     struct cache_info cinfo;
     Cachestat_eBPF bpf;
-    //bpf.attach_kernel_probe_event();
+    bpf.attach_kernel_probe_event();
     //reinterpret_cast<DBImpl*>(db)->eBPF_ = new Cachestat_eBPF();
 
     int64_t files_num_inlevel[config::kNumLevels];
@@ -1366,7 +1366,7 @@ void* DBImpl::BCC_BGWork(void *db)
     double probe_time;
     Probe_Timer<double> probe_timer;
 
-    //cinfo = bpf.get_cache_info();
+    cinfo = bpf.get_cache_info();
     while(1){
 
         //start probe time count
@@ -1387,7 +1387,7 @@ void* DBImpl::BCC_BGWork(void *db)
 
             usleep(config::kLDCBCCProbeInterval* 1000 *1000);
             std::cout <<"=================================RUNNING STATISTIC==========================="<<std::endl;
-            //cinfo = bpf.get_cache_info();
+            cinfo = bpf.get_cache_info();
 
 
             for(int i = 0; i < config::kNumLevels; i++)
