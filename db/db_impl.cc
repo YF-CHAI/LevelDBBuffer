@@ -366,9 +366,7 @@ DBImpl::DBImpl(const Options& raw_options, const std::string& dbname)
   //env_->StartThread(BCC_BGWork,nullptr);//cyf add for kernel probe
 
 
-
-      //DBImpl::isProbingEnd = false;
-      pthread_create(&pth,NULL,BCC_BGWork,(void*)this);
+  pthread_create(&pth,NULL,BCC_BGWork,(void*)this);
 
 
 
