@@ -184,7 +184,7 @@ class DBImpl : public DB {
   pthread_t pth;
   //port::Mutex probe_mutex_;
   //port::CondVar probe__cv_;//cyf add for probing linux kernel function
-  Cachestat_eBPF* eBPF_;
+  //Cachestat_eBPF* eBPF_;
 
 
 
