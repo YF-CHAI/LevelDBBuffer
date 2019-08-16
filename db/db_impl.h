@@ -188,7 +188,7 @@ class DBImpl : public DB {
   static bool swith_isprobe_start;
   static bool isProbingEnd;
   pthread_t pth;
-  pid_t pid_bcc_;
+  //pid_t pid_bcc_;
   //Cachestat_eBPF* bpf;//cyf add
   //port::Mutex probe_mutex_;
   //port::CondVar probe__cv_;//cyf add for probing linux kernel function

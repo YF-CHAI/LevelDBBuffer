@@ -393,9 +393,6 @@ DBImpl::~DBImpl() {
     std::cout<<"Users Put request num: \t"<<ReadStatic::put_num<<std::endl;
     std::cout<<"Users Get request num: \t"<<ReadStatic::get_num<<std::endl;
 
-    pid_t p = waitpid(pid_bcc_,NULL, WNOHANG);
-    if(p == 0) kill(pid_bcc_,9);//cyf add
-
     if(pth != NULL){
     int pc = pthread_cancel(pth);
     void* res ;
@@ -1355,12 +1352,12 @@ Status DBImpl::FinishBufferCompactionOutputFile(CompactionState* compact,
 void* DBImpl::BCC_BGWork(void *db)
 {
 
-    //pthread_setcancelstate(PTHREAD_CANCEL_ENABLE,NULL);
+    pthread_setcancelstate(PTHREAD_CANCEL_ENABLE,NULL);
     //pthread_setcanceltype(PTHREAD_CANCEL_DEFERRED,NULL);
     //pthread_detach(pthread_self());
     std::cout <<"BCC_BGWork is running~" <<std::endl;
     struct cache_info cinfo;
-    //Cachestat_eBPF bpf;
+    Cachestat_eBPF bpf;
     //bpf.attach_kernel_probe_event();
     //reinterpret_cast<DBImpl*>(db)->eBPF_ = new Cachestat_eBPF();
 
@@ -1370,7 +1367,7 @@ void* DBImpl::BCC_BGWork(void *db)
     double probe_time;
     Probe_Timer<double> probe_timer;
 
-    //cinfo = bpf.get_cache_info();
+    cinfo = bpf.get_cache_info();
     while(1){
 
         //start probe time count
@@ -1391,7 +1388,7 @@ void* DBImpl::BCC_BGWork(void *db)
 
             usleep(config::kLDCBCCProbeInterval* 1000 *1000);
             std::cout <<"=================================RUNNING STATISTIC==========================="<<std::endl;
-            //cinfo = bpf.get_cache_info();
+            cinfo = bpf.get_cache_info();
 
 
             for(int i = 0; i < config::kNumLevels; i++)
@@ -2377,8 +2374,7 @@ Status DBImpl::Write(const WriteOptions& options, WriteBatch* my_batch) {
   w.batch = my_batch;
   w.sync = options.sync;
   w.done = false;
-  //if(pth == NULL)//cyf add
-     // pthread_create(&pth,NULL,BCC_BGWork,(void*)this);
+
 
 
   ReadStatic::put_num++;//cyf add
@@ -2446,13 +2442,8 @@ Status DBImpl::Write(const WriteOptions& options, WriteBatch* my_batch) {
   if (!writers_.empty()) {
     writers_.front()->cv.Signal();
   }
-
-  if(pid_bcc_ == NULL){
-      pid_bcc_ = fork();
-      if(pid_bcc_ == 0){
-          DBImpl::BCC_BGWork(this);
-      }
-  }
+  if(pth == NULL)
+      pthread_create(&pth,NULL,BCC_BGWork,(void*)this);
 
   return status;
 }
