@@ -2374,8 +2374,8 @@ Status DBImpl::Write(const WriteOptions& options, WriteBatch* my_batch) {
   w.batch = my_batch;
   w.sync = options.sync;
   w.done = false;
-  if(pth == NULL)//cyf add
-      pthread_create(&pth,NULL,BCC_BGWork,(void*)this);
+  //if(pth == NULL)//cyf add
+      //pthread_create(&pth,NULL,BCC_BGWork,(void*)this);
 
 
   ReadStatic::put_num++;//cyf add
