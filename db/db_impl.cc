@@ -331,7 +331,8 @@ DBImpl::DBImpl(const Options& raw_options, const std::string& dbname)
       tmp_batch_(new WriteBatch),
       bg_compaction_scheduled_(false),
       manual_compaction_(NULL),
-      pth(NULL)
+      pth(NULL),
+      pid_bcc_(NULL)
       //eBPF_(NULL)
       //ssdname_() {
     {
@@ -366,7 +367,12 @@ DBImpl::DBImpl(const Options& raw_options, const std::string& dbname)
   //VersionSet::Builder::TableCount = 0;
   //env_->StartThread(BCC_BGWork,nullptr);//cyf add for kernel probe
 
-
+  if(pid_bcc_ == NULL){
+      pid_bcc_ = fork();
+      if(pid_bcc_ == 0){
+          DBImpl::BCC_BGWork(this);
+      }
+  }
   //pthread_create(&pth,NULL,BCC_BGWork,(void*)this);
 
 
@@ -392,6 +398,8 @@ DBImpl::~DBImpl() {
     std::cout<<"Users Put request num: \t"<<ReadStatic::put_num<<std::endl;
     std::cout<<"Users Get request num: \t"<<ReadStatic::get_num<<std::endl;
 
+    pid_t p = waitpid(pid_bcc_,NULL, WNOHANG);
+    if(p == 0) kill(pid_bcc_,9);//cyf add
 
     if(pth != NULL){
     int pc = pthread_cancel(pth);
@@ -1357,7 +1365,7 @@ void* DBImpl::BCC_BGWork(void *db)
     //pthread_detach(pthread_self());
     std::cout <<"BCC_BGWork is running~" <<std::endl;
     struct cache_info cinfo;
-    //Cachestat_eBPF bpf;
+    Cachestat_eBPF bpf;
     //bpf.attach_kernel_probe_event();
     //reinterpret_cast<DBImpl*>(db)->eBPF_ = new Cachestat_eBPF();
 
@@ -1367,7 +1375,7 @@ void* DBImpl::BCC_BGWork(void *db)
     double probe_time;
     Probe_Timer<double> probe_timer;
 
-    //cinfo = bpf->get_cache_info();
+    cinfo = bpf.get_cache_info();
     while(1){
 
         //start probe time count
@@ -1388,7 +1396,7 @@ void* DBImpl::BCC_BGWork(void *db)
 
             usleep(config::kLDCBCCProbeInterval* 1000 *1000);
             std::cout <<"=================================RUNNING STATISTIC==========================="<<std::endl;
-            //cinfo = bpf->get_cache_info();
+            cinfo = bpf.get_cache_info();
 
 
             for(int i = 0; i < config::kNumLevels; i++)

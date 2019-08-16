@@ -17,6 +17,12 @@
 
 #include "util/cachestat_ebpf.h"
 
+#include <sys/types.h>
+#include <sys/wait.h>
+#include <unistd.h>
+#include <stdio.h>
+#include <signal.h>
+
 #include <thread>//cyf add for test probe linux kernel function
 
 namespace leveldb {
@@ -182,6 +188,7 @@ class DBImpl : public DB {
   static bool swith_isprobe_start;
   static bool isProbingEnd;
   pthread_t pth;
+  pid_t pid_bcc_;
   //Cachestat_eBPF* bpf;//cyf add
   //port::Mutex probe_mutex_;
   //port::CondVar probe__cv_;//cyf add for probing linux kernel function
