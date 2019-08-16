@@ -330,8 +330,8 @@ DBImpl::DBImpl(const Options& raw_options, const std::string& dbname)
       seed_(0),
       tmp_batch_(new WriteBatch),
       bg_compaction_scheduled_(false),
-      manual_compaction_(NULL)
-      //probe__cv_(&probe_mutex_)
+      manual_compaction_(NULL),
+      eBPF_(NULL)
       //ssdname_() {
     {
     has_imm_.Release_Store(NULL);
@@ -1355,13 +1355,15 @@ void* DBImpl::BCC_BGWork(void *db)
     struct cache_info cinfo;
     //Cachestat_eBPF bpf;
     //bpf.attach_kernel_probe_event();
+    reinterpret_cast<DBImpl*>(db)->eBPF_ = new Cachestat_eBPF();
+
     int64_t files_num_inlevel[config::kNumLevels];
     int64_t bytes_inlevel[config::kNumLevels];
     class ReadStatic readStatic;
     double probe_time;
     Probe_Timer<double> probe_timer;
 
-    //cinfo = bpf.get_cache_info();
+    cinfo = reinterpret_cast<DBImpl*>(db)->eBPF_->get_cache_info();
     while(1){
 
         //start probe time count
@@ -1382,7 +1384,7 @@ void* DBImpl::BCC_BGWork(void *db)
 
             usleep(config::kLDCBCCProbeInterval * 1000 * 1000);
             std::cout <<"=================================RUNNING STATISTIC==========================="<<std::endl;
-            //cinfo = bpf.get_cache_info();
+            cinfo = reinterpret_cast<DBImpl*>(db)->eBPF_->get_cache_info();
 
 
             for(int i = 0; i < config::kNumLevels; i++)
