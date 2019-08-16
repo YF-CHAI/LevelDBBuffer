@@ -1378,12 +1378,12 @@ void* DBImpl::BCC_BGWork(void *db)
         if(1){
             std::thread::id tid = std::this_thread::get_id();
 
-            memcpy(stmp_, stats_, sizeof(struct DBImpl::CompactionStats) * config::kNumLevels);
-            for(int i = 0; i < config::kNumLevels; i++){
-                files_num_inlevel[i] = reinterpret_cast<DBImpl*>(db)->versions_->NumLevelFiles(i);
-                bytes_inlevel[i] = reinterpret_cast<DBImpl*>(db)->versions_->NumLevelBytes(i);
-            }
-            readStatic.getSnapShot();
+//            memcpy(stmp_, stats_, sizeof(struct DBImpl::CompactionStats) * config::kNumLevels);
+//            for(int i = 0; i < config::kNumLevels; i++){
+//                files_num_inlevel[i] = reinterpret_cast<DBImpl*>(db)->versions_->NumLevelFiles(i);
+//                bytes_inlevel[i] = reinterpret_cast<DBImpl*>(db)->versions_->NumLevelBytes(i);
+//            }
+//            readStatic.getSnapShot();
 
             usleep(config::kLDCBCCProbeInterval* 1000 *1000);
             std::cout <<"=================================RUNNING STATISTIC==========================="<<std::endl;
