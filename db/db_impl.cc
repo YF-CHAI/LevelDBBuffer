@@ -1937,7 +1937,7 @@ Status DBImpl::Dispatch(CompactionState* compact) {
       Compaction* c2;
       c2 = versions_->PickCompaction();
       CompactionState* compact2 = new CompactionState(c2);
-      for(int index = 0;index < compact2->compaction->inputs_[0].size();index++){
+      for(size_t index = 0;index < compact2->compaction->inputs_[0].size();index++){
           status = BufferCompact(compact2,index);
           if (!status.ok())
               break;
