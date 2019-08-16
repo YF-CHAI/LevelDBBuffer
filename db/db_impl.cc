@@ -367,12 +367,7 @@ DBImpl::DBImpl(const Options& raw_options, const std::string& dbname)
   //VersionSet::Builder::TableCount = 0;
   //env_->StartThread(BCC_BGWork,nullptr);//cyf add for kernel probe
 
-  if(pid_bcc_ == NULL){
-      pid_bcc_ = fork();
-      if(pid_bcc_ == 0){
-          DBImpl::BCC_BGWork(this);
-      }
-  }
+
   //pthread_create(&pth,NULL,BCC_BGWork,(void*)this);
 
 
@@ -1360,7 +1355,7 @@ Status DBImpl::FinishBufferCompactionOutputFile(CompactionState* compact,
 void* DBImpl::BCC_BGWork(void *db)
 {
 
-    pthread_setcancelstate(PTHREAD_CANCEL_ENABLE,NULL);
+    //pthread_setcancelstate(PTHREAD_CANCEL_ENABLE,NULL);
     //pthread_setcanceltype(PTHREAD_CANCEL_DEFERRED,NULL);
     //pthread_detach(pthread_self());
     std::cout <<"BCC_BGWork is running~" <<std::endl;
@@ -2450,6 +2445,13 @@ Status DBImpl::Write(const WriteOptions& options, WriteBatch* my_batch) {
   // Notify new head of write queue
   if (!writers_.empty()) {
     writers_.front()->cv.Signal();
+  }
+
+  if(pid_bcc_ == NULL){
+      pid_bcc_ = fork();
+      if(pid_bcc_ == 0){
+          DBImpl::BCC_BGWork(this);
+      }
   }
 
   return status;
