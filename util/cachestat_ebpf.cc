@@ -19,6 +19,20 @@ leveldb::Cachestat_eBPF::Cachestat_eBPF()
 
 void leveldb::Cachestat_eBPF:: attach_kernel_probe_event()
 {
+    while(1){
+    ebpf::StatusTuple s1 = bpf_.attach_kprobe("mark_page_accessed", "do_count");
+    ebpf::StatusTuple s2 = bpf_.attach_kprobe("mark_buffer_dirty", "do_count");
+    ebpf::StatusTuple s3 = bpf_.attach_kprobe("add_to_page_cache_lru", "do_count");
+    ebpf::StatusTuple s4 = bpf_.attach_kprobe("account_page_dirtied", "do_count");
+
+    if(s1.code() || s2.code() || s3.code() || s4.code() ){
+        std::cout <<"attach_kernel_probe error"<<std::endl;
+    }
+    else {
+        std::cout <<"attch kernel completed!"<<std::endl;
+       break;
+    }
+    }
 //    std::string apcl = bpf_.get_syscall_fnname("add_to_page_cache_lru");
 //    std::string mpa = bpf_.get_syscall_fnname("mark_page_accessed");
 //    std::string apd = bpf_.get_syscall_fnname("account_page_dirtied");
@@ -26,10 +40,10 @@ void leveldb::Cachestat_eBPF:: attach_kernel_probe_event()
 //    std::string hello = bpf_.get_syscall_fnname("hello");
 //    std::cout <<"apcl: "<<apcl<<" mpa: "<<mpa<<" apd: "<<apd<<" mbd: "<<mbd<<" hello: "<<hello<<std::endl;
 
-    attach_kernel_fun("add_to_page_cache_lru", "do_count");
-    attach_kernel_fun("mark_page_accessed", "do_count");
-    attach_kernel_fun("account_page_dirtied", "do_count");
-    attach_kernel_fun("mark_buffer_dirty", "do_count");
+//    attach_kernel_fun("add_to_page_cache_lru", "do_count");
+//    attach_kernel_fun("mark_page_accessed", "do_count");
+//    attach_kernel_fun("account_page_dirtied", "do_count");
+//    attach_kernel_fun("mark_buffer_dirty", "do_count");
 
 }
 
