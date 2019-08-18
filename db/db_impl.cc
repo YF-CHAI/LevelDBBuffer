@@ -1358,7 +1358,6 @@ void* DBImpl::BCC_BGWork(void *db)
     struct cache_info cinfo;
     Cachestat_eBPF bpf;
     bpf.attach_kernel_probe_event();
-    //reinterpret_cast<DBImpl*>(db)->eBPF_ = new Cachestat_eBPF();
 
     int64_t files_num_inlevel[config::kNumLevels];
     int64_t bytes_inlevel[config::kNumLevels];
@@ -1372,9 +1371,6 @@ void* DBImpl::BCC_BGWork(void *db)
         //start probe time count
         probe_timer.Start();
 
-
-    //reinterpret_cast<DBImpl*>(db)->ebpf_.attach_kernel_probe_event();
-    //cinfo = reinterpret_cast<DBImpl*>(db)->ebpf_.get_cache_info();
         if(1){
             std::thread::id tid = std::this_thread::get_id();
 
@@ -1388,7 +1384,8 @@ void* DBImpl::BCC_BGWork(void *db)
             usleep(config::kLDCBCCProbeInterval* 1000 *1000);
             std::cout <<"=================================RUNNING STATISTIC==========================="<<std::endl;
             cinfo = bpf.get_cache_info();
-
+            std::cout << "mpa: \t"<<cinfo.mpa<<"\t mbd: \t"<<cinfo.mbd
+                      <<"\t apcl: \t"<<cinfo.apcl<<"\t apd: \t"<<cinfo.apd<<std::endl;
 
             for(int i = 0; i < config::kNumLevels; i++)
                 stmp_[i].SubstractBy(stats_[i]);
@@ -1398,18 +1395,18 @@ void* DBImpl::BCC_BGWork(void *db)
             probe_time = probe_timer.End();
             std::cout << "Probing cost time is: "<<probe_time<<" Seconds"<<std::endl;
             //continue;
-            std::cout<<"Delta mem getnum: \t"<<readStatic.mem_get<<std::endl;
+            std::cout<<"Delta mem getnum: \t"<<readStatic.readStaticDelta_.mem_get<<std::endl;
             for(int i=0;i<config::kNumLevels;i++)
-                std::cout<<"Delta level: \t"<<i<<"\t getnum: \t"<<readStatic.level_get[i]<<std::endl;
+                std::cout<<"Delta level: \t"<<i<<"\t getnum: \t"<<readStatic.readStaticDelta_.level_get[i]<<std::endl;
 
-            std::cout<<"Delta table get: \t "<<readStatic.table_get<<std::endl;
-            std::cout<<"Delta bloomfilter miss: \t "<<readStatic.table_bloomfilter_miss<<std::endl;
-            std::cout<<"Delta readfile miss: \t"<<readStatic.table_readfile_miss<<std::endl;
-            std::cout<<"Delta table cache shoot: \t"<<readStatic.table_cache_shoot<<std::endl;
-            std::cout<<"Delta data block read: \t"<<readStatic.data_block_read<<std::endl;
-            std::cout<<"Delta index size: \t"<<readStatic.index_block_size<<std::endl;
-            std::cout<<"Delta Users Get request num: \t"<<readStatic.get_num<<std::endl;
-            std::cout<<"Delta Users Put request num: \t"<<readStatic.put_num<<std::endl;
+            std::cout<<"Delta table get: \t "<<readStatic.readStaticDelta_.table_get<<std::endl;
+            std::cout<<"Delta bloomfilter miss: \t "<<readStatic.readStaticDelta_.table_bloomfilter_miss<<std::endl;
+            std::cout<<"Delta readfile miss: \t"<<readStatic.readStaticDelta_.table_readfile_miss<<std::endl;
+            std::cout<<"Delta table cache shoot: \t"<<readStatic.readStaticDelta_.table_cache_shoot<<std::endl;
+            std::cout<<"Delta data block read: \t"<<readStatic.readStaticDelta_.data_block_read<<std::endl;
+            std::cout<<"Delta index size: \t"<<readStatic.readStaticDelta_.index_block_size<<std::endl;
+            std::cout<<"Delta Users Get request num: \t"<<readStatic.readStaticDelta_.get_num<<std::endl;
+            std::cout<<"Delta Users Put request num: \t"<<readStatic.readStaticDelta_.put_num<<std::endl;
 
             //std::cout << "SubstractBy stmp_[1].partial_stats.bytes_written: "<<stmp_[1].partial_stats.bytes_written<< std::endl;
 
@@ -1439,10 +1436,8 @@ void* DBImpl::BCC_BGWork(void *db)
                              stmp_[level].partial_stats.write_file_nums,
                              stmp_[level].partial_stats.compact_times);
 
-
                   }
                 }
-
 
                 for (int level = 1; level < config::kNumLevels; level++) {
                   int files = reinterpret_cast<DBImpl*>(db)->versions_->NumLevelFiles(level);
@@ -1464,11 +1459,6 @@ void* DBImpl::BCC_BGWork(void *db)
 
         }
 
-
-
-
-    //int files = reinterpret_cast<DBImpl*>(db)->versions_->NumLevelFiles(0);
-    //std::cout << "BCC_BGWork NumLevelFiles:"<<files <<std::endl;
 
     }
 

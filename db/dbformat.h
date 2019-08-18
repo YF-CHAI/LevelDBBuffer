@@ -57,10 +57,10 @@ static const uint64_t kLDCMaxFileSizeLimit = 32 << 20;
 static const uint64_t kLDCBlockCacheSize = 8 << 20;
 static const uint64_t kLDCMaxWriteBufferSize = 64 << 20;
 
-static const uint64_t kLDCBCCProbeInterval = 10;
+static const uint64_t kLDCBCCProbeInterval = 5;
 
 //whc add
-static const int kThresholdBufferNum  = 5;
+static const int kThresholdBufferNum  = 1;
 
 //cyf add for having two condition to determine the merge operation
 //kLDCMergeSizeRatio = total_linked_fragement_size / target_merge_sstable_size
@@ -166,7 +166,7 @@ class ReadStatic{
         readStaticDelta_.get_num = ReadStatic::get_num - readStaticDelta_.get_num;
 
     }
-private:
+
     struct ReadStaticDelta readStaticDelta_;
 };
 
