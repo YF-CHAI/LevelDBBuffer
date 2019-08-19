@@ -1381,6 +1381,8 @@ void* DBImpl::BCC_BGWork(void *db)
             }
             readStatic.getSnapShot();
 
+            std::cout <<"Current config::kLDCMergeSizeRatio: "<<config::kLDCMergeSizeRatio<<std::endl;
+
             sleep(config::kLDCBCCProbeInterval);
             std::cout <<"=================================RUNNING STATISTIC==========================="<<std::endl;
             cinfo = bpf.get_cache_info();
