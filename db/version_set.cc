@@ -1169,7 +1169,7 @@ void Apply(VersionEdit* edit) {
                  <<"buffer num: "<<f->buffer->nodes.size()<<" |"
                  <<std::endl; */
          if(  ( (merge_score  >= config::kLDCMergeSizeRatio ) && (config::kIsLDCSizeTrigger) )
-                 || ( (f->buffer->nodes.size() >= config::kThresholdBufferNum) && (!config::kIsLDCSizeTrigger) )  ){
+                 || ( (f->buffer->nodes.size() >= config::kThresholdBufferNum) && (config::kIsLDCSizeTrigger) )  ){
              //cyf change, 1.0 means buffers' size / to be merged SST's size has no write amplification
              vset_->buffer_compact_switch_ = true;
              v->bc_compaction_level_ = level;

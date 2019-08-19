@@ -1381,11 +1381,11 @@ void* DBImpl::BCC_BGWork(void *db)
             }
             readStatic.getSnapShot();
 
-            usleep(config::kLDCBCCProbeInterval* 1000 *1000);
-//            std::cout <<"=================================RUNNING STATISTIC==========================="<<std::endl;
+            sleep(config::kLDCBCCProbeInterval);
+            std::cout <<"=================================RUNNING STATISTIC==========================="<<std::endl;
             cinfo = bpf.get_cache_info();
-//            std::cout << "mpa: \t"<<cinfo.mpa<<"\t mbd: \t"<<cinfo.mbd
-//                      <<"\t apcl: \t"<<cinfo.apcl<<"\t apd: \t"<<cinfo.apd<<std::endl;
+            std::cout << "mpa: \t"<<cinfo.mpa<<"\t mbd: \t"<<cinfo.mbd
+                      <<"\t apcl: \t"<<cinfo.apcl<<"\t apd: \t"<<cinfo.apd<<std::endl;
 
             for(int i = 0; i < config::kNumLevels; i++)
                 stmp_[i].SubstractBy(stats_[i]);
@@ -1393,46 +1393,46 @@ void* DBImpl::BCC_BGWork(void *db)
             readStatic.getReadStaticDelta();
 
             probe_time = probe_timer.End();
-//            std::cout << "Probing cost time is: "<<probe_time<<" Seconds"<<std::endl;
-//            std::cout<<"Delta mem getnum: \t"<<readStatic.readStaticDelta_.mem_get<<std::endl;
-//            for(int i=0;i<config::kNumLevels;i++)
-//                std::cout<<"Delta level: \t"<<i<<"\t getnum: \t"<<readStatic.readStaticDelta_.level_get[i]<<std::endl;
+            std::cout << "Probing cost time is: "<<probe_time<<" Seconds"<<std::endl;
+            std::cout<<"Delta mem getnum: \t"<<readStatic.readStaticDelta_.mem_get<<std::endl;
+            for(int i=0;i<config::kNumLevels;i++)
+                std::cout<<"Delta level: \t"<<i<<"\t getnum: \t"<<readStatic.readStaticDelta_.level_get[i]<<std::endl;
 
-//            std::cout<<"Delta table get: \t "<<readStatic.readStaticDelta_.table_get<<std::endl;
-//            std::cout<<"Delta bloomfilter miss: \t "<<readStatic.readStaticDelta_.table_bloomfilter_miss<<std::endl;
-//            std::cout<<"Delta readfile miss: \t"<<readStatic.readStaticDelta_.table_readfile_miss<<std::endl;
-//            std::cout<<"Delta table cache shoot: \t"<<readStatic.readStaticDelta_.table_cache_shoot<<std::endl;
-//            std::cout<<"Delta data block read: \t"<<readStatic.readStaticDelta_.data_block_read<<std::endl;
-//            std::cout<<"Delta index size: \t"<<readStatic.readStaticDelta_.index_block_size<<std::endl;
-//            std::cout<<"Delta Users Get request num: \t"<<readStatic.readStaticDelta_.get_num<<std::endl;
-//            std::cout<<"Delta Users Put request num: \t"<<readStatic.readStaticDelta_.put_num<<std::endl;
+            std::cout<<"Delta table get: \t "<<readStatic.readStaticDelta_.table_get<<std::endl;
+            std::cout<<"Delta bloomfilter miss: \t "<<readStatic.readStaticDelta_.table_bloomfilter_miss<<std::endl;
+            std::cout<<"Delta readfile miss: \t"<<readStatic.readStaticDelta_.table_readfile_miss<<std::endl;
+            std::cout<<"Delta table cache shoot: \t"<<readStatic.readStaticDelta_.table_cache_shoot<<std::endl;
+            std::cout<<"Delta data block read: \t"<<readStatic.readStaticDelta_.data_block_read<<std::endl;
+            std::cout<<"Delta index size: \t"<<readStatic.readStaticDelta_.index_block_size<<std::endl;
+            std::cout<<"Delta Users Get request num: \t"<<readStatic.readStaticDelta_.get_num<<std::endl;
+            std::cout<<"Delta Users Put request num: \t"<<readStatic.readStaticDelta_.put_num<<std::endl;
 
 
 
                 std::string value;
                 char buf[500];
 
-//                printf(
-//                         "                               Delta_Compactions\n"
-//                         "Level   Files  Size(MB)   Time(sec)   Read(MB)   Write(MB)  ReadFiles   WriteFiles   CompactTimes\n"
-//                         "-------------------------------------------------------------------------------------------------\n"
-//                         );
+                printf(
+                         "                               Delta_Compactions\n"
+                         "Level   Files  Size(MB)   Time(sec)   Read(MB)   Write(MB)  ReadFiles   WriteFiles   CompactTimes\n"
+                         "-------------------------------------------------------------------------------------------------\n"
+                         );
 
 
                 for (int level = 0; level < config::kNumLevels; level++) {
                   int files = reinterpret_cast<DBImpl*>(db)->versions_->NumLevelFiles(level) ;
                   if ( true /*||stats_[level].partial_stats.micros >= 0 || files >= 0*/) {
-//                    printf(
-//                             " %3d  %8d  %9.0lf  %9.0lf  %9.0lf  %9.0lf  %10lld  %10lld  %10lld\n",
-//                             level,
-//                             files - files_num_inlevel[level],
-//                             (reinterpret_cast<DBImpl*>(db)->versions_->NumLevelBytes(level) - bytes_inlevel[level]) / 1048576.0,
-//                             stmp_[level].partial_stats.micros / 1e6,
-//                             stmp_[level].partial_stats.bytes_read / 1048576.0,
-//                             stmp_[level].partial_stats.bytes_written / 1048576.0,
-//                             stmp_[level].partial_stats.read_file_nums,
-//                             stmp_[level].partial_stats.write_file_nums,
-//                             stmp_[level].partial_stats.compact_times);
+                    printf(
+                             " %3d  %8d  %9.0lf  %9.0lf  %9.0lf  %9.0lf  %10lld  %10lld  %10lld\n",
+                             level,
+                             files - files_num_inlevel[level],
+                             (reinterpret_cast<DBImpl*>(db)->versions_->NumLevelBytes(level) - bytes_inlevel[level]) / 1048576.0,
+                             stmp_[level].partial_stats.micros / 1e6,
+                             stmp_[level].partial_stats.bytes_read / 1048576.0,
+                             stmp_[level].partial_stats.bytes_written / 1048576.0,
+                             stmp_[level].partial_stats.read_file_nums,
+                             stmp_[level].partial_stats.write_file_nums,
+                             stmp_[level].partial_stats.compact_times);
 
                   }
                 }
@@ -1445,14 +1445,14 @@ void* DBImpl::BCC_BGWork(void *db)
                     for(int i = 0; i < stmp_[level-1].max_read_file_nums; i++){
                       for(int j = 0; j < stmp_[level].max_read_file_nums; j++){
                         if(stmp_[level].lh_compact_times[i][j] > 0){
-//                          printf(" (%d+%d,%lld) ", i, j, stmp_[level].lh_compact_times[i][j]);
+                          printf(" (%d+%d,%lld) ", i, j, stmp_[level].lh_compact_times[i][j]);
 
                         }
                       }
                     }
 
                   }
-//                  std::cout << std::endl;
+                  std::cout << std::endl;
                 }
 
         }
