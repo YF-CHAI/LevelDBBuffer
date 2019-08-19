@@ -1395,6 +1395,12 @@ void* DBImpl::BCC_BGWork(void *db)
             readStatic.getReadStaticDelta();
 
             probe_time = probe_timer.End();
+
+            if(1){
+                //cyf add for self-adaptive tune the config::kLDCMergeSizeRatio
+            }
+
+
             std::cout << "Probing cost time is: "<<probe_time<<" Seconds"<<std::endl;
             std::cout<<"Delta mem getnum: \t"<<readStatic.readStaticDelta_.mem_get<<std::endl;
             for(int i=0;i<config::kNumLevels;i++)
