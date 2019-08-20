@@ -1398,25 +1398,25 @@ void* DBImpl::BCC_BGWork(void *db)
 
             if(1){
                 //cyf add for self-adaptive tune the config::kLDCMergeSizeRatio
-                uint64_t rand_read4k_TP = 40 << 20; //40MB/s
-                uint64_t rand_write4k_TP = 450 << 20;//450MB/s
-                uint64_t user_read_MB = readStatic.readStaticDelta_.data_block_read * 1024 / 1048576;
-                uint64_t user_write_MB = readStatic.readStaticDelta_.put_num * 1024 /1048576;
-                uint64_t read_compaction_MB = 0;
-                uint64_t write_compation_MB = 0;
+                double rand_read4k_TP = 40 << 20; //40MB/s
+                double rand_write4k_TP = 450 << 20;//450MB/s
+                double user_read_MB = readStatic.readStaticDelta_.data_block_read * 1024 / 1048576;
+                double user_write_MB = readStatic.readStaticDelta_.put_num * 1024 /1048576;
+                double read_compaction_MB = 0;
+                double write_compation_MB = 0;
                 for (int i=0;i<config::kNumLevels;i++){
                     read_compaction_MB += (stmp_[i].partial_stats.bytes_read /1048576);
                     write_compation_MB += (stmp_[i].partial_stats.bytes_written /1048576);
                 }
 
-                uint64_t current_score = (user_read_MB +read_compaction_MB )/ rand_read4k_TP
+                double current_score = (user_read_MB + read_compaction_MB )/ rand_read4k_TP
                         + (write_compation_MB - user_write_MB) / rand_write4k_TP;
 
-                uint64_t increase_score = (user_read_MB << 1 + read_compaction_MB >>1 ) / rand_read4k_TP
-                        + (write_compation_MB >> 1 - user_write_MB) / rand_write4k_TP;
+                double increase_score = (user_read_MB * 2 + read_compaction_MB / 2 ) / rand_read4k_TP
+                        + (write_compation_MB /2 - user_write_MB) / rand_write4k_TP;
 
-                uint64_t decrease_score = (user_read_MB >> 1 + read_compaction_MB << 1 ) / rand_read4k_TP
-                        + (write_compation_MB << 1 - user_write_MB) / rand_write4k_TP;
+                double decrease_score = (user_read_MB / 2 + read_compaction_MB * 2 ) / rand_read4k_TP
+                        + (write_compation_MB *2 - user_write_MB) / rand_write4k_TP;
 
 
                 std::cout <<" increase_score: "<< increase_score <<" current_score: " << current_score
