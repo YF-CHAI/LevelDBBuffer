@@ -1398,15 +1398,15 @@ void* DBImpl::BCC_BGWork(void *db)
 
             if(1){
                 //cyf add for self-adaptive tune the config::kLDCMergeSizeRatio
-                double rand_read4k_TP = 40 << 20; //40MB/s
-                double rand_write4k_TP = 450 << 20;//450MB/s
-                double user_read_MB = readStatic.readStaticDelta_.data_block_read * 1024 / 1048576;
-                double user_write_MB = readStatic.readStaticDelta_.put_num * 1024 /1048576;
+                double rand_read4k_TP = 40; //40MB/s
+                double rand_write4k_TP = 450;//450MB/s
+                double user_read_MB = readStatic.readStaticDelta_.data_block_read * 1024 / 1048576.0;
+                double user_write_MB = readStatic.readStaticDelta_.put_num * 1024 /1048576.0;
                 double read_compaction_MB = 0;
                 double write_compation_MB = 0;
                 for (int i=0;i<config::kNumLevels;i++){
-                    read_compaction_MB += (stmp_[i].partial_stats.bytes_read /1048576);
-                    write_compation_MB += (stmp_[i].partial_stats.bytes_written /1048576);
+                    read_compaction_MB += (stmp_[i].partial_stats.bytes_read /1048576.0);
+                    write_compation_MB += (stmp_[i].partial_stats.bytes_written /1048576.0);
                 }
 
                 double current_score = (user_read_MB + read_compaction_MB )/ rand_read4k_TP
