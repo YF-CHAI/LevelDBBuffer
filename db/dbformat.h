@@ -104,6 +104,7 @@ struct ReadStaticDelta{
      uint64_t table_cache_shoot;
      uint64_t data_block_read;
      uint64_t index_block_size;
+     uint64_t block_cache_read;
      int open_num;
      int get_flag;
 
@@ -122,6 +123,7 @@ class ReadStatic{
     static uint64_t table_cache_shoot;
     static uint64_t data_block_read;
     static uint64_t index_block_size;
+    static uint64_t block_cache_read;
     static int open_num;
     static int get_flag;
 
@@ -139,6 +141,7 @@ class ReadStatic{
         readStaticDelta_.table_cache_shoot = ReadStatic::table_cache_shoot;
         readStaticDelta_.data_block_read = ReadStatic::data_block_read;
         readStaticDelta_.index_block_size = ReadStatic::index_block_size;
+        readStaticDelta_.block_cache_read = ReadStatic::block_cache_read;
         readStaticDelta_.open_num = ReadStatic::open_num;
         readStaticDelta_.get_flag = ReadStatic::get_flag;
 
@@ -159,6 +162,7 @@ class ReadStatic{
         readStaticDelta_.table_cache_shoot = ReadStatic::table_cache_shoot - readStaticDelta_.table_cache_shoot;
         readStaticDelta_.data_block_read = ReadStatic::data_block_read - readStaticDelta_.data_block_read;
         readStaticDelta_.index_block_size = ReadStatic::index_block_size - readStaticDelta_.index_block_size;
+        readStaticDelta_.block_cache_read = ReadStatic::block_cache_read - readStaticDelta_.block_cache_read;
         readStaticDelta_.open_num = ReadStatic::open_num - readStaticDelta_.open_num;
         readStaticDelta_.get_flag = ReadStatic::get_flag - readStaticDelta_.get_flag;
 

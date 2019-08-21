@@ -25,6 +25,7 @@ uint64_t ReadStatic::table_readfile_miss = 0;
 uint64_t ReadStatic::table_cache_shoot = 0;
 uint64_t ReadStatic::data_block_read = 0;
 uint64_t ReadStatic::index_block_size = 0;
+uint64_t ReadStatic::block_cache_read = 0;
 int ReadStatic::open_num = 0;
 int ReadStatic::get_flag = 0;
 

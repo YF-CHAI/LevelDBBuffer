@@ -197,6 +197,7 @@ Iterator* Table::BlockReader(void* arg,
       cache_handle = block_cache->Lookup(key);
       if (cache_handle != NULL) {
         block = reinterpret_cast<Block*>(block_cache->Value(cache_handle));
+        ReadStatic::block_cache_read++;//cyf add for statistic block cache gets number
       } else {
         s = ReadBlock(table->rep_->file, options, handle, &contents);
         if (s.ok()) {
