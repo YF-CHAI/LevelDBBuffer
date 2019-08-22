@@ -304,7 +304,7 @@ Options SanitizeOptions(const std::string& dbname,
   }
   //whc change
   if (result.block_cache == NULL) {
-    result.block_cache = NewLRUCache(config::kLDCBlockCacheSize);//cyf changed to 1GB, default 8MB
+    //result.block_cache = NewLRUCache(config::kLDCBlockCacheSize);//cyf changed to 1GB, default 8MB
     //result.block_cache = NewLRUCache(8);
   }
   return result;
@@ -389,6 +389,7 @@ DBImpl::~DBImpl() {
     std::cout<<"table cache shoot: \t"<<ReadStatic::table_cache_shoot<<std::endl;
     std::cout<<"data block read: \t"<<ReadStatic::data_block_read<<std::endl;
     std::cout<<"index size: \t"<<ReadStatic::index_block_size<<std::endl;
+    std::cout<<"block cache read: \t"<<ReadStatic::block_cache_read<<std::endl;
     std::cout<<"Users Put request num: \t"<<ReadStatic::put_num<<std::endl;
     std::cout<<"Users Get request num: \t"<<ReadStatic::get_num<<std::endl;
 
@@ -1443,6 +1444,8 @@ void* DBImpl::BCC_BGWork(void *db)
             std::cout<<"Delta table cache shoot: \t"<<readStatic.readStaticDelta_.table_cache_shoot<<std::endl;
             std::cout<<"Delta data block read: \t"<<readStatic.readStaticDelta_.data_block_read<<std::endl;
             std::cout<<"Delta index size: \t"<<readStatic.readStaticDelta_.index_block_size<<std::endl;
+            std::cout<<"Delta block cache read: \t"<<readStatic.readStaticDelta_.block_cache_read<<std::endl;
+
             std::cout<<"Delta Users Get request num: \t"<<readStatic.readStaticDelta_.get_num<<std::endl;
             std::cout<<"Delta Users Put request num: \t"<<readStatic.readStaticDelta_.put_num<<std::endl;
 
