@@ -21,7 +21,7 @@ Options::Options()
       write_buffer_size(config::kLDCMaxWriteBufferSize),//cyf changed default:4MB
       max_open_files(50000),
       block_cache(NULL),
-      block_size(4096 * 8),//cyf change default 4096
+      block_size(4096),//cyf change default 4096
       block_restart_interval(16),
       max_file_size(config::kLDCMaxFileSizeLimit),//cyf changed default:2MB
       compression(kSnappyCompression),//cyf change for test, default:kSnappyCompression
