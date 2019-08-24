@@ -1396,6 +1396,11 @@ void* DBImpl::BCC_BGWork(void *db)
             readStatic.getReadStaticDelta();
 
             probe_time = probe_timer.End();
+            std::cout << "# Transaction throughput (KTPS): \t"
+                <<(readStatic.readStaticDelta_.get_num
+                   + readStatic.readStaticDelta_.put_num) / probe_time / 1000 << std::endl;
+
+
 
             if(1){
                 //cyf add for self-adaptive tune the config::kLDCMergeSizeRatio
