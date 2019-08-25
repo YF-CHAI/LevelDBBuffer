@@ -1382,7 +1382,7 @@ void* DBImpl::BCC_BGWork(void *db)
             }
             readStatic.getSnapShot();
 
-            std::cout <<"Current config::kLDCMergeSizeRatio: "<<config::kLDCMergeSizeRatio<<std::endl;
+
 
             sleep(config::kLDCBCCProbeInterval);
             std::cout <<"=================================RUNNING STATISTIC==========================="<<std::endl;
@@ -1423,8 +1423,19 @@ void* DBImpl::BCC_BGWork(void *db)
 
                 double decrease_score = (user_read_MB / 2 + read_compaction_MB * 2 ) / rand_read4k_TP
                         + (write_compation_MB *2 - user_write_MB) / rand_write4k_TP;
+                if((current_score <= increase_score) && (current_score <= decrease_score)){
+                    std::cout<< "No need to tune config::kLDCMergeSizeRatio!"<<std::endl;
 
+                } else if(increase_score < decrease_score){
+                    config::kLDCMergeSizeRatio =
+                            config::kLDCMergeSizeRatio + 0.1 > 2.0 ? 2.0 : config::kLDCMergeSizeRatio + 0.1 ;
+                } else {
+                    config::kLDCMergeSizeRatio =
+                            config::kLDCMergeSizeRatio - 0.1 >= 0.1 ? config::kLDCMergeSizeRatio - 0.1: 0.1;
 
+                }
+
+                std::cout <<"Current config::kLDCMergeSizeRatio: "<<config::kLDCMergeSizeRatio<<std::endl;
                 std::cout <<" increase_score: "<< increase_score <<" current_score: " << current_score
                          <<" decrease_score: "<< decrease_score<<std::endl;
 
