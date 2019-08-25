@@ -141,7 +141,7 @@ class DB {
   // Therefore the following call will compact the entire database:
   //    db->CompactRange(NULL, NULL);
   virtual void CompactRange(const Slice* begin, const Slice* end) = 0;
-  virtual void setScanNum(int len) = 0;
+  virtual void setScanNum(int len){}
  private:
   // No copying allowed
   DB(const DB&);
