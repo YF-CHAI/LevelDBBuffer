@@ -51,7 +51,7 @@ static const int kBufferCompactEndLevel = 7;
 
 
 //cyf LDC trigger condition
-static const bool kUseBccInLDC = true;//cyf use to open libbcc to probe kernel function, maybe use std::atomic better
+
 static const bool kIsLDCSizeTrigger = true;
 static const uint64_t kLDCMaxFileSizeLimit = 4 << 20;
 static const uint64_t kLDCBlockCacheSize = 8 << 20;//cyf change default 8MB
@@ -66,6 +66,7 @@ static const int kThresholdBufferNum  = 30;
 //kLDCMergeSizeRatio = total_linked_fragement_size / target_merge_sstable_size
 //the best is 1:1, means no write amplification
 static  double  kLDCMergeSizeRatio = 1.0;//cyf change to non-const var
+static const bool kUseAdaptiveLDC = true;
 
 //cyf add for pre-reserving buffer number
 static const int kBufferResveredNum = 20;

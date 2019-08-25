@@ -1427,10 +1427,10 @@ void* DBImpl::BCC_BGWork(void *db)
                 if((current_score <= increase_score) && (current_score <= decrease_score)){
                     //std::cout<< "No need to tune config::kLDCMergeSizeRatio!"<<std::endl;
 
-                } else if(increase_score < decrease_score){
+                } else if( (increase_score < decrease_score) && config::kUseAdaptiveLDC){
                     config::kLDCMergeSizeRatio =
                             config::kLDCMergeSizeRatio + 0.1 > 2.0 ? 2.0 : config::kLDCMergeSizeRatio + 0.1 ;
-                } else {
+                } else if(config::kUseAdaptiveLDC){
                     config::kLDCMergeSizeRatio =
                             config::kLDCMergeSizeRatio - 0.1 >= 0.1 ? config::kLDCMergeSizeRatio - 0.1: 0.1;
 
