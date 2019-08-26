@@ -142,6 +142,7 @@ class DB {
   //    db->CompactRange(NULL, NULL);
   virtual void CompactRange(const Slice* begin, const Slice* end) = 0;
   virtual void setScanNum(int len){}
+  virtual void resetLDCRatio(){}
  private:
   // No copying allowed
   DB(const DB&);

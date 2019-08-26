@@ -59,6 +59,7 @@ static const int kThresholdBufferNum  = 30;
 //kLDCMergeSizeRatio = total_linked_fragement_size / target_merge_sstable_size
 //the best is 1:1, means no write amplification
 static  double  kLDCMergeSizeRatio = 1.0;//cyf change to non-const var
+
 static const bool kUseAdaptiveLDC = true;
 
 //whc add
@@ -72,7 +73,7 @@ static const int kBufferResveredNum = 20;
 //|0%   |10%    |......|90%     |100%   |
 //|key0 |key1   |......|key9    |key10  |   key0 = smallest, key10 = largest
 static const int kLDCLinkKVSizeInterval = 21;
-
+static double const kInitialLDCMergeSizeRatio = kLDCMergeSizeRatio;//cyf use for reset Ratio value for YCSB Run stage
 //whc add
 static const bool kSwitchSSD = false;
 
