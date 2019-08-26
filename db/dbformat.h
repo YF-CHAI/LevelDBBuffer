@@ -50,7 +50,7 @@ static const uint64_t kLDCMaxFileSizeLimit = 4 << 20;
 static const uint64_t kLDCBlockCacheSize = 8 << 20;//cyf change default 8MB
 static const uint64_t kLDCMaxWriteBufferSize = 8 << 20;
 
-static const uint64_t kLDCBCCProbeInterval = 10;//cyf probe every 30s
+static const uint64_t kLDCBCCProbeInterval = 30;//cyf probe every 30s
 
 //whc add
 static const int kThresholdBufferNum  = 30;

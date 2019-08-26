@@ -393,12 +393,7 @@ DBImpl::~DBImpl() {
     std::cout<<"Users Put request num: \t"<<ReadStatic::put_num<<std::endl;
     std::cout<<"Users Get request num: \t"<<ReadStatic::get_num<<std::endl;
 
-    if(pth != NULL){
-    int pc = pthread_cancel(pth);
-    void* res ;
-    pthread_join(pth,&res);
-    if(res == PTHREAD_CANCELED) std::cout<< "BCC_WORK thread is canceled!"<<std::endl;
-    }
+
 
     std::cout <<"run DBImpl::~DBImpl()"<<std::endl;
 	// Wait for background work to finish
@@ -408,6 +403,14 @@ DBImpl::~DBImpl() {
     bg_cv_.Wait();
   }
   mutex_.Unlock();
+
+  //cyf cancel the probe thread after back ground compaction totally complete.
+  if(pth != NULL){
+  int pc = pthread_cancel(pth);
+  void* res ;
+  pthread_join(pth,&res);
+  if(res == PTHREAD_CANCELED) std::cout<< "BCC_WORK thread is canceled!"<<std::endl;
+  }
 
   if (db_lock_ != NULL) {
     env_->UnlockFile(db_lock_);
@@ -1429,7 +1432,7 @@ void* DBImpl::BCC_BGWork(void *db)
 
                 } else if( (increase_score < decrease_score) && config::kUseAdaptiveLDC){
                     config::kLDCMergeSizeRatio =
-                            (config::kLDCMergeSizeRatio * 2) >= 4.0 ? 4.0 : config::kLDCMergeSizeRatio * 2 ;
+                            (config::kLDCMergeSizeRatio + 0.1) >= 2.0 ? 2.0 : config::kLDCMergeSizeRatio + 0.1 ;
                 } else if(config::kUseAdaptiveLDC){
                     config::kLDCMergeSizeRatio =
                             (config::kLDCMergeSizeRatio / 2) >= 0.01 ? config::kLDCMergeSizeRatio / 2 : 0.01;
