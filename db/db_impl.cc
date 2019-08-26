@@ -1385,10 +1385,10 @@ void* DBImpl::BCC_BGWork(void *db)
 
 
             sleep(config::kLDCBCCProbeInterval);
-            std::cout <<"=================================RUNNING STATISTIC==========================="<<std::endl;
+            //std::cout <<"=================================RUNNING STATISTIC==========================="<<std::endl;
             cinfo = bpf.get_cache_info();
-            std::cout << "mpa: \t"<<cinfo.mpa<<"\t mbd: \t"<<cinfo.mbd
-                      <<"\t apcl: \t"<<cinfo.apcl<<"\t apd: \t"<<cinfo.apd<<std::endl;
+            //std::cout << "mpa: \t"<<cinfo.mpa<<"\t mbd: \t"<<cinfo.mbd
+                      //<<"\t apcl: \t"<<cinfo.apcl<<"\t apd: \t"<<cinfo.apd<<std::endl;
 
             for(int i = 0; i < config::kNumLevels; i++)
                 stmp_[i].SubstractBy(stats_[i]);
@@ -1437,8 +1437,8 @@ void* DBImpl::BCC_BGWork(void *db)
                 }
 
 
-                std::cout <<" increase_score: "<< increase_score <<" current_score: " << current_score
-                         <<" decrease_score: "<< decrease_score<<std::endl;
+                //std::cout <<" increase_score: "<< increase_score <<" current_score: " << current_score
+                         //<<" decrease_score: "<< decrease_score<<std::endl;
 
 
 
@@ -1449,7 +1449,7 @@ void* DBImpl::BCC_BGWork(void *db)
 
             }
 
-
+            /*
             std::cout << "Probing cost time is: "<<probe_time<<" Seconds"<<std::endl;
             std::cout<<"Delta mem getnum: \t"<<readStatic.readStaticDelta_.mem_get<<std::endl;
             for(int i=0;i<config::kNumLevels;i++)
@@ -1480,7 +1480,7 @@ void* DBImpl::BCC_BGWork(void *db)
 
                 for (int level = 0; level < config::kNumLevels; level++) {
                   int files = reinterpret_cast<DBImpl*>(db)->versions_->NumLevelFiles(level) ;
-                  if ( true /*||stats_[level].partial_stats.micros >= 0 || files >= 0*/) {
+                  if ( true ) {
                     printf(
                              " %3d  %8d  %9.0lf  %9.0lf  %9.0lf  %9.0lf  %10lld  %10lld  %10lld\n",
                              level,
@@ -1512,7 +1512,7 @@ void* DBImpl::BCC_BGWork(void *db)
 
                   }
                   std::cout << std::endl;
-                }
+                }*/
 
         }
 
