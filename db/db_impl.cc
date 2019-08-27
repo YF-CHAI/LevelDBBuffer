@@ -1406,7 +1406,7 @@ void* DBImpl::BCC_BGWork(void *db)
 
 
 
-            if(1){
+            if(DBImpl::swith_isprobe_start){
                 //cyf add for self-adaptive tune the config::kLDCMergeSizeRatio
                 double rand_read4k_TP = 40; //40MB/s
                 double rand_write4k_TP = 450;//450MB/s
@@ -2030,6 +2030,7 @@ Status DBImpl::Dispatch(CompactionState* compact) {
 
 //cyf: actually means LDC's Merge operation
 Status DBImpl::BufferCompact(CompactionState* compact,int index){
+    DBImpl::swith_isprobe_start  = true;
     Status status;
     const uint64_t start_micros = env_->NowMicros();
     int64_t imm_micros = 0;  // Micros spent doing imm_ compactions
