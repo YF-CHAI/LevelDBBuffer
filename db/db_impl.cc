@@ -43,7 +43,7 @@ namespace leveldb {
 const int kNumNonTableCacheFiles = 10;
 
 bool DBImpl::isProbingEnd =false;
-bool DBImpl::swith_isprobe_start = false;
+bool DBImpl::swith_isprobe_start = true;
 
 // Information kept for every waiting writer
 struct DBImpl::Writer {
@@ -2030,7 +2030,7 @@ Status DBImpl::Dispatch(CompactionState* compact) {
 
 //cyf: actually means LDC's Merge operation
 Status DBImpl::BufferCompact(CompactionState* compact,int index){
-    DBImpl::swith_isprobe_start  = true;
+    //DBImpl::swith_isprobe_start  = true;
     Status status;
     const uint64_t start_micros = env_->NowMicros();
     int64_t imm_micros = 0;  // Micros spent doing imm_ compactions
