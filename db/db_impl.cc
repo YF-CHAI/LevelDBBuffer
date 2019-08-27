@@ -1407,7 +1407,6 @@ void* DBImpl::BCC_BGWork(void *db)
 
 
             if(DBImpl::swith_isprobe_start){
-                //cyf add for self-adaptive tune the config::kLDCMergeSizeRatio
                 double rand_read4k_TP = 40; //40MB/s
                 double rand_write4k_TP = 450;//450MB/s
                 double user_read_MB = readStatic.readStaticDelta_.data_block_read * 1024 / 1048576.0;
@@ -1432,7 +1431,7 @@ void* DBImpl::BCC_BGWork(void *db)
 
                 } else if( (increase_score < decrease_score) && config::kUseAdaptiveLDC){
                     config::kLDCMergeSizeRatio =
-                            (config::kLDCMergeSizeRatio * 2) >= 2.0 ? 2.0 : config::kLDCMergeSizeRatio * 2 ;
+                            (config::kLDCMergeSizeRatio * 8) >= 2.0 ? 2.0 : config::kLDCMergeSizeRatio * 8 ;
                 } else if(config::kUseAdaptiveLDC){
                     config::kLDCMergeSizeRatio =
                             (config::kLDCMergeSizeRatio / 2) >= 0.01 ? config::kLDCMergeSizeRatio / 2 : 0.01;
@@ -2420,6 +2419,10 @@ Status DBImpl::Delete(const WriteOptions& options, const Slice& key) {
 }
 
 Status DBImpl::Write(const WriteOptions& options, WriteBatch* my_batch) {
+
+    if(pth == NULL)
+        pthread_create(&pth,NULL,BCC_BGWork,(void*)this);
+
   Writer w(&mutex_);
   w.batch = my_batch;
   w.sync = options.sync;
@@ -2492,8 +2495,7 @@ Status DBImpl::Write(const WriteOptions& options, WriteBatch* my_batch) {
   if (!writers_.empty()) {
     writers_.front()->cv.Signal();
   }
-  if(pth == NULL)
-      pthread_create(&pth,NULL,BCC_BGWork,(void*)this);
+
 
   return status;
 }
