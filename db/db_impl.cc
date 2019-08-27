@@ -1432,7 +1432,7 @@ void* DBImpl::BCC_BGWork(void *db)
 
                 } else if( (increase_score < decrease_score) && config::kUseAdaptiveLDC){
                     config::kLDCMergeSizeRatio =
-                            (config::kLDCMergeSizeRatio + 0.1) >= 2.0 ? 2.0 : config::kLDCMergeSizeRatio + 0.1 ;
+                            (config::kLDCMergeSizeRatio * 2) >= 2.0 ? 2.0 : config::kLDCMergeSizeRatio * 2 ;
                 } else if(config::kUseAdaptiveLDC){
                     config::kLDCMergeSizeRatio =
                             (config::kLDCMergeSizeRatio / 2) >= 0.01 ? config::kLDCMergeSizeRatio / 2 : 0.01;
