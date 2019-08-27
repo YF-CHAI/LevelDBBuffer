@@ -53,7 +53,7 @@ static const uint64_t kLDCMaxWriteBufferSize = 8 << 20;
 static const uint64_t kLDCBCCProbeInterval = 1;//cyf probe every 30s
 
 //whc add
-static const int kThresholdBufferNum  = 20;
+static const int kThresholdBufferNum  = 10;
 //cyf LDC trigger condition
 //cyf add for having two condition to determine the merge operation
 //kLDCMergeSizeRatio = total_linked_fragement_size / target_merge_sstable_size
