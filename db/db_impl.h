@@ -92,7 +92,7 @@ class DBImpl : public DB {
   virtual void CompactRange(const Slice* begin, const Slice* end);
 
   virtual void setScanNum(int len){ReadStatic::get_num += len;}//cyf add for scan number statistic
-  virtual void resetLDCRatio(){kLDCMergeSizeRatio = config::kInitialLDCMergeSizeRatio;}//cyf add for scan number statistic
+  virtual void resetLDCRatio(){DBImpl::LDC_MERGE_RATIO_ = config::kInitialLDCMergeSizeRatio;}//cyf add for scan number statistic
   // Extra methods (for testing) that are not in the public DB interface
 
   // Compact any files in the named level that overlap [*begin,*end]
@@ -123,6 +123,9 @@ class DBImpl : public DB {
   struct PartialCompactionStats;
   struct OneTimeCompactionStats;
   struct CompactionStats;
+
+  //cyf add
+  static double LDC_MERGE_RATIO_;
 
  private:
   //Cachestat_eBPF ebpf_;

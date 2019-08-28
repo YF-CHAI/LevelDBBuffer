@@ -44,6 +44,7 @@ const int kNumNonTableCacheFiles = 10;
 
 bool DBImpl::isProbingEnd =false;
 bool DBImpl::swith_isprobe_start = true;
+double DBImpl::LDC_MERGE_RATIO_ = config::kLDCMergeSizeRatio;
 
 // Information kept for every waiting writer
 struct DBImpl::Writer {
@@ -1402,7 +1403,9 @@ void* DBImpl::BCC_BGWork(void *db)
             std::cout << "# Transaction throughput (KTPS): \t"
                 <<(readStatic.readStaticDelta_.get_num
                    + readStatic.readStaticDelta_.put_num) / probe_time / 1000
-                <<"\t Current kLDCMergeSizeRatio: "<<kLDCMergeSizeRatio<<std::endl;
+                <<"\t Current DBImpl::LDC_MERGE_RATIO_: "<<DBImpl::LDC_MERGE_RATIO_
+                <<"this->LDC_MERGE_RATIO_: "<<  reinterpret_cast<DBImpl*>(db)->LDC_MERGE_RATIO_
+                <<std::endl;
 
 
 
@@ -1427,14 +1430,14 @@ void* DBImpl::BCC_BGWork(void *db)
                 double decrease_score = (user_read_MB / 2 + read_compaction_MB * 2 ) / rand_read4k_TP
                         + (write_compation_MB *2 - user_write_MB) / rand_write4k_TP;
                 if((current_score <= increase_score) && (current_score <= decrease_score)){
-                    //std::cout<< "No need to tune kLDCMergeSizeRatio!"<<std::endl;
+                    //std::cout<< "No need to tune DBImpl::LDC_MERGE_RATIO!"<<std::endl;
 
                 } else if( (increase_score < decrease_score) && config::kUseAdaptiveLDC){
-                    kLDCMergeSizeRatio =
-                            (kLDCMergeSizeRatio * 2) >= 2.0 ? 2.0 : kLDCMergeSizeRatio * 2 ;
+                    DBImpl::LDC_MERGE_RATIO_ =
+                            (DBImpl::LDC_MERGE_RATIO_ * 2) >= 2.0 ? 2.0 : DBImpl::LDC_MERGE_RATIO_ * 2 ;
                 } else if((increase_score >= decrease_score) && config::kUseAdaptiveLDC){
-                    kLDCMergeSizeRatio =
-                            (kLDCMergeSizeRatio / 2) >= 0.01 ? kLDCMergeSizeRatio / 2 : 0.01;
+                    DBImpl::LDC_MERGE_RATIO_ =
+                            (DBImpl::LDC_MERGE_RATIO_ / 2) >= 0.01 ? DBImpl::LDC_MERGE_RATIO_ / 2 : 0.01;
 
                 }
 
