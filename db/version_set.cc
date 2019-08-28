@@ -1163,12 +1163,12 @@ void Apply(VersionEdit* edit) {
 
          double merge_score = 0.0;
          merge_score =  static_cast<double>(buffer_size_tmp) / max;
-          std::cout<< "| cyf merge_score: "<<merge_score
+          /*std::cout<< "| cyf merge_score: "<<merge_score
                   <<" | f->buffer->size KB: "<<f->buffer->size/(1024.0)
                  <<" |f->file_size KB:"<<f->file_size/((1<<10)*1.0)<<" | "
                  <<"buffer num: "<<f->buffer->nodes.size()<<" |"
                  <<"The LDC Merge Ratio: "<<DBImpl::LDC_MERGE_RATIO_
-                 <<std::endl;
+                 <<std::endl;*/
          if(  ( (merge_score  >= DBImpl::LDC_MERGE_RATIO_ ) && (config::kIsLDCSizeTrigger) )
                  || ( (f->buffer->nodes.size() >= config::kThresholdBufferNum) && (config::kIsLDCSizeTrigger) )  ){
              //cyf change, 1.0 means buffers' size / to be merged SST's size has no write amplification
@@ -1183,7 +1183,7 @@ void Apply(VersionEdit* edit) {
       }//end for for(size_t j=0;j<levels_[level].added_buffer_nodes.size();j++)
 
     }//end for for (int level = 0; level < config::kNumLevels; level++)
-    std::cout <<" cyf void SaveTo(Version* v) finished, LDC Ratio is: "<<DBImpl::LDC_MERGE_RATIO_<<std::endl;
+    //std::cout <<" cyf void SaveTo(Version* v) finished, LDC Ratio is: "<<DBImpl::LDC_MERGE_RATIO_<<std::endl;
   }
 
   void MaybeAddFile(Version* v, int level, FileMetaData* f) {
