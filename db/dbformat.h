@@ -16,6 +16,7 @@
 #include <atomic>
 
 namespace leveldb {
+static  double  kLDCMergeSizeRatio = 0.1;//cyf change to non-const var
 
 // Grouping of constants.  We may want to make some of these
 // parameters set via options.
@@ -58,7 +59,7 @@ static const int kThresholdBufferNum  = 10;
 //cyf add for having two condition to determine the merge operation
 //kLDCMergeSizeRatio = total_linked_fragement_size / target_merge_sstable_size
 //the best is 1:1, means no write amplification
-static  double  kLDCMergeSizeRatio = 0.1;//cyf change to non-const var
+
 
 static const bool kUseAdaptiveLDC = true;
 

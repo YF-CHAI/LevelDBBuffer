@@ -1402,7 +1402,7 @@ void* DBImpl::BCC_BGWork(void *db)
             std::cout << "# Transaction throughput (KTPS): \t"
                 <<(readStatic.readStaticDelta_.get_num
                    + readStatic.readStaticDelta_.put_num) / probe_time / 1000
-                <<"\t Current kLDCMergeSizeRatio: "<<config::kLDCMergeSizeRatio<<std::endl;
+                <<"\t Current kLDCMergeSizeRatio: "<<kLDCMergeSizeRatio<<std::endl;
 
 
 
@@ -1427,14 +1427,14 @@ void* DBImpl::BCC_BGWork(void *db)
                 double decrease_score = (user_read_MB / 2 + read_compaction_MB * 2 ) / rand_read4k_TP
                         + (write_compation_MB *2 - user_write_MB) / rand_write4k_TP;
                 if((current_score <= increase_score) && (current_score <= decrease_score)){
-                    //std::cout<< "No need to tune config::kLDCMergeSizeRatio!"<<std::endl;
+                    //std::cout<< "No need to tune kLDCMergeSizeRatio!"<<std::endl;
 
                 } else if( (increase_score < decrease_score) && config::kUseAdaptiveLDC){
-                    config::kLDCMergeSizeRatio =
-                            (config::kLDCMergeSizeRatio * 2) >= 2.0 ? 2.0 : config::kLDCMergeSizeRatio * 2 ;
+                    kLDCMergeSizeRatio =
+                            (kLDCMergeSizeRatio * 2) >= 2.0 ? 2.0 : kLDCMergeSizeRatio * 2 ;
                 } else if((increase_score >= decrease_score) && config::kUseAdaptiveLDC){
-                    config::kLDCMergeSizeRatio =
-                            (config::kLDCMergeSizeRatio / 2) >= 0.01 ? config::kLDCMergeSizeRatio / 2 : 0.01;
+                    kLDCMergeSizeRatio =
+                            (kLDCMergeSizeRatio / 2) >= 0.01 ? kLDCMergeSizeRatio / 2 : 0.01;
 
                 }
 
