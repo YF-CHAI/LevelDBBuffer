@@ -1163,12 +1163,13 @@ void Apply(VersionEdit* edit) {
 
          double merge_score = 0.0;
          merge_score =  static_cast<double>(buffer_size_tmp) / max;
-         std::cout << "The merge_score is: "<<merge_score << "\n The LDC Merge Ratio:  "<<config::kLDCMergeSizeRatio<<std::endl;
-         /* std::cout<< "| cyf merge_score: "<<merge_score
-                  <<" | f->buffer->size: "<<f->buffer->size
-                 <<" |f->file_size:"<<f->file_size<<" | "
+         //std::cout << "The merge_score is: "<<merge_score << "\n The LDC Merge Ratio:  "<<config::kLDCMergeSizeRatio<<std::endl;
+          std::cout<< "| cyf merge_score: "<<merge_score
+                  <<" | f->buffer->size: "<<f->buffer->size/(1024.0)
+                 <<" |f->file_size MB:"<<f->file_size/((1<<10)*0.1)<<" | "
                  <<"buffer num: "<<f->buffer->nodes.size()<<" |"
-                 <<std::endl; */
+                 <<"The LDC Merge Ratio: "<<config::kLDCMergeSizeRatio
+                 <<std::endl;
          if(  ( (merge_score  >= config::kLDCMergeSizeRatio ) && (config::kIsLDCSizeTrigger) )
                  || ( (f->buffer->nodes.size() >= config::kThresholdBufferNum) && (config::kIsLDCSizeTrigger) )  ){
              //cyf change, 1.0 means buffers' size / to be merged SST's size has no write amplification

@@ -1971,17 +1971,15 @@ Status DBImpl::Dispatch(CompactionState* compact) {
   }
 
   if (status.ok()) {
-    //std::cout<<"dispatch:begin to install result"<<std::endl;
+
     status = InstallCompactionResults(compact);
-    //std::cout<<"dispatch:end to install result"<<std::endl;
+
   }
   
-  //std::cout<<"dispatch:going to clean compact"<<std::endl;
+
   compact->compaction->ReleaseInputs();
   CleanupCompaction(compact);
-  //std::cout<<"dispatch:end to clean compact"<<std::endl;
-  //compact->compaction->ReleaseInputs();
-  //std::cout<<"dispatch:end to releaseinput"<<std::endl;
+
   
   
   if(versions_->buffer_compact_switch_ ){
