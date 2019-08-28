@@ -1165,8 +1165,8 @@ void Apply(VersionEdit* edit) {
          merge_score =  static_cast<double>(buffer_size_tmp) / max;
          //std::cout << "The merge_score is: "<<merge_score << "\n The LDC Merge Ratio:  "<<config::kLDCMergeSizeRatio<<std::endl;
           std::cout<< "| cyf merge_score: "<<merge_score
-                  <<" | f->buffer->size: "<<f->buffer->size/(1024.0)
-                 <<" |f->file_size MB:"<<f->file_size/((1<<10)*0.1)<<" | "
+                  <<" | f->buffer->size KB: "<<f->buffer->size/(1024.0)
+                 <<" |f->file_size KB:"<<f->file_size/((1<<10)*1.0)<<" | "
                  <<"buffer num: "<<f->buffer->nodes.size()<<" |"
                  <<"The LDC Merge Ratio: "<<config::kLDCMergeSizeRatio
                  <<std::endl;
