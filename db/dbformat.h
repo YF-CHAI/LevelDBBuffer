@@ -60,7 +60,7 @@ static const int kThresholdBufferNum  = 10;
 //kLDCMergeSizeRatio = total_linked_fragement_size / target_merge_sstable_size
 //the best is 1:1, means no write amplification
 
-static const double kLDCMergeSizeRatio = 0.1;//cyf change to non-const var
+static const double kLDCMergeSizeRatio = 1.0;//cyf change to non-const var
 static const bool kUseAdaptiveLDC = true;
 
 //whc add
