@@ -1391,8 +1391,8 @@ void* DBImpl::BCC_BGWork(void *db)
             sleep(config::kLDCBCCProbeInterval);
             //std::cout <<"=================================RUNNING STATISTIC==========================="<<std::endl;
             cinfo = bpf.get_cache_info();
-            //std::cout << "mpa: \t"<<cinfo.mpa<<"\t mbd: \t"<<cinfo.mbd
-                      //<<"\t apcl: \t"<<cinfo.apcl<<"\t apd: \t"<<cinfo.apd<<std::endl;
+            std::cout << "mpa: \t"<<cinfo.mpa<<"\t mbd: \t"<<cinfo.mbd
+                      <<"\t apcl: \t"<<cinfo.apcl<<"\t apd: \t"<<cinfo.apd<<std::endl;
 
             for(int i = 0; i < config::kNumLevels; i++)
                 stmp_[i].SubstractBy(stats_[i]);
@@ -1400,10 +1400,10 @@ void* DBImpl::BCC_BGWork(void *db)
             readStatic.getReadStaticDelta();
 
             probe_time = probe_timer.End();
-            std::cout << "# Transaction throughput (KTPS): \t"
+            std::cout << "#_Transaction_throughput_(KTPS): \t"
                 <<(readStatic.readStaticDelta_.get_num
                    + readStatic.readStaticDelta_.put_num) / probe_time / 1000
-                <<"\t Current DBImpl::LDC_MERGE_RATIO_: "<<DBImpl::LDC_MERGE_RATIO_
+                <<"\t Current_DBImpl::LDC_MERGE_RATIO_: "<<DBImpl::LDC_MERGE_RATIO_
                 <<"this->LDC_MERGE_RATIO_: "<<  reinterpret_cast<DBImpl*>(db)->LDC_MERGE_RATIO_
                 <<std::endl;
 
@@ -1442,8 +1442,8 @@ void* DBImpl::BCC_BGWork(void *db)
                 }
 
 
-                //std::cout <<" increase_score: "<< increase_score <<" current_score: " << current_score
-                         //<<" decrease_score: "<< decrease_score<<std::endl;
+                std::cout <<" increase_score: "<< increase_score <<" current_score: " << current_score
+                         <<" decrease_score: "<< decrease_score<<std::endl;
 
 
 
@@ -1454,7 +1454,7 @@ void* DBImpl::BCC_BGWork(void *db)
 
             }
 
-            /*
+
             std::cout << "Probing cost time is: "<<probe_time<<" Seconds"<<std::endl;
             std::cout<<"Delta mem getnum: \t"<<readStatic.readStaticDelta_.mem_get<<std::endl;
             for(int i=0;i<config::kNumLevels;i++)
@@ -1517,7 +1517,7 @@ void* DBImpl::BCC_BGWork(void *db)
 
                   }
                   std::cout << std::endl;
-                }*/
+                }
 
         }
 
