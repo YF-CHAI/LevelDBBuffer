@@ -1377,7 +1377,7 @@ void* DBImpl::BCC_BGWork(void *db)
         probe_timer.Start();
 
         if(1){
-            std::thread::id tid = std::this_thread::get_id();
+            //std::thread::id tid = std::this_thread::get_id();
 
             memcpy(stmp_, stats_, sizeof(struct DBImpl::CompactionStats) * config::kNumLevels);
             for(int i = 0; i < config::kNumLevels; i++){
@@ -1389,7 +1389,7 @@ void* DBImpl::BCC_BGWork(void *db)
 
 
             sleep(config::kLDCBCCProbeInterval);
-            //std::cout <<"=================================RUNNING STATISTIC==========================="<<std::endl;
+
             cinfo = bpf.get_cache_info();
             std::cout << "mpa: \t"<<cinfo.mpa<<"\t mbd: \t"<<cinfo.mbd
                       <<"\t apcl: \t"<<cinfo.apcl<<"\t apd: \t"<<cinfo.apd<<std::endl;
@@ -1412,7 +1412,10 @@ void* DBImpl::BCC_BGWork(void *db)
             if(DBImpl::swith_isprobe_start){
                 double rand_read4k_TP = 40; //40MB/s
                 double rand_write4k_TP = 450;//450MB/s
-                double user_read_MB = readStatic.readStaticDelta_.data_block_read * 1024 / 1048576.0;
+                double user_read_MB = readStatic.readStaticDelta_.data_block_read == 0 ?
+                            readStatic.readStaticDelta_.get_num  * 1024 / 1048576.0
+                          : readStatic.readStaticDelta_.data_block_read * 1024 / 1048576.0;
+
                 double user_write_MB = readStatic.readStaticDelta_.put_num * 1024 /1048576.0;
                 double read_compaction_MB = 0;
                 double write_compation_MB = 0;
