@@ -1377,7 +1377,7 @@ void* DBImpl::BCC_BGWork(void *db)
         probe_timer.Start();
 
         if(1){
-            //std::thread::id tid = std::this_thread::get_id();
+            std::thread::id tid = std::this_thread::get_id();
 
             memcpy(stmp_, stats_, sizeof(struct DBImpl::CompactionStats) * config::kNumLevels);
             for(int i = 0; i < config::kNumLevels; i++){
@@ -1391,8 +1391,8 @@ void* DBImpl::BCC_BGWork(void *db)
             sleep(config::kLDCBCCProbeInterval);
 
             cinfo = bpf.get_cache_info();
-            std::cout << "mpa: \t"<<cinfo.mpa<<"\t mbd: \t"<<cinfo.mbd
-                      <<"\t apcl: \t"<<cinfo.apcl<<"\t apd: \t"<<cinfo.apd<<std::endl;
+            //std::cout << "mpa: \t"<<cinfo.mpa<<"\t mbd: \t"<<cinfo.mbd
+                      //<<"\t apcl: \t"<<cinfo.apcl<<"\t apd: \t"<<cinfo.apd<<std::endl;
 
             for(int i = 0; i < config::kNumLevels; i++)
                 stmp_[i].SubstractBy(stats_[i]);
@@ -1445,8 +1445,8 @@ void* DBImpl::BCC_BGWork(void *db)
                 }
 
 
-                std::cout <<" increase_score: "<< increase_score <<" current_score: " << current_score
-                         <<" decrease_score: "<< decrease_score<<std::endl;
+                //std::cout <<" increase_score: "<< increase_score <<" current_score: " << current_score
+                         //<<" decrease_score: "<< decrease_score<<std::endl;
 
 
 
@@ -1457,7 +1457,7 @@ void* DBImpl::BCC_BGWork(void *db)
 
             }
 
-
+            /*
             std::cout << "Probing cost time is: "<<probe_time<<" Seconds"<<std::endl;
             std::cout<<"Delta mem getnum: \t"<<readStatic.readStaticDelta_.mem_get<<std::endl;
             for(int i=0;i<config::kNumLevels;i++)
@@ -1520,7 +1520,7 @@ void* DBImpl::BCC_BGWork(void *db)
 
                   }
                   std::cout << std::endl;
-                }
+                }*/
 
         }
 
