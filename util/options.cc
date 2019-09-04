@@ -19,7 +19,7 @@ Options::Options()
       env(Env::Default()),
       info_log(NULL),
       write_buffer_size(config::kLDCMaxWriteBufferSize),//cyf changed default:4MB
-      max_open_files(50000),
+      max_open_files(1000),
       block_cache(NULL),
       block_size(4096),//cyf change default 4096
       block_restart_interval(16),
