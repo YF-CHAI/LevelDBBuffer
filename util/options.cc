@@ -27,6 +27,7 @@ Options::Options()
       compression(kSnappyCompression),//cyf change for test, default:kSnappyCompression
       reuse_logs(false),
       filter_policy(NewBloomFilterPolicy(128)),
+      //filter_policy(nullptr),
       amplify(10.0),
       top_level_size(20.0 * 1048576.0){//cyf changed default: 10MB
           //std::cout<<"options:filter:"<<filter_policy<<std::endl;
