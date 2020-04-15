@@ -29,7 +29,7 @@ Options::Options()
       filter_policy(NewBloomFilterPolicy(128)),
       //filter_policy(nullptr),
       amplify(10.0),
-      top_level_size(20.0 * 1048576.0){//cyf changed default: 10MB
+      top_level_size(5 * config::kLDCMaxFileSizeLimit){//cyf changed default: 10MB = 2MB(SST) * 5 ,scaled by SST size
           //std::cout<<"options:filter:"<<filter_policy<<std::endl;
 }
 
