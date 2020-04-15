@@ -45,7 +45,7 @@ static const int kMaxMemCompactLevel = 0;
 static const int kReadBytesPeriod = 1048576;
 
 
-
+static const uint64_t kLDCBlockSize = 4 << 10;
 static const bool kIsLDCSizeTrigger = true;
 static const uint64_t kLDCMaxFileSizeLimit = 4 << 20;
 static const uint64_t kLDCBlockCacheSize = 8 << 20;//cyf change default 8MB
