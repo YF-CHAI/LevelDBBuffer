@@ -52,6 +52,9 @@ static const uint64_t kLDCMaxFileSizeLimit = 4 << 20;
 static const uint64_t kLDCBlockSize = 4 << 10;
 static const uint64_t kLDCMaxWriteBufferSize = kLDCMaxFileSizeLimit * 2;
 
+//whc add
+static const int kBufferCompactStartLevel  = 1;
+static const int kBufferCompactEndLevel = 7;
 
 static const uint64_t kLDCBCCProbeInterval = 5;//cyf probe every 30s
 
@@ -66,9 +69,7 @@ static const bool kIsLDCSizeTrigger = true;
 static const double kLDCMergeSizeRatio = 1.0;//cyf change to non-const var
 static const bool kUseAdaptiveLDC = true;
 
-//whc add
-static const int kBufferCompactStartLevel  = 1;
-static const int kBufferCompactEndLevel = 7;
+
 
 //cyf add for pre-reserving buffer number
 static const int kBufferResveredNum = 20;
