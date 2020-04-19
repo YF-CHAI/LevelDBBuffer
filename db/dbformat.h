@@ -44,7 +44,7 @@ static const int kMaxMemCompactLevel = 0;
 // Approximate gap in bytes between samples of data read during iteration.
 static const int kReadBytesPeriod = 1048576;
 
-
+static const uint64_t kBloomFilterBitsPerKey = 128;
 static const uint64_t kLDCBlockSize = 4 << 10;
 static const bool kIsLDCSizeTrigger = true;
 static const uint64_t kLDCMaxFileSizeLimit = 4 << 20;

@@ -26,7 +26,7 @@ Options::Options()
       max_file_size(config::kLDCMaxFileSizeLimit),//cyf changed default:2MB
       compression(kSnappyCompression),//cyf change for test, default:kSnappyCompression
       reuse_logs(false),
-      filter_policy(NewBloomFilterPolicy(128)),
+      filter_policy(NewBloomFilterPolicy(config::kBloomFilterBitsPerKey)),
       //filter_policy(nullptr),
       amplify(10.0),
       top_level_size(5 * config::kLDCMaxFileSizeLimit){//cyf changed default: 10MB = 2MB(SST) * 5 ,scaled by SST size
