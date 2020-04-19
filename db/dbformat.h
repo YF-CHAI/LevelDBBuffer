@@ -45,11 +45,13 @@ static const int kMaxMemCompactLevel = 0;
 static const int kReadBytesPeriod = 1048576;
 
 static const uint64_t kBloomFilterBitsPerKey = 128;
-static const uint64_t kLDCBlockSize = 4 << 10;
-static const bool kIsLDCSizeTrigger = true;
-static const uint64_t kLDCMaxFileSizeLimit = 4 << 20;
+
 static const uint64_t kLDCBlockCacheSize = 8 << 20;//cyf change default 8MB
-static const uint64_t kLDCMaxWriteBufferSize = 8 << 20;
+
+static const uint64_t kLDCMaxFileSizeLimit = 4 << 20;
+static const uint64_t kLDCBlockSize = 4 << 10;
+static const uint64_t kLDCMaxWriteBufferSize = kLDCMaxFileSizeLimit * 2;
+
 
 static const uint64_t kLDCBCCProbeInterval = 5;//cyf probe every 30s
 
@@ -60,6 +62,7 @@ static const int kThresholdBufferNum  = 10;
 //kLDCMergeSizeRatio = total_linked_fragement_size / target_merge_sstable_size
 //the best is 1:1, means no write amplification
 
+static const bool kIsLDCSizeTrigger = true;
 static const double kLDCMergeSizeRatio = 1.0;//cyf change to non-const var
 static const bool kUseAdaptiveLDC = true;
 
