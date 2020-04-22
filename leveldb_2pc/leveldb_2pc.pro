@@ -153,7 +153,7 @@ HEADERS += \
     ../table/merger.h \
     ../table/two_level_iterator.h \
     ../util/arena.h \
-    ../util/cachestat_ebpf.h \
+    #../util/cachestat_ebpf.h \
     ../util/coding.h \
     ../util/crc32c.h \
     ../util/hash.h \

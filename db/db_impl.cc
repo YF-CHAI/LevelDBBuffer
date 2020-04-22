@@ -1360,9 +1360,9 @@ void* DBImpl::BCC_BGWork(void *db)
     //pthread_setcanceltype(PTHREAD_CANCEL_DEFERRED,NULL);
     //pthread_detach(pthread_self());
     std::cout <<"BCC_BGWork is running~" <<std::endl;
-    struct cache_info cinfo;
-    Cachestat_eBPF bpf;
-    bpf.attach_kernel_probe_event();
+    //struct cache_info cinfo;
+    //Cachestat_eBPF bpf;
+    //bpf.attach_kernel_probe_event();
 
     int64_t files_num_inlevel[config::kNumLevels];
     int64_t bytes_inlevel[config::kNumLevels];
@@ -1370,7 +1370,7 @@ void* DBImpl::BCC_BGWork(void *db)
     double probe_time;
     Probe_Timer<double> probe_timer;
 
-    cinfo = bpf.get_cache_info();
+   // cinfo = bpf.get_cache_info();
     while(1){
 
         //start probe time count
@@ -1390,7 +1390,7 @@ void* DBImpl::BCC_BGWork(void *db)
 
             sleep(config::kLDCBCCProbeInterval);
 
-            cinfo = bpf.get_cache_info();
+            //cinfo = bpf.get_cache_info();
             //std::cout << "mpa: \t"<<cinfo.mpa<<"\t mbd: \t"<<cinfo.mbd
                       //<<"\t apcl: \t"<<cinfo.apcl<<"\t apd: \t"<<cinfo.apd<<std::endl;
 

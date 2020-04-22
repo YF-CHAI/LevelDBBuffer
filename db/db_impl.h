@@ -15,7 +15,7 @@
 #include "port/port.h"
 #include "port/thread_annotations.h"
 
-#include "util/cachestat_ebpf.h"
+//#include "util/cachestat_ebpf.h"
 
 #include <sys/types.h>
 #include <sys/wait.h>
