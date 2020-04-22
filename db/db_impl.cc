@@ -1536,7 +1536,7 @@ void DBImpl::ProbeKernelFunction()//cyf won't use anymore
 {
 
     std::cout << "ProbeKernelFunction while outer~ "<< std::endl;
-    struct cache_info cinfo;
+    //struct cache_info cinfo;
     while(true){
         std::cout << "ProbeKernelFunction while inner"<< std::endl;
 
