@@ -12,7 +12,7 @@ namespace leveldb {
 // See doc/table_format.txt for an explanation of the filter block format.
 
 // Generate new filter every 2KB of data
-static const size_t kFilterBaseLg = 20;//cyf change for big kv default:11
+static const size_t kFilterBaseLg = 14;//cyf change for big kv default:11
 static const size_t kFilterBase = 1 << kFilterBaseLg;
 
 FilterBlockBuilder::FilterBlockBuilder(const FilterPolicy* policy)

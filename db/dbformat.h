@@ -44,7 +44,7 @@ static const int kMaxMemCompactLevel = 0;
 // Approximate gap in bytes between samples of data read during iteration.
 static const int kReadBytesPeriod = 1048576;
 
-static const uint64_t kBloomFilterBitsPerKey = 128;
+static const uint64_t kBloomFilterBitsPerKey = 10;
 
 static const uint64_t kLDCBlockCacheSize = 8 << 20;//cyf change default 8MB
 
