@@ -1440,7 +1440,7 @@ void* DBImpl::BCC_BGWork(void *db)
                 } else if( (increase_score < decrease_score) && config::kUseAdaptiveLDC){
                     DBImpl::LDC_MERGE_RATIO_ =
                             (DBImpl::LDC_MERGE_RATIO_ * 2) >= 2.0 ? 2.0 : DBImpl::LDC_MERGE_RATIO_ * 2 ;
-                } else if((increase_score >= decrease_score) || (readRatio > 0.8) && config::kUseAdaptiveLDC){
+                } else if((increase_score >= decrease_score) || (readRatio > 0.7) && config::kUseAdaptiveLDC){
                     DBImpl::LDC_MERGE_RATIO_ =
                             (DBImpl::LDC_MERGE_RATIO_ / 2) >= 0.1 ? DBImpl::LDC_MERGE_RATIO_ / 2 : 0.1;
 
