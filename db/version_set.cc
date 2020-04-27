@@ -1163,12 +1163,7 @@ void Apply(VersionEdit* edit) {
 
          double merge_score = 0.0;
          merge_score =  static_cast<double>(buffer_size_tmp) / max;
-          /*std::cout<< "| cyf merge_score: "<<merge_score
-                  <<" | f->buffer->size KB: "<<f->buffer->size/(1024.0)
-                 <<" |f->file_size KB:"<<f->file_size/((1<<10)*1.0)<<" | "
-                 <<"buffer num: "<<f->buffer->nodes.size()<<" |"
-                 <<"The LDC Merge Ratio: "<<DBImpl::LDC_MERGE_RATIO_
-                 <<std::endl;*/
+
          if(  ( (merge_score  >= DBImpl::LDC_MERGE_RATIO_ ) && (config::kIsLDCSizeTrigger) )
                  || ( (f->buffer->nodes.size() >= config::kThresholdBufferNum) && (config::kIsLDCSizeTrigger) )  ){
              //cyf change, 1.0 means buffers' size / to be merged SST's size has no write amplification
