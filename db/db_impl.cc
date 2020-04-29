@@ -1434,15 +1434,34 @@ void* DBImpl::BCC_BGWork(void *db)
 
                 double decrease_score = (user_read_MB / 2 + read_compaction_MB * 2 ) / rand_read4k_TP
                         + (write_compation_MB * 2 - user_write_MB) / rand_write4k_TP;
+
+                //cyf add compactionIOLimitFactor to avoid to bring huge amount compaction when
+                //decrease the LDC_MERGE_RATIO_ parameter too sharply, so use it as a threshold
+                double compactionIOLimitFactor = decrease_score / (current_score + 0.001);
+
                 if((current_score <= increase_score) && (current_score <= decrease_score)){
                     //std::cout<< "No need to tune DBImpl::LDC_MERGE_RATIO!"<<std::endl;
 
                 } else if( (increase_score < decrease_score) && config::kUseAdaptiveLDC){
                     DBImpl::LDC_MERGE_RATIO_ =
                             (DBImpl::LDC_MERGE_RATIO_ * 2) >= 2.0 ? 2.0 : DBImpl::LDC_MERGE_RATIO_ * 2 ;
-                } else if((increase_score >= decrease_score) || (readRatio > 0.7) && config::kUseAdaptiveLDC){
-                    DBImpl::LDC_MERGE_RATIO_ =
+                } else if( ( (increase_score >= decrease_score) || (readRatio > 0.7) ) && config::kUseAdaptiveLDC){
+                    if(compactionIOLimitFactor > config::kCompactionIOLimitFactorThreshold)
+                    {
+                        DBImpl::LDC_MERGE_RATIO_ =
+                            (DBImpl::LDC_MERGE_RATIO_ - 0.1) >= 0.1 ? (DBImpl::LDC_MERGE_RATIO_ - 0.1): 0.1;
+                    }
+                    else
+                    {
+                        DBImpl::LDC_MERGE_RATIO_ =
                             (DBImpl::LDC_MERGE_RATIO_ / 2) >= 0.1 ? DBImpl::LDC_MERGE_RATIO_ / 2 : 0.1;
+                    }
+
+                }
+                if(readRatio > 0.9)
+                {
+                    reinterpret_cast<DBImpl*>(db)->versions_->buffer_compact_switch_  =true;
+                    reinterpret_cast<DBImpl*>(db)->MaybeScheduleCompaction();
 
                 }
 

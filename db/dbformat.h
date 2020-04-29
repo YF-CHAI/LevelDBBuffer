@@ -68,7 +68,8 @@ static const int kThresholdBufferNum  = 10;
 static const bool kIsLDCSizeTrigger = true;
 static const double kLDCMergeSizeRatio = 1.0;//cyf change to non-const var
 static const bool kUseAdaptiveLDC = true;
-
+//cyf add for compation IO limit factor's threshold
+static const double kCompactionIOLimitFactorThreshold = 2.0;
 
 
 //cyf add for pre-reserving buffer number
