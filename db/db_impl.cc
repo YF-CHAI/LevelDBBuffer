@@ -1458,7 +1458,7 @@ void* DBImpl::BCC_BGWork(void *db)
                     }
 
                 }
-                if(readRatio > 0.9)
+                if((readRatio > 0.9) && (reinterpret_cast<DBImpl*>(db)->versions_->buffer_compact_switch_ == false) )
                 {
                     reinterpret_cast<DBImpl*>(db)->versions_->buffer_compact_switch_  =true;
                     reinterpret_cast<DBImpl*>(db)->MaybeScheduleCompaction();
