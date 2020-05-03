@@ -1464,13 +1464,13 @@ void* DBImpl::BCC_BGWork(void *db)
                 {
                     DBImpl::LDC_MERGE_LINK_NUM_ = 1;
                     //reinterpret_cast<DBImpl*>(db)->versions_->buffer_compact_switch_  = true;
-                    //reinterpret_cast<DBImpl*>(db)->MaybeScheduleCompaction();
+                    reinterpret_cast<DBImpl*>(db)->MaybeScheduleCompaction();
 
                 }else{
                     DBImpl::LDC_MERGE_LINK_NUM_ = config::kThresholdBufferNum;
                 }
                 std::cout << "The Current readRatio is: "<<readRatio
-                          <<"The link num: "<<DBImpl::LDC_MERGE_LINK_NUM_ <<std::endl;
+                          <<" The link num: "<<DBImpl::LDC_MERGE_LINK_NUM_ <<std::endl;
 
 
                 //std::cout <<" increase_score: "<< increase_score <<" current_score: " << current_score
