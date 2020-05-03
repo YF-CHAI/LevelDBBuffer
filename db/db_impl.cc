@@ -1458,10 +1458,11 @@ void* DBImpl::BCC_BGWork(void *db)
                     }
 
                 }
-                if((readRatio > 0.9) && (reinterpret_cast<DBImpl*>(db)->versions_->buffer_compact_switch_ == false) )
+                if((readRatio > 0.8) /*&& (reinterpret_cast<DBImpl*>(db)->versions_->buffer_compact_switch_ == false) */)
                 {
-                    reinterpret_cast<DBImpl*>(db)->versions_->buffer_compact_switch_  =true;
-                    reinterpret_cast<DBImpl*>(db)->MaybeScheduleCompaction();
+                    std::cout << "The Current readRatio is: "<<readRatio<<std::endl;
+                    //reinterpret_cast<DBImpl*>(db)->versions_->buffer_compact_switch_  = true;
+                    //reinterpret_cast<DBImpl*>(db)->MaybeScheduleCompaction();
 
                 }
 
