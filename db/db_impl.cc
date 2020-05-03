@@ -45,6 +45,7 @@ const int kNumNonTableCacheFiles = 10;
 bool DBImpl::isProbingEnd =false;
 bool DBImpl::swith_isprobe_start = true;
 double DBImpl::LDC_MERGE_RATIO_ = config::kLDCMergeSizeRatio;
+uint32_t DBImpl::LDC_MERGE_LINK_NUM_ = config::kThresholdBufferNum;//cyf add for link clear under read heavy workload
 
 // Information kept for every waiting writer
 struct DBImpl::Writer {
@@ -1450,6 +1451,7 @@ void* DBImpl::BCC_BGWork(void *db)
                     {
                         DBImpl::LDC_MERGE_RATIO_ =
                             (DBImpl::LDC_MERGE_RATIO_ - 0.1) >= 0.1 ? (DBImpl::LDC_MERGE_RATIO_ - 0.1): 0.1;
+                        std::cout<< "decrease the LDC_MERGE_RATIO_ parameter softly by 0.1 "<<std::endl;
                     }
                     else
                     {
@@ -1458,13 +1460,17 @@ void* DBImpl::BCC_BGWork(void *db)
                     }
 
                 }
-                if((readRatio > 0.8) /*&& (reinterpret_cast<DBImpl*>(db)->versions_->buffer_compact_switch_ == false) */)
+                if((readRatio > 0.9))
                 {
-                    std::cout << "The Current readRatio is: "<<readRatio<<std::endl;
+                    DBImpl::LDC_MERGE_LINK_NUM_ = 1;
                     //reinterpret_cast<DBImpl*>(db)->versions_->buffer_compact_switch_  = true;
                     //reinterpret_cast<DBImpl*>(db)->MaybeScheduleCompaction();
 
+                }else{
+                    DBImpl::LDC_MERGE_LINK_NUM_ = config::kThresholdBufferNum;
                 }
+                std::cout << "The Current readRatio is: "<<readRatio
+                          <<"The link num: "<<DBImpl::LDC_MERGE_LINK_NUM_ <<std::endl;
 
 
                 //std::cout <<" increase_score: "<< increase_score <<" current_score: " << current_score

@@ -126,6 +126,7 @@ class DBImpl : public DB {
 
   //cyf add
   static double LDC_MERGE_RATIO_;
+  static uint32_t LDC_MERGE_LINK_NUM_;
 
  private:
   //Cachestat_eBPF ebpf_;

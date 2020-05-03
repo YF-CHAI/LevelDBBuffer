@@ -1165,7 +1165,7 @@ void Apply(VersionEdit* edit) {
          merge_score =  static_cast<double>(buffer_size_tmp) / max;
 
          if(  ( (merge_score  >= DBImpl::LDC_MERGE_RATIO_ ) && (config::kIsLDCSizeTrigger) )
-                 || ( (f->buffer->nodes.size() >= config::kThresholdBufferNum) && (config::kIsLDCSizeTrigger) )  ){
+                 || ( (f->buffer->nodes.size() >= DBImpl::LDC_MERGE_LINK_NUM_) && (config::kIsLDCSizeTrigger) )  ){
              //cyf change, 1.0 means buffers' size / to be merged SST's size has no write amplification
              vset_->buffer_compact_switch_ = true;
              v->bc_compaction_level_ = level;
