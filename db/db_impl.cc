@@ -1405,7 +1405,7 @@ void* DBImpl::BCC_BGWork(void *db)
                 <<(readStatic.readStaticDelta_.get_num
                    + readStatic.readStaticDelta_.put_num) / probe_time / 1000
                 <<"\t Current_DBImpl::LDC_MERGE_RATIO_: "<<DBImpl::LDC_MERGE_RATIO_
-                <<"this->LDC_MERGE_RATIO_: "<<  reinterpret_cast<DBImpl*>(db)->LDC_MERGE_RATIO_
+                <<" this->LDC_MERGE_RATIO_: "<<  reinterpret_cast<DBImpl*>(db)->LDC_MERGE_RATIO_
                 <<std::endl;
 
                 double readRatio = readStatic.readStaticDelta_.get_num
@@ -1464,7 +1464,10 @@ void* DBImpl::BCC_BGWork(void *db)
                 {
                     DBImpl::LDC_MERGE_LINK_NUM_ = 1;
                     //reinterpret_cast<DBImpl*>(db)->versions_->buffer_compact_switch_  = true;
-                    reinterpret_cast<DBImpl*>(db)->MaybeScheduleCompaction();
+                    if(db == nullptr)
+                        std::cout <<"reinterpret_cast<DBImpl*>(db) is nullptr"<<std::endl;
+                    else
+                        reinterpret_cast<DBImpl*>(db)->MaybeScheduleCompaction();
 
                 }else{
                     DBImpl::LDC_MERGE_LINK_NUM_ = config::kThresholdBufferNum;
