@@ -1460,7 +1460,7 @@ void* DBImpl::BCC_BGWork(void *db)
                     }
 
                 }
-                if((readRatio > 0.9))
+                if((readRatio >= 0.95))
                 {
                     DBImpl::LDC_MERGE_LINK_NUM_ = 1;
                     //reinterpret_cast<DBImpl*>(db)->versions_->buffer_compact_switch_  = true;
