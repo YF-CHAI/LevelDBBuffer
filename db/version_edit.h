@@ -30,7 +30,7 @@ struct FileMetaData {
 
   Buffer* buffer;//whc add
 
-  FileMetaData() : refs(0), allowed_seeks(1 << 30), file_size(0),buffer(NULL) {
+  FileMetaData() : refs(0), allowed_seeks(100), file_size(0),buffer(NULL) {
 
       percent_size_key.reserve(config::kLDCLinkKVSizeInterval);
       InternalKey key;

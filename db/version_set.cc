@@ -633,7 +633,7 @@ Status Version::BufferGet(const ReadOptions& options,
 bool Version::UpdateStats(const GetStats& stats) {
   FileMetaData* f = stats.seek_file;
   if (f != NULL) {
-    //f->allowed_seeks--;
+    f->allowed_seeks--;//cyf changed
     if (f->allowed_seeks <= 0 && file_to_compact_ == NULL) {
       file_to_compact_ = f;
       file_to_compact_level_ = stats.seek_file_level;
@@ -1058,6 +1058,9 @@ void Apply(VersionEdit* edit) {
     v->sequence_ = vset_->LastVersionSequence();
     vset_->SetLastVersionSequence(v->sequence_ +1);
 
+    //cyf add a switch to control the LDC SSTables just from only one level.
+    bool getOneLevelOnce = true;
+
     for (int level = 0; level < config::kNumLevels; level++) {
       // Merge the set of added files with the set of pre-existing files.
       // Drop any deleted files.  Store the result in *v.
@@ -1127,6 +1130,8 @@ void Apply(VersionEdit* edit) {
       // add newbuffer and new ssd file to *v
       //std::cout<<"1"<<std::endl;
       for(size_t j=0;j<levels_[level].added_buffer_nodes.size();j++){
+          if(!getOneLevelOnce)
+              break;//cyf add just for get one level's link SSTables to v->need_compact_[level],also for performance
     	 // add source ssd table ref
     	  uint64_t s = levels_[level].added_buffer_nodes[j].snumber;
     	 if(v->files_in_ssd_[level-1].find(s) == v->files_in_ssd_[level-1].end()){    // this file never save
@@ -1168,6 +1173,7 @@ void Apply(VersionEdit* edit) {
          if(  ( (merge_score  >= DBImpl::LDC_MERGE_RATIO_ ) && (config::kIsLDCSizeTrigger) )
                  || ( (f->buffer->nodes.size() >= DBImpl::LDC_MERGE_LINK_NUM_) && (config::kIsLDCSizeTrigger) )  ){
              //cyf change, 1.0 means buffers' size / to be merged SST's size has no write amplification
+             getOneLevelOnce = !config::kLDCGetOneLevelOnce;
              vset_->buffer_compact_switch_ = true;
              v->bc_compaction_level_ = level;
              if(std::find(v->need_compact_[level].begin(),v->need_compact_[level].end(),f)
