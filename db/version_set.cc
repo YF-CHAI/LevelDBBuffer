@@ -54,7 +54,8 @@ static double MaxBytesForLevel(const Options* options, int level) {
   // Result for both level-0 and level-1
   double result = options->top_level_size;
   while (level > 1) {
-    result *= options->amplify;
+    //result *= options->amplify;//cyf change for ALDC
+    result *= DBImpl::LDC_AMPLIFY_FACTOR_;
     level--;
   }
   return result;

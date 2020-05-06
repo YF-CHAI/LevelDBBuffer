@@ -29,7 +29,7 @@ Options::Options()
       reuse_logs(false),
       filter_policy(NewBloomFilterPolicy(config::kBloomFilterBitsPerKey)),
       //filter_policy(nullptr),
-      amplify(10.0),
+      amplify(config::kLDCAmplifyFactor),
       top_level_size(5 * config::kLDCMaxFileSizeLimit){//cyf changed default: 10MB = 2MB(SST) * 5 ,scaled by SST size
           //std::cout<<"options:filter:"<<filter_policy<<std::endl;
 }

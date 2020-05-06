@@ -46,7 +46,7 @@ bool DBImpl::isProbingEnd =false;
 bool DBImpl::swith_isprobe_start = true;
 double DBImpl::LDC_MERGE_RATIO_ = config::kLDCMergeSizeRatio;
 uint32_t DBImpl::LDC_MERGE_LINK_NUM_ = config::kThresholdBufferNum;//cyf add for link clear under read heavy workload
-
+uint32_t DBImpl::LDC_AMPLIFY_FACTOR_ = config::kLDCAmplifyFactor;
 // Information kept for every waiting writer
 struct DBImpl::Writer {
   Status status;
@@ -1464,16 +1464,24 @@ void* DBImpl::BCC_BGWork(void *db)
                 {
                     DBImpl::LDC_MERGE_LINK_NUM_ = 1;
                     //reinterpret_cast<DBImpl*>(db)->versions_->buffer_compact_switch_  = true;
-                    if(db == nullptr)
+                    if(db == nullptr){
                         std::cout <<"reinterpret_cast<DBImpl*>(db) is nullptr"<<std::endl;
-                    else
+                    }
+                    else{
+                        DBImpl::LDC_AMPLIFY_FACTOR_ =
+                                (DBImpl::LDC_AMPLIFY_FACTOR_ / 2) >= 1 ? DBImpl::LDC_AMPLIFY_FACTOR_ / 2 : 1;
                         reinterpret_cast<DBImpl*>(db)->MaybeScheduleCompaction();
+                    }
+
 
                 }else{
                     DBImpl::LDC_MERGE_LINK_NUM_ = config::kThresholdBufferNum;
+                    DBImpl::LDC_AMPLIFY_FACTOR_ = config::kLDCAmplifyFactor;
                 }
                 std::cout << "The Current readRatio is: "<<readRatio
-                          <<" The link num: "<<DBImpl::LDC_MERGE_LINK_NUM_ <<std::endl;
+                          <<" The link num: "<<DBImpl::LDC_MERGE_LINK_NUM_
+                         <<" The amplify factor is: "<< DBImpl::LDC_AMPLIFY_FACTOR_
+                         <<std::endl;
 
 
                 //std::cout <<" increase_score: "<< increase_score <<" current_score: " << current_score
@@ -2793,7 +2801,9 @@ Status DB::Open(const Options& options, const std::string& dbname,
   DBImpl* impl = new DBImpl(options, dbname);
   
   //whc add
-  std::cout << "amplify=" << options.amplify << std::endl;
+  //cyf no more use it
+  //std::cout << "amplify=" << options.amplify << std::endl;
+  std::cout << " DBImpl::LDC_AMPLIFY_FACTOR_ = " << DBImpl::LDC_AMPLIFY_FACTOR_<< std::endl;
   
   impl->mutex_.Lock();
   VersionEdit edit;
