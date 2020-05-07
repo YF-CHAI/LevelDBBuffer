@@ -1173,9 +1173,11 @@ void Apply(VersionEdit* edit) {
          if(  ( (merge_score  >= DBImpl::LDC_MERGE_RATIO_ ) && (config::kIsLDCSizeTrigger) )
                  || ( (f->buffer->nodes.size() >= DBImpl::LDC_MERGE_LINK_NUM_) && (config::kIsLDCSizeTrigger) )  ){
              //cyf change, 1.0 means buffers' size / to be merged SST's size has no write amplification
-             //getOneLevelOnce = !config::kLDCGetOneLevelOnce;
+             if(getOneLevelOnce){
              vset_->buffer_compact_switch_ = true;
              v->bc_compaction_level_ = level;
+             getOneLevelOnce = false;
+             }
              if(std::find(v->need_compact_[level].begin(),v->need_compact_[level].end(),f)
              ==v->need_compact_[level].end())
                  v->need_compact_[level].push_back(f);

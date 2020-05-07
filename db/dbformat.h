@@ -52,7 +52,7 @@ static const uint64_t kLDCMaxFileSizeLimit = 4 << 20;
 static const uint64_t kLDCBlockSize = 4 << 10;
 static const uint64_t kLDCMaxWriteBufferSize = kLDCMaxFileSizeLimit * 2;
 static const uint32_t kLDCAmplifyFactor = 10;
-static const bool kLDCGetOneLevelOnce = true;
+//static const bool kLDCGetOneLevelOnce = true;
 //whc add
 static const int kBufferCompactStartLevel  = 1;
 static const int kBufferCompactEndLevel = 7;
