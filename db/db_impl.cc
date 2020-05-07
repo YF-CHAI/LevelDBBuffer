@@ -1469,7 +1469,7 @@ void* DBImpl::BCC_BGWork(void *db)
                     }
                     else{
                         DBImpl::LDC_AMPLIFY_FACTOR_ =
-                                (DBImpl::LDC_AMPLIFY_FACTOR_ * 2) >= 20 ? DBImpl::LDC_AMPLIFY_FACTOR_ * 2 : 20;
+                                (DBImpl::LDC_AMPLIFY_FACTOR_ * 2) <= 100 ? DBImpl::LDC_AMPLIFY_FACTOR_ * 2 : 100;
                         reinterpret_cast<DBImpl*>(db)->MaybeScheduleCompaction();
                     }
 
