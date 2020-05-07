@@ -1130,8 +1130,8 @@ void Apply(VersionEdit* edit) {
       // add newbuffer and new ssd file to *v
       //std::cout<<"1"<<std::endl;
       for(size_t j=0;j<levels_[level].added_buffer_nodes.size();j++){
-          if(!getOneLevelOnce)
-              break;//cyf add just for get one level's link SSTables to v->need_compact_[level],also for performance
+          //if(!getOneLevelOnce)
+             // break;//cyf add just for get one level's link SSTables to v->need_compact_[level],also for performance
     	 // add source ssd table ref
     	  uint64_t s = levels_[level].added_buffer_nodes[j].snumber;
     	 if(v->files_in_ssd_[level-1].find(s) == v->files_in_ssd_[level-1].end()){    // this file never save
@@ -1173,7 +1173,7 @@ void Apply(VersionEdit* edit) {
          if(  ( (merge_score  >= DBImpl::LDC_MERGE_RATIO_ ) && (config::kIsLDCSizeTrigger) )
                  || ( (f->buffer->nodes.size() >= DBImpl::LDC_MERGE_LINK_NUM_) && (config::kIsLDCSizeTrigger) )  ){
              //cyf change, 1.0 means buffers' size / to be merged SST's size has no write amplification
-             getOneLevelOnce = !config::kLDCGetOneLevelOnce;
+             //getOneLevelOnce = !config::kLDCGetOneLevelOnce;
              vset_->buffer_compact_switch_ = true;
              v->bc_compaction_level_ = level;
              if(std::find(v->need_compact_[level].begin(),v->need_compact_[level].end(),f)
