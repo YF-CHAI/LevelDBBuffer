@@ -52,7 +52,10 @@ static double MaxBytesForLevel(const Options* options, int level) {
   // the level-0 compaction threshold based on number of files.
 
   // Result for both level-0 and level-1
-  double result = options->top_level_size;
+  //double result = options->top_level_size;
+    double result =
+            level == 0 ? options->top_level_size : DBImpl::CuttleTreeFirstLevelSize;
+
   while (level > 1) {
     //result *= options->amplify;//cyf change for ALDC
     result *= DBImpl::LDC_AMPLIFY_FACTOR_;

@@ -46,7 +46,8 @@ bool DBImpl::isProbingEnd =false;
 bool DBImpl::swith_isprobe_start = true;
 double DBImpl::LDC_MERGE_RATIO_ = config::kLDCMergeSizeRatio;
 uint32_t DBImpl::LDC_MERGE_LINK_NUM_ = config::kThresholdBufferNum;//cyf add for link clear under read heavy workload
-uint32_t DBImpl::LDC_AMPLIFY_FACTOR_ = config::kLDCAmplifyFactor;
+uint32_t DBImpl::LDC_AMPLIFY_FACTOR_ = config::kCuttleTreeAmplifyFactor;
+uint64_t DBImpl::CuttleTreeFirstLevelSize  = config::kCuttleTreeFirstLevelSize;
 // Information kept for every waiting writer
 struct DBImpl::Writer {
   Status status;
@@ -1412,7 +1413,7 @@ void* DBImpl::BCC_BGWork(void *db)
                         / (readStatic.readStaticDelta_.get_num + readStatic.readStaticDelta_.put_num + 0.01);
 
 
-            if(DBImpl::swith_isprobe_start){
+            if( true /*DBImpl::swith_isprobe_start*/){
                 double rand_read4k_TP = 40; //40MB/s
                 double rand_write4k_TP = 450;//450MB/s
                 double user_read_MB = readStatic.readStaticDelta_.data_block_read == 0 ?
@@ -1440,13 +1441,15 @@ void* DBImpl::BCC_BGWork(void *db)
                 //decrease the LDC_MERGE_RATIO_ parameter too sharply, so use it as a threshold
                 double compactionIOLimitFactor = decrease_score / (current_score + 0.001);
 
+             if(config::kUseAdaptiveLDC)
+               {
                 if((current_score <= increase_score) && (current_score <= decrease_score)){
                     //std::cout<< "No need to tune DBImpl::LDC_MERGE_RATIO!"<<std::endl;
 
-                } else if( (increase_score < decrease_score) && config::kUseAdaptiveLDC){
+                } else if( (increase_score < decrease_score)){
                     DBImpl::LDC_MERGE_RATIO_ =
                             (DBImpl::LDC_MERGE_RATIO_ * 2) >= 2.0 ? 2.0 : DBImpl::LDC_MERGE_RATIO_ * 2 ;
-                } else if( ( (increase_score >= decrease_score) || (readRatio > 0.7) ) && config::kUseAdaptiveLDC){
+                } else if( ( (increase_score >= decrease_score) || (readRatio > 0.7) )){
                     if(compactionIOLimitFactor > config::kCompactionIOLimitFactorThreshold)
                     {
                         DBImpl::LDC_MERGE_RATIO_ =
@@ -1460,39 +1463,53 @@ void* DBImpl::BCC_BGWork(void *db)
                     }
 
                 }
+
                 if((readRatio >= 0.95))
                 {
                     DBImpl::LDC_MERGE_LINK_NUM_ = 1;
-                    //reinterpret_cast<DBImpl*>(db)->versions_->buffer_compact_switch_  = true;
+
                     if(db == nullptr){
                         std::cout <<"reinterpret_cast<DBImpl*>(db) is nullptr"<<std::endl;
                     }
                     else{
-                        DBImpl::LDC_AMPLIFY_FACTOR_ =
-                                (DBImpl::LDC_AMPLIFY_FACTOR_ * 2) <= 100 ? DBImpl::LDC_AMPLIFY_FACTOR_ * 2 : 100;
                         reinterpret_cast<DBImpl*>(db)->MaybeScheduleCompaction();
                     }
 
 
                 }else{
                     DBImpl::LDC_MERGE_LINK_NUM_ = config::kThresholdBufferNum;
-                    DBImpl::LDC_AMPLIFY_FACTOR_ = config::kLDCAmplifyFactor;
+
                 }
-                std::cout << "The Current readRatio is: "<<readRatio
-                          <<" The link num: "<<DBImpl::LDC_MERGE_LINK_NUM_
-                         <<" The amplify factor is: "<< DBImpl::LDC_AMPLIFY_FACTOR_
+              }
+
+             if(config::kUseCattleTreeMethods)
+             {
+                 if(readRatio >= 0.7)
+                 {
+                     DBImpl::LDC_AMPLIFY_FACTOR_ =
+                             (DBImpl::LDC_AMPLIFY_FACTOR_ - 2) >= 2  ? DBImpl::LDC_AMPLIFY_FACTOR_ - 2 : 2;
+
+                     DBImpl::CuttleTreeFirstLevelSize = config::kCuttleTreeFirstLevelSize / 2;
+                 }
+                 else if(readRatio <= 0.3)
+                 {
+                     DBImpl::LDC_AMPLIFY_FACTOR_ =
+                             (DBImpl::LDC_AMPLIFY_FACTOR_ + 2) <= 20  ? DBImpl::LDC_AMPLIFY_FACTOR_ + 2 : 20;
+
+                     DBImpl::CuttleTreeFirstLevelSize = config::kCuttleTreeFirstLevelSize * 2;
+                 }else
+                 {
+                     DBImpl::LDC_AMPLIFY_FACTOR_ = config::kCuttleTreeAmplifyFactor;
+                     DBImpl::CuttleTreeFirstLevelSize = config::kCuttleTreeFirstLevelSize;
+
+                 }
+             }
+
+             std::cout << "ReadRatio is: "<<readRatio
+                          <<" Link num: "<<DBImpl::LDC_MERGE_LINK_NUM_
+                         <<" Amplify is: "<< DBImpl::LDC_AMPLIFY_FACTOR_
+                        <<" Lv1 size: "<<DBImpl::CuttleTreeFirstLevelSize
                          <<std::endl;
-
-
-                //std::cout <<" increase_score: "<< increase_score <<" current_score: " << current_score
-                         //<<" decrease_score: "<< decrease_score<<std::endl;
-
-
-
-
-
-
-
 
             }
 

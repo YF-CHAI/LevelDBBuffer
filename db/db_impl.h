@@ -128,6 +128,7 @@ class DBImpl : public DB {
   static double LDC_MERGE_RATIO_;
   static uint32_t LDC_MERGE_LINK_NUM_;
   static uint32_t LDC_AMPLIFY_FACTOR_;
+  static uint64_t CuttleTreeFirstLevelSize;
 
  private:
   //Cachestat_eBPF ebpf_;

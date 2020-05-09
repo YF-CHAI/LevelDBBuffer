@@ -39,7 +39,7 @@ static const int kL0_StopWritesTrigger = 12;
 // the largest level since that can generate a lot of wasted disk
 // space if the same key space is being repeatedly overwritten.
 //whc change
-static const int kMaxMemCompactLevel = 0;
+static const int kMaxMemCompactLevel = 2;//cyf changed
 
 // Approximate gap in bytes between samples of data read during iteration.
 static const int kReadBytesPeriod = 1048576;
@@ -51,14 +51,18 @@ static const uint64_t kLDCBlockCacheSize = 8 << 20;//cyf change default 8MB
 static const uint64_t kLDCMaxFileSizeLimit = 4 << 20;
 static const uint64_t kLDCBlockSize = 4 << 10;
 static const uint64_t kLDCMaxWriteBufferSize = kLDCMaxFileSizeLimit * 2;
-static const uint32_t kLDCAmplifyFactor = 10;
 //static const bool kLDCGetOneLevelOnce = true;
 //whc add
 static const int kBufferCompactStartLevel  = 1;
 static const int kBufferCompactEndLevel = 7;
 
-static const uint64_t kLDCBCCProbeInterval = 5;//cyf probe every 30s
+static const double kLDCMergeSizeRatio = 1.0;//cyf change to non-const var
+static const bool kUseAdaptiveLDC = true;
+static const bool kUseCattleTreeMethods = false;
+static const uint32_t kCuttleTreeAmplifyFactor = 10;
+static const uint64_t kCuttleTreeFirstLevelSize = 5 * kLDCMaxFileSizeLimit;
 
+static const uint64_t kLDCBCCProbeInterval = 5;//cyf probe every 30s
 //whc add
 static const int kThresholdBufferNum  = 10;
 //cyf LDC trigger condition
@@ -67,8 +71,7 @@ static const int kThresholdBufferNum  = 10;
 //the best is 1:1, means no write amplification
 
 static const bool kIsLDCSizeTrigger = true;
-static const double kLDCMergeSizeRatio = 1.0;//cyf change to non-const var
-static const bool kUseAdaptiveLDC = true;
+
 //cyf add for compation IO limit factor's threshold
 static const double kCompactionIOLimitFactorThreshold = 2.0;
 
