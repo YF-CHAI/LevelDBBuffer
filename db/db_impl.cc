@@ -1464,7 +1464,7 @@ void* DBImpl::BCC_BGWork(void *db)
 
                 }
 
-                if((readRatio >= 0.95))
+                if((readRatio >= 0.85))
                 {
                     DBImpl::LDC_MERGE_LINK_NUM_ = 1;
 
@@ -1484,14 +1484,14 @@ void* DBImpl::BCC_BGWork(void *db)
 
              if(config::kUseCattleTreeMethods)
              {
-                 if(readRatio >= 0.7)
+                 if(readRatio >= 0.8)
                  {
                      DBImpl::LDC_AMPLIFY_FACTOR_ =
-                             (DBImpl::LDC_AMPLIFY_FACTOR_ - 2) >= 2  ? DBImpl::LDC_AMPLIFY_FACTOR_ - 2 : 2;
+                             (DBImpl::LDC_AMPLIFY_FACTOR_ - 2) >= 4  ? DBImpl::LDC_AMPLIFY_FACTOR_ - 2 : 4;
 
                      DBImpl::CuttleTreeFirstLevelSize = config::kCuttleTreeFirstLevelSize / 2;
                  }
-                 else if(readRatio <= 0.3)
+                 else if(readRatio <= 0.2)
                  {
                      DBImpl::LDC_AMPLIFY_FACTOR_ =
                              (DBImpl::LDC_AMPLIFY_FACTOR_ + 2) <= 20  ? DBImpl::LDC_AMPLIFY_FACTOR_ + 2 : 20;
