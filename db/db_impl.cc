@@ -1467,7 +1467,7 @@ void* DBImpl::BCC_BGWork(void *db)
 
                 }
 
-                if((readRatio >= 0.85) || writeRatio == 0)
+                if((readRatio >= 0.95) || (writeRatio == 0 && readRatio == 0))
                 {
                     DBImpl::LDC_MERGE_LINK_NUM_ = 1;
 
