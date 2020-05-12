@@ -1478,17 +1478,13 @@ void* DBImpl::BCC_BGWork(void *db)
                     }
                     else{
                         reinterpret_cast<DBImpl*>(db)->MaybeScheduleCompaction();
-                        DBImpl::LDC_AMPLIFY_FACTOR_ =
-                                (DBImpl::LDC_AMPLIFY_FACTOR_ - 2) >= 6  ? DBImpl::LDC_AMPLIFY_FACTOR_ - 2 : 6;
 
-                        DBImpl::CuttleTreeFirstLevelSize = config::kCuttleTreeFirstLevelSize / 2;
                     }
 
 
                 }else{
                     DBImpl::LDC_MERGE_LINK_NUM_ = config::kThresholdBufferNum;
-                    DBImpl::LDC_AMPLIFY_FACTOR_ = config::kCuttleTreeAmplifyFactor;
-                    DBImpl::CuttleTreeFirstLevelSize = config::kCuttleTreeFirstLevelSize;
+
 
                 }
               }
