@@ -1489,17 +1489,17 @@ void* DBImpl::BCC_BGWork(void *db)
 
              if(config::kUseCattleTreeMethods)
              {
-                 if(readRatio >= 0.8)
+                 if(readRatio >= 0.85)
                  {
                      DBImpl::LDC_AMPLIFY_FACTOR_ =
-                             (DBImpl::LDC_AMPLIFY_FACTOR_ - 2) >= 4  ? DBImpl::LDC_AMPLIFY_FACTOR_ - 2 : 4;
+                             (DBImpl::LDC_AMPLIFY_FACTOR_ - 2) >= 6  ? DBImpl::LDC_AMPLIFY_FACTOR_ - 2 : 6;
 
                      DBImpl::CuttleTreeFirstLevelSize = config::kCuttleTreeFirstLevelSize / 2;
                  }
-                 else if(readRatio <= 0.2)
+                 else if(readRatio <= 0.15)
                  {
                      DBImpl::LDC_AMPLIFY_FACTOR_ =
-                             (DBImpl::LDC_AMPLIFY_FACTOR_ + 2) <= 20  ? DBImpl::LDC_AMPLIFY_FACTOR_ + 2 : 20;
+                             (DBImpl::LDC_AMPLIFY_FACTOR_ + 2) <= 16  ? DBImpl::LDC_AMPLIFY_FACTOR_ + 2 : 16;
 
                      DBImpl::CuttleTreeFirstLevelSize = config::kCuttleTreeFirstLevelSize * 2;
                  }else
