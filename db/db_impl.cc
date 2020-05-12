@@ -1412,6 +1412,9 @@ void* DBImpl::BCC_BGWork(void *db)
                 double readRatio = readStatic.readStaticDelta_.get_num
                         / (readStatic.readStaticDelta_.get_num + readStatic.readStaticDelta_.put_num + 0.01);
 
+                double writeRatio = readStatic.readStaticDelta_.put_num
+                        / (readStatic.readStaticDelta_.get_num + readStatic.readStaticDelta_.put_num + 0.01);
+
 
             if( true /*DBImpl::swith_isprobe_start*/){
                 double rand_read4k_TP = 40; //40MB/s
@@ -1464,7 +1467,7 @@ void* DBImpl::BCC_BGWork(void *db)
 
                 }
 
-                if((readRatio >= 0.9))
+                if((readRatio >= 0.85) || writeRatio == 0)
                 {
                     DBImpl::LDC_MERGE_LINK_NUM_ = 1;
 
