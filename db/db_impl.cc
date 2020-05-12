@@ -1494,7 +1494,7 @@ void* DBImpl::BCC_BGWork(void *db)
                  if(readRatio >= 0.85)
                  {
                      DBImpl::LDC_AMPLIFY_FACTOR_ =
-                             (DBImpl::LDC_AMPLIFY_FACTOR_ - 2) >= 4  ? DBImpl::LDC_AMPLIFY_FACTOR_ - 2 : 4;
+                             (DBImpl::LDC_AMPLIFY_FACTOR_ - 2) >= 8  ? DBImpl::LDC_AMPLIFY_FACTOR_ - 2 : 8;
 
                      DBImpl::CuttleTreeFirstLevelSize = config::kCuttleTreeFirstLevelSize / 2;
                  }
