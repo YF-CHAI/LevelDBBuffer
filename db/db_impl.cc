@@ -1489,10 +1489,10 @@ void* DBImpl::BCC_BGWork(void *db)
                 if((readRatio >= 0.95) || (readRatio == 0.0 && writeRatio == 0.0))
                 {
                     DBImpl::LDC_MERGE_LINK_NUM_ = 1;
-                    //DBImpl::LDC_AMPLIFY_FACTOR_ =
-                      //      (DBImpl::LDC_AMPLIFY_FACTOR_ - 2) >= 4  ? DBImpl::LDC_AMPLIFY_FACTOR_ - 2 : 4;
+                    DBImpl::LDC_AMPLIFY_FACTOR_ =
+                            (DBImpl::LDC_AMPLIFY_FACTOR_ - 2) >= 4  ? DBImpl::LDC_AMPLIFY_FACTOR_ - 2 : 4;
 
-                    //DBImpl::CuttleTreeFirstLevelSize = config::kCuttleTreeFirstLevelSize / 2;
+                    DBImpl::CuttleTreeFirstLevelSize = config::kCuttleTreeFirstLevelSize / 2;
 
                     if(db == nullptr){
                         std::cout <<"reinterpret_cast<DBImpl*>(db) is nullptr"<<std::endl;
@@ -1505,8 +1505,8 @@ void* DBImpl::BCC_BGWork(void *db)
 
                 }else{
                     DBImpl::LDC_MERGE_LINK_NUM_ = config::kThresholdBufferNum;
-                    //DBImpl::LDC_AMPLIFY_FACTOR_ = config::kCuttleTreeAmplifyFactor;
-                    //DBImpl::CuttleTreeFirstLevelSize = config::kCuttleTreeFirstLevelSize;
+                    DBImpl::LDC_AMPLIFY_FACTOR_ = config::kCuttleTreeAmplifyFactor;
+                    DBImpl::CuttleTreeFirstLevelSize = config::kCuttleTreeFirstLevelSize;
 
 
                 }
