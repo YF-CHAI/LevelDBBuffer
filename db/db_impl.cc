@@ -1463,25 +1463,13 @@ void* DBImpl::BCC_BGWork(void *db)
                             (DBImpl::LDC_MERGE_RATIO_ - 0.1) >= 0.1 ? (DBImpl::LDC_MERGE_RATIO_ - 0.1): 0.1;
                         std::cout<< "decrease the LDC_MERGE_RATIO_ parameter softly by 0.1 "<<std::endl;
 
-                        if(db == nullptr){
-                            std::cout <<"reinterpret_cast<DBImpl*>(db) is nullptr"<<std::endl;
-                        }
-                        else{
-                            reinterpret_cast<DBImpl*>(db)->MaybeScheduleCompaction();
 
-                        }
                     }
                     else
                     {
                         DBImpl::LDC_MERGE_RATIO_ =
                             (DBImpl::LDC_MERGE_RATIO_ / 2) >= 0.1 ? DBImpl::LDC_MERGE_RATIO_ / 2 : 0.1;
-                        if(db == nullptr){
-                            std::cout <<"reinterpret_cast<DBImpl*>(db) is nullptr"<<std::endl;
-                        }
-                        else{
-                            reinterpret_cast<DBImpl*>(db)->MaybeScheduleCompaction();
 
-                        }
                     }
 
                 }
