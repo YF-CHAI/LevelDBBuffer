@@ -1469,11 +1469,11 @@ void* DBImpl::BCC_BGWork(void *db)
 
                 }
 
-                if((readRatio >= 0.95) || (readRatio == 0.0 && writeRatio == 0.0))
+                if((readRatio > 0.9) || (readRatio == 0.0 && writeRatio == 0.0))
                 {
                     DBImpl::LDC_MERGE_LINK_NUM_ = 1;
                     DBImpl::LDC_AMPLIFY_FACTOR_ =
-                            (DBImpl::LDC_AMPLIFY_FACTOR_ - 2) >= 4  ? DBImpl::LDC_AMPLIFY_FACTOR_ - 2 : 4;
+                            (DBImpl::LDC_AMPLIFY_FACTOR_ - 2) >= 6  ? DBImpl::LDC_AMPLIFY_FACTOR_ - 2 : 6;
 
                     DBImpl::CuttleTreeFirstLevelSize = config::kCuttleTreeFirstLevelSize / 2;
 
