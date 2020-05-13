@@ -1490,7 +1490,7 @@ void* DBImpl::BCC_BGWork(void *db)
                 {
                     DBImpl::LDC_MERGE_LINK_NUM_ = 1;
                     DBImpl::LDC_AMPLIFY_FACTOR_ =
-                            (DBImpl::LDC_AMPLIFY_FACTOR_ - 2) >= 2  ? DBImpl::LDC_AMPLIFY_FACTOR_ - 2 : 2;
+                            (DBImpl::LDC_AMPLIFY_FACTOR_ - 2) >= 4  ? DBImpl::LDC_AMPLIFY_FACTOR_ - 2 : 4;
 
                     DBImpl::CuttleTreeFirstLevelSize = config::kCuttleTreeFirstLevelSize / 2;
 
