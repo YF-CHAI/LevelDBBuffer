@@ -636,7 +636,7 @@ Status Version::BufferGet(const ReadOptions& options,
 bool Version::UpdateStats(const GetStats& stats) {
   FileMetaData* f = stats.seek_file;
   if (f != NULL) {
-    f->allowed_seeks--;//cyf changed
+    //f->allowed_seeks--;//cyf changed
     if (f->allowed_seeks <= 0 && file_to_compact_ == NULL) {
       file_to_compact_ = f;
       file_to_compact_level_ = stats.seek_file_level;
