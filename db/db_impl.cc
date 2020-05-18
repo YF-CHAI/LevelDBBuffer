@@ -1505,14 +1505,14 @@ void* DBImpl::BCC_BGWork(void *db)
                  if(readRatio >= 0.85)
                  {
                      DBImpl::LDC_AMPLIFY_FACTOR_ =
-                             (DBImpl::LDC_AMPLIFY_FACTOR_ - 2) >= 4  ? DBImpl::LDC_AMPLIFY_FACTOR_ - 2 : 4;
+                             (DBImpl::LDC_AMPLIFY_FACTOR_ - 2) >= 6  ? DBImpl::LDC_AMPLIFY_FACTOR_ - 2 : 6;
 
-                     DBImpl::CuttleTreeFirstLevelSize = config::kCuttleTreeFirstLevelSize / 2;
+                     DBImpl::CuttleTreeFirstLevelSize = config::kCuttleTreeFirstLevelSize * 0.8;
                  }
                  else if(readRatio <= 0.15)
                  {
                      DBImpl::LDC_AMPLIFY_FACTOR_ =
-                             (DBImpl::LDC_AMPLIFY_FACTOR_ + 2) <= 20  ? DBImpl::LDC_AMPLIFY_FACTOR_ + 2 : 20;
+                             (DBImpl::LDC_AMPLIFY_FACTOR_ + 2) <= 16  ? DBImpl::LDC_AMPLIFY_FACTOR_ + 2 : 16;
 
                      DBImpl::CuttleTreeFirstLevelSize = config::kCuttleTreeFirstLevelSize * 2;
                  }else
@@ -1527,6 +1527,7 @@ void* DBImpl::BCC_BGWork(void *db)
                           <<" Link num: "<<DBImpl::LDC_MERGE_LINK_NUM_
                          <<" Amplify is: "<< DBImpl::LDC_AMPLIFY_FACTOR_
                         <<" Lv1 size: "<<DBImpl::CuttleTreeFirstLevelSize
+                       <<" Compaction_IO(MB): "<<(read_compaction_MB +write_compation_MB)
                          <<std::endl;
 
             }
@@ -1547,8 +1548,6 @@ void* DBImpl::BCC_BGWork(void *db)
 
             std::cout<<"Delta Users Get request num: \t"<<readStatic.readStaticDelta_.get_num<<std::endl;
             std::cout<<"Delta Users Put request num: \t"<<readStatic.readStaticDelta_.put_num<<std::endl;
-
-
 
                 std::string value;
                 char buf[500];
