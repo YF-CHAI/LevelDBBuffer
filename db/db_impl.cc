@@ -1493,9 +1493,9 @@ void* DBImpl::BCC_BGWork(void *db)
                 {
                     DBImpl::LDC_MERGE_LINK_NUM_ = 1;
                     DBImpl::LDC_AMPLIFY_FACTOR_ =
-                            (DBImpl::LDC_AMPLIFY_FACTOR_ - 2) >= 6  ? DBImpl::LDC_AMPLIFY_FACTOR_ - 2 : 6;
+                            (DBImpl::LDC_AMPLIFY_FACTOR_ - 2) >= 8  ? DBImpl::LDC_AMPLIFY_FACTOR_ - 2 : 8;
 
-                    DBImpl::CuttleTreeFirstLevelSize = config::kCuttleTreeFirstLevelSize / 2;
+                    DBImpl::CuttleTreeFirstLevelSize = config::kCuttleTreeFirstLevelSize * 0.8;
 
                     if(db == nullptr){
                         std::cout <<"reinterpret_cast<DBImpl*>(db) is nullptr"<<std::endl;
@@ -1520,14 +1520,14 @@ void* DBImpl::BCC_BGWork(void *db)
                  if(readRatio >= 0.85)
                  {
                      DBImpl::LDC_AMPLIFY_FACTOR_ =
-                             (DBImpl::LDC_AMPLIFY_FACTOR_ - 2) >= 6  ? DBImpl::LDC_AMPLIFY_FACTOR_ - 2 : 6;
+                             (DBImpl::LDC_AMPLIFY_FACTOR_ - 2) >= 8  ? DBImpl::LDC_AMPLIFY_FACTOR_ - 2 : 8;
 
                      DBImpl::CuttleTreeFirstLevelSize = config::kCuttleTreeFirstLevelSize * 0.8;
                  }
                  else if(readRatio <= 0.15)
                  {
                      DBImpl::LDC_AMPLIFY_FACTOR_ =
-                             (DBImpl::LDC_AMPLIFY_FACTOR_ + 2) <= 16  ? DBImpl::LDC_AMPLIFY_FACTOR_ + 2 : 16;
+                             (DBImpl::LDC_AMPLIFY_FACTOR_ + 2) <= 14  ? DBImpl::LDC_AMPLIFY_FACTOR_ + 2 : 14;
 
                      DBImpl::CuttleTreeFirstLevelSize = config::kCuttleTreeFirstLevelSize * 2;
                  }else
