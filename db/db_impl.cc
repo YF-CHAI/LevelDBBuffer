@@ -1493,9 +1493,9 @@ void* DBImpl::BCC_BGWork(void *db)
                 {
                     DBImpl::LDC_MERGE_LINK_NUM_ = 1;
                     DBImpl::LDC_AMPLIFY_FACTOR_ =
-                            (DBImpl::LDC_AMPLIFY_FACTOR_ - 2) >= 8  ? DBImpl::LDC_AMPLIFY_FACTOR_ - 2 : 8;
+                            (DBImpl::LDC_AMPLIFY_FACTOR_ - 2) >= 6  ? DBImpl::LDC_AMPLIFY_FACTOR_ - 2 : 6;
 
-                    DBImpl::CuttleTreeFirstLevelSize = config::kCuttleTreeFirstLevelSize * 0.8;
+                    DBImpl::CuttleTreeFirstLevelSize = config::kCuttleTreeFirstLevelSize / 2;
 
                     if(db == nullptr){
                         std::cout <<"reinterpret_cast<DBImpl*>(db) is nullptr"<<std::endl;
@@ -1510,6 +1510,14 @@ void* DBImpl::BCC_BGWork(void *db)
                     DBImpl::LDC_MERGE_LINK_NUM_ = config::kThresholdBufferNum;
                     DBImpl::LDC_AMPLIFY_FACTOR_ = config::kCuttleTreeAmplifyFactor;
                     DBImpl::CuttleTreeFirstLevelSize = config::kCuttleTreeFirstLevelSize;
+
+                    if(db == nullptr){
+                        std::cout <<"reinterpret_cast<DBImpl*>(db) is nullptr"<<std::endl;
+                    }
+                    else{
+                        reinterpret_cast<DBImpl*>(db)->MaybeScheduleCompaction();
+
+                    }
 
 
                 }
