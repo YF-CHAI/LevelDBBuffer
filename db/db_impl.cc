@@ -1511,15 +1511,6 @@ void* DBImpl::BCC_BGWork(void *db)
                     DBImpl::LDC_AMPLIFY_FACTOR_ = config::kCuttleTreeAmplifyFactor;
                     DBImpl::CuttleTreeFirstLevelSize = config::kCuttleTreeFirstLevelSize;
 
-                    if(db == nullptr){
-                        std::cout <<"reinterpret_cast<DBImpl*>(db) is nullptr"<<std::endl;
-                    }
-                    else{
-                        reinterpret_cast<DBImpl*>(db)->MaybeScheduleCompaction();
-
-                    }
-
-
                 }
               }
 
