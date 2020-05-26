@@ -1372,6 +1372,10 @@ void* DBImpl::BCC_BGWork(void *db)
     double probe_time;
     Probe_Timer<double> probe_timer;
 
+    double acc_compaction_read_MB = 0;
+    double acc_compaction_write_MB = 0;
+    uint64_t acc_compaction_times = 0;
+
    // cinfo = bpf.get_cache_info();
     while(1){
 
@@ -1431,6 +1435,11 @@ void* DBImpl::BCC_BGWork(void *db)
                 for (int i=0;i<config::kNumLevels;i++){
                     read_compaction_MB += (stmp_[i].partial_stats.bytes_read /1048576.0);
                     write_compation_MB += (stmp_[i].partial_stats.bytes_written /1048576.0);
+
+                    acc_compaction_read_MB += (stats_[i].partial_stats.bytes_read /1048576.0);
+                    acc_compaction_write_MB += (stats_[i].partial_stats.bytes_written /1048576.0);
+                    acc_compaction_times += (stats_[i].partial_stats.compact_times);
+
                 }
 
                 double current_score = (user_read_MB + read_compaction_MB )/ rand_read4k_TP
@@ -1526,9 +1535,9 @@ void* DBImpl::BCC_BGWork(void *db)
                  else if(readRatio <= 0.15)
                  {
                      DBImpl::LDC_AMPLIFY_FACTOR_ =
-                             (DBImpl::LDC_AMPLIFY_FACTOR_ + 2) <= 14  ? DBImpl::LDC_AMPLIFY_FACTOR_ + 2 : 14;
+                             (DBImpl::LDC_AMPLIFY_FACTOR_ + 2) <= 12  ? DBImpl::LDC_AMPLIFY_FACTOR_ + 2 : 12;
 
-                     DBImpl::CuttleTreeFirstLevelSize = config::kCuttleTreeFirstLevelSize * 2;
+                     DBImpl::CuttleTreeFirstLevelSize = config::kCuttleTreeFirstLevelSize * 1.5;
                  }else
                  {
                      DBImpl::LDC_AMPLIFY_FACTOR_ = config::kCuttleTreeAmplifyFactor;
@@ -1541,7 +1550,9 @@ void* DBImpl::BCC_BGWork(void *db)
                           <<" Link num: "<<DBImpl::LDC_MERGE_LINK_NUM_
                          <<" Amplify is: "<< DBImpl::LDC_AMPLIFY_FACTOR_
                         <<" Lv1 size: "<<DBImpl::CuttleTreeFirstLevelSize
-                       <<" Compaction_IO(MB): "<<(read_compaction_MB +write_compation_MB)
+                       <<" Delta Compaction_IO(MB): "<<(read_compaction_MB +write_compation_MB)
+                      << " Acc_compaction(MB): "<< (acc_compaction_read_MB + acc_compaction_write_MB)
+                      <<" Acc_comapactionTimes: "<< acc_compaction_times
                          <<std::endl;
 
             }
