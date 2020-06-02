@@ -1432,9 +1432,15 @@ void* DBImpl::BCC_BGWork(void *db)
                 double user_write_MB = readStatic.readStaticDelta_.put_num * 1024 /1048576.0;
                 double read_compaction_MB = 0;
                 double write_compation_MB = 0;
+                double delta_compaction_times = 0;
+                acc_compaction_times = 0;
+                acc_compaction_read_MB = 0;
+                acc_compaction_write_MB = 0;
+
                 for (int i=0;i<config::kNumLevels;i++){
                     read_compaction_MB += (stmp_[i].partial_stats.bytes_read /1048576.0);
                     write_compation_MB += (stmp_[i].partial_stats.bytes_written /1048576.0);
+                    delta_compaction_times += (stmp_[i].partial_stats.compact_times);
 
                     acc_compaction_read_MB += (stats_[i].partial_stats.bytes_read /1048576.0);
                     acc_compaction_write_MB += (stats_[i].partial_stats.bytes_written /1048576.0);
@@ -1546,13 +1552,14 @@ void* DBImpl::BCC_BGWork(void *db)
                  }
              }
 
-             std::cout << "ReadRatio is: "<<readRatio
+             std::cout << "ReadRatio: "<<readRatio
                           <<" Link num: "<<DBImpl::LDC_MERGE_LINK_NUM_
-                         <<" Amplify is: "<< DBImpl::LDC_AMPLIFY_FACTOR_
-                        <<" Lv1 size: "<<DBImpl::CuttleTreeFirstLevelSize
-                       <<" Delta Compaction_IO(MB): "<<(read_compaction_MB +write_compation_MB)
-                      << " Acc_compaction(MB): "<< (acc_compaction_read_MB + acc_compaction_write_MB)
-                      <<" Acc_comapactionTimes: "<< acc_compaction_times
+                         <<" Amplify: "<< DBImpl::LDC_AMPLIFY_FACTOR_
+                        <<" Lv1 size: "<<DBImpl::CuttleTreeFirstLevelSize/1048576.0
+                       <<" Delta Compact_IO(MB): "<<(read_compaction_MB +write_compation_MB)
+                      <<" Delta CompactTimes:"<<delta_compaction_times
+                      << " Acc_compact(MB): "<< (acc_compaction_read_MB + acc_compaction_write_MB)
+                      <<" Acc_comapactTimes: "<< acc_compaction_times
                          <<std::endl;
 
             }
