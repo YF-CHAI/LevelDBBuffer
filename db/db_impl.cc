@@ -1551,14 +1551,14 @@ void* DBImpl::BCC_BGWork(void *db)
 
                  }
              }
-
+//cyf add :there is some statistic error in write_compaciton_MB to be fixed, now use read_compaction_MB *2 instead
              std::cout << "ReadRatio: "<<readRatio
                           <<" Link num: "<<DBImpl::LDC_MERGE_LINK_NUM_
                          <<" Amplify: "<< DBImpl::LDC_AMPLIFY_FACTOR_
                         <<" Lv1 size: "<<DBImpl::CuttleTreeFirstLevelSize/1048576.0
-                       <<" Delta Compact_IO(MB): "<<(read_compaction_MB +write_compation_MB)
+                       <<" Delta Compact_IO(MB): "<<(read_compaction_MB*2 + 0*write_compation_MB)
                       <<" Delta CompactTimes:"<<delta_compaction_times
-                      << " Acc_compact(MB): "<< (acc_compaction_read_MB + acc_compaction_write_MB)
+                      << " Acc_compact(MB): "<< (acc_compaction_read_MB*2 + 0*acc_compaction_write_MB)
                       <<" Acc_comapactTimes: "<< acc_compaction_times
                          <<std::endl;
 
