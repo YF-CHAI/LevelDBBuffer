@@ -24,13 +24,16 @@ namespace config {
 static const int kNumLevels = 7;
 
 // Level-0 compaction is started when we hit this many files.
-static const int kL0_CompactionTrigger = 4;
+static  int kL0_CompactionTrigger = 4;
 
 // Soft limit on number of level-0 files.  We slow down writes at this point.
-static const int kL0_SlowdownWritesTrigger = 8;
+static  int kL0_SlowdownWritesTrigger = 8;
 
 // Maximum number of level-0 files.  We stop writes at this point.
-static const int kL0_StopWritesTrigger = 12;
+static  int kL0_StopWritesTrigger = 12;
+
+//cyf add for auto-tuning to change Fanout
+static  int kLSMFanout = 10;
 
 // Maximum level to which a new compacted memtable is pushed if it
 // does not create overlap.  We try to push to level 2 to avoid the
@@ -48,23 +51,24 @@ static const uint64_t kBloomFilterBitsPerKey = 10;
 
 static const uint64_t kLDCBlockCacheSize = 8 << 20;//cyf change default 8MB
 
-static const uint64_t kLDCMaxFileSizeLimit = 4 << 20;
-static const uint64_t kLDCBlockSize = 4 << 10;
-static const uint64_t kLDCMaxWriteBufferSize = kLDCMaxFileSizeLimit * 2;
+static uint64_t kLDCMaxFileSizeLimit = 4 << 20;
+static uint64_t kLDCBlockSize = 4 << 10;
+static uint64_t kLDCMaxWriteBufferSize = kLDCMaxFileSizeLimit * 2;
 //static const bool kLDCGetOneLevelOnce = true;
 //whc add
-static const int kBufferCompactStartLevel  = 1;
-static const int kBufferCompactEndLevel = 7;
+static  int kBufferCompactStartLevel  = 7;//need to check Start Level < End Level
+static  int kBufferCompactEndLevel = 7;
 
-static const double kLDCMergeSizeRatio = 1.0;//cyf change to non-const var
-static const bool kUseAdaptiveLDC = true;
+static  double kLDCMergeSizeRatio = 0.5;//cyf change to non-const var
+static  bool   kUseAdaptiveLDC = false;
+//cuttleTrees'option
 static const bool kUseCattleTreeMethods = false;
-static const uint32_t kCuttleTreeAmplifyFactor = 10;
+static const uint32_t kCuttleTreeAmplifyFactor = kLSMFanout;
 static const uint64_t kCuttleTreeFirstLevelSize = 5 * kLDCMaxFileSizeLimit;
 
 static const uint64_t kLDCBCCProbeInterval = 5;//cyf probe every 30s
 //whc add
-static const int kThresholdBufferNum  = 10;
+static  int kThresholdBufferNum  = 10;
 //cyf LDC trigger condition
 //cyf add for having two condition to determine the merge operation
 //kLDCMergeSizeRatio = total_linked_fragement_size / target_merge_sstable_size

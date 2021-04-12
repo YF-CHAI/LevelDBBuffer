@@ -2974,5 +2974,47 @@ void WRSample::resetWRSample()
     writes_num_ = 0.0;
 
 }
+void DB::setStaticParameters(
+  int kL0_CompactionTrigger,//cyf change for AiKV parameters 
+  int kL0_SlowdownWritesTrigger,
+  int kL0_StopWritesTrigger,
+  int kLSMFanout,
+  uint64_t kLDCMaxFileSizeLimit,
+  uint64_t kLDCMaxWriteBufferSize,
+  int kBufferCompactStartLevel,
+  int kBufferCompactEndLevel,
+  double kLDCMergeSizeRatio,
+  bool kUseAdaptiveLDC,
+  int kThresholdBufferNum,
+  uint64_t kLDCBlockSize){
+  config::kL0_CompactionTrigger = kL0_CompactionTrigger;
+  config::kL0_SlowdownWritesTrigger = kL0_SlowdownWritesTrigger;
+  config::kL0_StopWritesTrigger = kL0_StopWritesTrigger;
+  config::kLSMFanout = kLSMFanout; 
+
+  config::kLDCMaxFileSizeLimit = kLDCMaxFileSizeLimit;
+  config::kLDCMaxWriteBufferSize  = kLDCMaxWriteBufferSize;
+  config::kBufferCompactStartLevel = kBufferCompactStartLevel;
+  config::kBufferCompactEndLevel = kBufferCompactEndLevel;
+  config::kLDCMergeSizeRatio = kLDCMergeSizeRatio;
+  config::kUseAdaptiveLDC = kUseAdaptiveLDC;
+  config::kThresholdBufferNum = kThresholdBufferNum;
+  config::kLDCBlockSize = kLDCBlockSize;
+
+  std::cout<<"kL0_CompactionTrigger: "<<config::kL0_CompactionTrigger<<std::endl;
+  std::cout<<"kL0_SlowdownWritesTrigger: "<<config::kL0_SlowdownWritesTrigger<<std::endl;
+  std::cout<<"kL0_StopWritesTrigger: "<<config::kL0_StopWritesTrigger<<std::endl;
+  std::cout<<"kLSMFanout: "<<config::kLSMFanout<<std::endl;
+
+  std::cout<<"kLDCMaxFileSizeLimit: "<<config::kLDCMaxFileSizeLimit<<std::endl;
+  std::cout<<"kLDCMaxWriteBufferSize: "<<config::kLDCMaxWriteBufferSize<<std::endl;
+  std::cout<<"kBufferCompactStartLevel: "<<config::kBufferCompactStartLevel<<std::endl;
+  std::cout<<"kBufferCompactEndLevel: "<<config::kBufferCompactEndLevel<<std::endl;
+  std::cout<<"kLDCMergeSizeRatio: "<<config::kLDCMergeSizeRatio<<std::endl;
+  std::cout<<"kUseAdaptiveLDC: "<<config::kUseAdaptiveLDC<<std::endl;
+  std::cout<<"kThresholdBufferNum: "<<config::kThresholdBufferNum<<std::endl;
+  std::cout<<"kLDCBlockSize: "<<config::kLDCBlockSize<<std::endl;
+  
+  }
 
 }  // namespace leveldb

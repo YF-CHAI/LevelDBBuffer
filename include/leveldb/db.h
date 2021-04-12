@@ -143,6 +143,21 @@ class DB {
   virtual void CompactRange(const Slice* begin, const Slice* end) = 0;
   virtual void setScanNum(int len){}
   virtual void resetLDCRatio(){}
+
+  static void setStaticParameters(
+  int kL0_CompactionTrigger,//cyf change for AiKV parameters 
+  int kL0_SlowdownWritesTrigger,
+  int kL0_StopWritesTrigger,
+  int kLSMFanout,
+  uint64_t kLDCMaxFileSizeLimit,
+  uint64_t kLDCMaxWriteBufferSize,
+  int kBufferCompactStartLevel,
+  int kBufferCompactEndLevel,
+  double kLDCMergeSizeRatio,
+  bool kUseAdaptiveLDC,
+  int kThresholdBufferNum,
+  uint64_t kLDCBlockSize);
+  
  private:
   // No copying allowed
   DB(const DB&);
