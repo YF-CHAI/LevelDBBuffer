@@ -56,7 +56,7 @@ static uint64_t kLDCBlockSize = 4 << 10;
 static uint64_t kLDCMaxWriteBufferSize = kLDCMaxFileSizeLimit * 2;
 //static const bool kLDCGetOneLevelOnce = true;
 //whc add
-static  int kBufferCompactStartLevel  = 7;//need to check Start Level < End Level
+static  int kBufferCompactStartLevel  = 1;//need to check Start Level < End Level
 static  int kBufferCompactEndLevel = 7;
 
 static  double kLDCMergeSizeRatio = 0.5;//cyf change to non-const var
@@ -66,7 +66,7 @@ static const bool kUseCattleTreeMethods = false;
 static const uint32_t kCuttleTreeAmplifyFactor = kLSMFanout;
 static const uint64_t kCuttleTreeFirstLevelSize = 5 * kLDCMaxFileSizeLimit;
 
-static const uint64_t kLDCBCCProbeInterval = 5;//cyf probe every 30s
+static  uint64_t kLDCBCCProbeInterval = 5;//cyf probe every 30s
 //whc add
 static  int kThresholdBufferNum  = 10;
 //cyf LDC trigger condition

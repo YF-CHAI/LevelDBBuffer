@@ -379,13 +379,21 @@ DBImpl::DBImpl(const Options& raw_options, const std::string& dbname)
 
 DBImpl::~DBImpl() {
   // whc add
-	for(int i=0;i<config::kNumLevels;i++)
-        std::cout<<"level: \t"<<i<<"\t Files nums: \t"<<versions_->current_->NumFiles(i)<<std::endl;
-        
+  //cyf add output file for AiKV
+  std::ofstream out("./output.txt",std::ios::app);
+	for(int i=0;i<config::kNumLevels;i++){
+    std::cout<<"level: \t"<<i<<"\t Files nums: \t"<<versions_->current_->NumFiles(i)<<std::endl;
+    out<<"level: \t"<<i<<"\t Files nums: \t"<<versions_->current_->NumFiles(i)<<std::endl;
+    }
+   
     std::cout<<"mem getnum: \t"<<ReadStatic::mem_get<<std::endl;
-    for(int i=0;i<config::kNumLevels;i++)
+    out<<"mem getnum: \t"<<ReadStatic::mem_get<<std::endl;
+
+    for(int i=0;i<config::kNumLevels;i++){
         std::cout<<"level: \t"<<i<<"\t getnum: \t"<<ReadStatic::level_get[i]<<std::endl;
-        
+        out<<"level: \t"<<i<<"\t getnum: \t"<<ReadStatic::level_get[i]<<std::endl;
+    }
+
     std::cout<<"table get: \t "<<ReadStatic::table_get<<std::endl;
     std::cout<<"bloomfilter miss: \t "<<ReadStatic::table_bloomfilter_miss<<std::endl;
     std::cout<<"readfile miss: \t"<<ReadStatic::table_readfile_miss<<std::endl;
@@ -395,7 +403,16 @@ DBImpl::~DBImpl() {
     std::cout<<"block cache read: \t"<<ReadStatic::block_cache_read<<std::endl;
     std::cout<<"Users Put request num: \t"<<ReadStatic::put_num<<std::endl;
     std::cout<<"Users Get request num: \t"<<ReadStatic::get_num<<std::endl;
-
+    //cyf add for AiKV statistic
+    out<<"table get: \t "<<ReadStatic::table_get<<std::endl;
+    out<<"bloomfilter miss: \t "<<ReadStatic::table_bloomfilter_miss<<std::endl;
+    out<<"readfile miss: \t"<<ReadStatic::table_readfile_miss<<std::endl;
+    out<<"table cache shoot: \t"<<ReadStatic::table_cache_shoot<<std::endl;
+    out<<"data block read: \t"<<ReadStatic::data_block_read<<std::endl;
+    out<<"index size: \t"<<ReadStatic::index_block_size<<std::endl;
+    out<<"block cache read: \t"<<ReadStatic::block_cache_read<<std::endl;
+    out<<"Users Put request num: \t"<<ReadStatic::put_num<<std::endl;
+    out<<"Users Get request num: \t"<<ReadStatic::get_num<<std::endl;
 
 
     std::cout <<"run DBImpl::~DBImpl()"<<std::endl;
@@ -430,15 +447,16 @@ DBImpl::~DBImpl() {
   std::string lh_compact_times;
   this->GetProperty("leveldb.lh_compact_times", &lh_compact_times);
 
-//  std::cout << "##sst_property" << std::endl;
-//  std::cout << sst_property << std::endl;
-  std::cout << "##mem_usage :\t" << std::endl;
-  std::cout << mem_usage << std::endl;
-  std::cout << "##stats_property: \t" << std::endl;
-  std::cout << stats_property << std::endl;
-  std::cout << "##lh_compact_times: \t" << std::endl;
-  std::cout << lh_compact_times << std::endl;
+  std::cout << "##sst_property:\t" << sst_property<<std::endl;
+  std::cout << "##mem_usage :\t" << mem_usage << std::endl;
+  std::cout << "##stats_property: \t" << stats_property << std::endl;
+  std::cout << "##lh_compact_times: \t" << lh_compact_times << std::endl;
 
+  out << "##sst_property:\t" << sst_property<<std::endl;
+  out << "##mem_usage:\t" << mem_usage << std::endl;
+  out << "##stats_property:\t" << stats_property << std::endl;
+  out << "##lh_compact_times:\t" << lh_compact_times << std::endl;
+  out.close();
 
   //cyf add for printing link number info
   /*
@@ -1406,7 +1424,7 @@ void* DBImpl::BCC_BGWork(void *db)
             readStatic.getReadStaticDelta();
 
             probe_time = probe_timer.End();
-            std::cout << "#_Transaction_throughput_(KTPS): \t"
+            std::cout << "#_Probe_Interval_(KTPS): \t"
                 <<(readStatic.readStaticDelta_.get_num
                    + readStatic.readStaticDelta_.put_num) / probe_time / 1000
                 <<"\t Current_DBImpl::LDC_MERGE_RATIO_: "<<DBImpl::LDC_MERGE_RATIO_
@@ -1561,71 +1579,22 @@ void* DBImpl::BCC_BGWork(void *db)
                       << " Acc_compact(MB): "<< (acc_compaction_read_MB*2 + 0*acc_compaction_write_MB)
                       <<" Acc_comapactTimes: "<< acc_compaction_times
                          <<std::endl;
+              
+              std::ofstream out("./output.txt",std::ios::app);
+              out << "ReadRatio: "<<readRatio
+                          <<" Link num: "<<DBImpl::LDC_MERGE_LINK_NUM_
+                         <<" Amplify: "<< DBImpl::LDC_AMPLIFY_FACTOR_
+                        <<" Lv1 size: "<<DBImpl::CuttleTreeFirstLevelSize/1048576.0
+                       <<" Delta Compact_IO(MB): "<<(read_compaction_MB*2 + 0*write_compation_MB)
+                      <<" Delta CompactTimes:"<<delta_compaction_times
+                      << " Acc_compact(MB): "<< (acc_compaction_read_MB*2 + 0*acc_compaction_write_MB)
+                      <<" Acc_comapactTimes: "<< acc_compaction_times
+                         <<std::endl;
+              out.close();
 
             }
 
-            /*
-            std::cout << "Probing cost time is: "<<probe_time<<" Seconds"<<std::endl;
-            std::cout<<"Delta mem getnum: \t"<<readStatic.readStaticDelta_.mem_get<<std::endl;
-            for(int i=0;i<config::kNumLevels;i++)
-                std::cout<<"Delta level: \t"<<i<<"\t getnum: \t"<<readStatic.readStaticDelta_.level_get[i]<<std::endl;
 
-            std::cout<<"Delta table get: \t "<<readStatic.readStaticDelta_.table_get<<std::endl;
-            std::cout<<"Delta bloomfilter miss: \t "<<readStatic.readStaticDelta_.table_bloomfilter_miss<<std::endl;
-            std::cout<<"Delta readfile miss: \t"<<readStatic.readStaticDelta_.table_readfile_miss<<std::endl;
-            std::cout<<"Delta table cache shoot: \t"<<readStatic.readStaticDelta_.table_cache_shoot<<std::endl;
-            std::cout<<"Delta data block read: \t"<<readStatic.readStaticDelta_.data_block_read<<std::endl;
-            std::cout<<"Delta index size: \t"<<readStatic.readStaticDelta_.index_block_size<<std::endl;
-            std::cout<<"Delta block cache read: \t"<<readStatic.readStaticDelta_.block_cache_read<<std::endl;
-
-            std::cout<<"Delta Users Get request num: \t"<<readStatic.readStaticDelta_.get_num<<std::endl;
-            std::cout<<"Delta Users Put request num: \t"<<readStatic.readStaticDelta_.put_num<<std::endl;
-
-                std::string value;
-                char buf[500];
-
-                printf(
-                         "                               Delta_Compactions\n"
-                         "Level   Files  Size(MB)   Time(sec)   Read(MB)   Write(MB)  ReadFiles   WriteFiles   CompactTimes\n"
-                         "-------------------------------------------------------------------------------------------------\n"
-                         );
-
-
-                for (int level = 0; level < config::kNumLevels; level++) {
-                  int files = reinterpret_cast<DBImpl*>(db)->versions_->NumLevelFiles(level) ;
-                  if ( true ) {
-                    printf(
-                             " %3d  %8d  %9.0lf  %9.0lf  %9.0lf  %9.0lf  %10lld  %10lld  %10lld\n",
-                             level,
-                             files - files_num_inlevel[level],
-                             (reinterpret_cast<DBImpl*>(db)->versions_->NumLevelBytes(level) - bytes_inlevel[level]) / 1048576.0,
-                             stmp_[level].partial_stats.micros / 1e6,
-                             stmp_[level].partial_stats.bytes_read / 1048576.0,
-                             stmp_[level].partial_stats.bytes_written / 1048576.0,
-                             stmp_[level].partial_stats.read_file_nums,
-                             stmp_[level].partial_stats.write_file_nums,
-                             stmp_[level].partial_stats.compact_times);
-
-                  }
-                }
-
-                for (int level = 1; level < config::kNumLevels; level++) {
-                  int files = reinterpret_cast<DBImpl*>(db)->versions_->NumLevelFiles(level);
-                  if (stmp_[level].partial_stats.micros > 0 || files > 0) {
-                    printf("Level %d: ", level);
-
-                    for(int i = 0; i < stmp_[level-1].max_read_file_nums; i++){
-                      for(int j = 0; j < stmp_[level].max_read_file_nums; j++){
-                        if(stmp_[level].lh_compact_times[i][j] > 0){
-                          printf(" (%d+%d,%lld) ", i, j, stmp_[level].lh_compact_times[i][j]);
-
-                        }
-                      }
-                    }
-
-                  }
-                  std::cout << std::endl;
-                }*/
 
         }
 
@@ -2138,7 +2107,7 @@ Status DBImpl::Dispatch(CompactionState* compact) {
 
 //cyf: actually means LDC's Merge operation
 Status DBImpl::BufferCompact(CompactionState* compact,int index){
-    //DBImpl::swith_isprobe_start  = true;
+    //std::cout << "this is LDC compaction\n"<<std::endl;//DBImpl::swith_isprobe_start  = true;
     Status status;
     const uint64_t start_micros = env_->NowMicros();
     int64_t imm_micros = 0;  // Micros spent doing imm_ compactions
@@ -2986,7 +2955,8 @@ void DB::setStaticParameters(
   double kLDCMergeSizeRatio,
   bool kUseAdaptiveLDC,
   int kThresholdBufferNum,
-  uint64_t kLDCBlockSize){
+  uint64_t kLDCBlockSize,
+  uint64_t kLDCBCCProbeInterval){
   config::kL0_CompactionTrigger = kL0_CompactionTrigger;
   config::kL0_SlowdownWritesTrigger = kL0_SlowdownWritesTrigger;
   config::kL0_StopWritesTrigger = kL0_StopWritesTrigger;
@@ -3000,6 +2970,7 @@ void DB::setStaticParameters(
   config::kUseAdaptiveLDC = kUseAdaptiveLDC;
   config::kThresholdBufferNum = kThresholdBufferNum;
   config::kLDCBlockSize = kLDCBlockSize;
+  config::kLDCBCCProbeInterval = kLDCBCCProbeInterval;
 
   std::cout<<"kL0_CompactionTrigger: "<<config::kL0_CompactionTrigger<<std::endl;
   std::cout<<"kL0_SlowdownWritesTrigger: "<<config::kL0_SlowdownWritesTrigger<<std::endl;
@@ -3014,6 +2985,7 @@ void DB::setStaticParameters(
   std::cout<<"kUseAdaptiveLDC: "<<config::kUseAdaptiveLDC<<std::endl;
   std::cout<<"kThresholdBufferNum: "<<config::kThresholdBufferNum<<std::endl;
   std::cout<<"kLDCBlockSize: "<<config::kLDCBlockSize<<std::endl;
+  std::cout<<"kLDCBCCProbeInterval: "<<config::kLDCBCCProbeInterval<<std::endl;
   
   }
 

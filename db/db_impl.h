@@ -24,6 +24,9 @@
 #include <signal.h>
 
 #include <thread>//cyf add for test probe linux kernel function
+#include <fstream>
+#include <stdio.h>
+#include <iostream>
 
 namespace leveldb {
 

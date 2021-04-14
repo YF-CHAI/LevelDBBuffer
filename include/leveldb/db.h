@@ -156,7 +156,8 @@ class DB {
   double kLDCMergeSizeRatio,
   bool kUseAdaptiveLDC,
   int kThresholdBufferNum,
-  uint64_t kLDCBlockSize);
+  uint64_t kLDCBlockSize,
+  uint64_t kLDCBCCProbeInterval);
   
  private:
   // No copying allowed
